@@ -1,0 +1,10 @@
+import { useState } from 'react'
+import { OrderCard } from '../components/OrderCard'
+import { TableCard } from '../components/TableCard'
+import { orders, restaurantTables, waiters } from '../mocks/restaurant'
+import type { RestaurantTable } from '../types'
+export function TablesPage() {
+  const [selected, setSelected] = useState<RestaurantTable | null>(null)
+  const selectedOrders = selected ? orders.filter((order) => selected.orderIds.includes(order.id)) : []
+  return <><section className="page-intro"><div><span className="eyebrow">Operación en vivo</span><h1>Mapa de mesas</h1><p>Seleccioná una mesa para consultar sus comensales y pedidos.</p></div><div className="legend"><span><i className="legend-free"></i>Disponible</span><span><i className="legend-occupied"></i>Ocupada</span></div></section><section className="table-grid" aria-label="Mapa del restaurante">{restaurantTables.map((table) => <TableCard key={table.id} table={table} onSelect={setSelected} />)}</section>{selected && <div className="modal-backdrop" onMouseDown={() => setSelected(null)}><aside className="table-detail" role="dialog" aria-modal="true" aria-label={`Detalle de mesa ${selected.number}`} onMouseDown={(event) => event.stopPropagation()}><button className="close-button" onClick={() => setSelected(null)} aria-label="Cerrar detalle">×</button><span className="eyebrow">Detalle de mesa</span><div className="detail-title"><h2>Mesa {selected.number}</h2><span className={selected.status === 'ocupada' ? 'status status--preparacion' : 'status status--entregado'}>{selected.status === 'ocupada' ? 'Ocupada' : 'Desocupada'}</span></div><div className="detail-stats"><div><span>Comensales</span><b>{selected.diners}</b></div><div><span>Pedidos</span><b>{selectedOrders.length}</b></div></div><h3>Pedidos asignados</h3>{selectedOrders.length ? <div className="detail-orders">{selectedOrders.map((order) => <OrderCard key={order.id} order={order} waiter={waiters.find((waiter) => waiter.id === order.waiterId)} compact />)}</div> : <div className="empty-state">Esta mesa está libre y no tiene pedidos activos.</div>}</aside></div>}</>
+}
