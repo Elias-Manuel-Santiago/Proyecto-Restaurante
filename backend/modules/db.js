@@ -1,11 +1,10 @@
 import mysql from "mysql2/promise";
 
-
-const connection = await mysql.createConnection({
+const connection = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "",
-  database: "restaurante",
+  database: process.env.DB_DATABASE || "restaurante",
 });
 
 export default connection;

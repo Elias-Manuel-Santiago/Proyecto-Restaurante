@@ -1,5 +1,43 @@
+import type { ReactNode } from 'react'
 import type { MenuDish } from '../types'
-const money = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })
-export function MenuDishCard({ dish }: { dish: MenuDish }) {
-  return <article className="dish-card"><img src={dish.image} alt={dish.name} /><div className="dish-card-content"><span className="eyebrow">{dish.category}</span><h3>{dish.name}</h3><p>{dish.description}</p><strong>{money.format(dish.price)}</strong></div></article>
+import { money } from '../state/model'
+export function MenuDishCard({
+  dish,
+  children,
+}: {
+  dish: MenuDish
+  children?: ReactNode
+}) {
+  return (
+    <article className="dish-card">
+      {dish.image ? (
+        <img
+          src={dish.image}
+          alt=""
+          loading="lazy"
+          onError={(event) => {
+            event.currentTarget.style.display = 'none'
+          }}
+        />
+      ) : (
+        <div className="dish-placeholder" aria-hidden="true">
+          N
+        </div>
+      )}
+      <div className="dish-card-content">
+        <div className="dish-meta">
+          <span className="eyebrow">{dish.category}</span>
+          <span
+            className={`status status--${dish.available ? 'listo' : 'cancelado'}`}
+          >
+            {dish.available ? 'Disponible' : 'Agotado'}
+          </span>
+        </div>
+        <h3>{dish.name}</h3>
+        <p>{dish.description}</p>
+        <strong>{money(dish.price)}</strong>
+        {children && <div className="card-actions">{children}</div>}
+      </div>
+    </article>
+  )
 }

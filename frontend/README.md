@@ -1,78 +1,128 @@
-# React + TypeScript + Vite
+# NÁCAR Restaurante
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend React + TypeScript conectado a la API Express/MySQL de `../backend`.
+Mesas, comidas, pedidos y resúmenes se leen y guardan en el servidor. Los usuarios,
+el acceso por roles y sus contraseñas siguen siendo locales, sin conexiones de usuarios.
 
-Currently, two official plugins are available:
+## Ejecutar
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+En `backend/`, con MySQL disponible y la conexión de `modules/db.js` configurada:
 
-## React Compiler
-
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```sh
+npm ci
+npm run migrate
+npm start
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+La migración agrega los campos necesarios para la interfaz y puede ejecutarse de nuevo.
+Conserva los registros existentes y no modifica las tablas de usuarios. El campo
+`pedidos.id_mesero` pasa a admitir `NULL` para no exigir un usuario real todavía.
+`DB_DATABASE` permite elegir otra base; por defecto se usa la conexión existente.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+En `frontend/`:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```sh
+npm ci
+npm run dev
 ```
+
+La URL de API predeterminada es `/api`. Vite reenvía esas solicitudes a
+`http://localhost:3005`, incluyendo `PATCH`. Las variables opcionales de `.env.example` son:
+
+```dotenv
+VITE_API_ROUTE=/api
+VITE_API_TARGET=http://localhost:3005
+```
+
+Si creás o cambiás `.env`, reiniciá Vite. `API_ROUTE` sin el prefijo `VITE_` ya no se usa.
+En producción, configurar el proxy `/api` en el servidor o establecer `VITE_API_ROUTE`
+con la dirección pública del backend al compilar. Configurar `FRONTEND_ORIGIN` en el
+backend si el origen del frontend es diferente de `http://localhost:5173`.
+Las rutas de la SPA necesitan fallback a `index.html`.
+
+## Organización del código
+
+- `src/services/apiAccess.ts`: contratos y todas las solicitudes HTTP. Una función
+  `consultar` usa `try/catch` y devuelve la respuesta Axios o el error original completo.
+- `src/services/adapters.ts`: convierte los nombres del backend al modelo de la interfaz,
+  agrupa las filas de pedidos y convierte importes de MySQL a números.
+- `src/state/store.ts`: carga inicial, acciones remotas y recarga después de guardar.
+  No crea datos operativos de demostración ni usa un fallback a mocks.
+- `src/state/model.ts`: utilidades de presentación y operaciones de usuarios locales.
+- `src/mocks/restaurant.ts`: conserva únicamente los perfiles iniciales de usuarios.
+
+El estado conserva el objeto de error completo. `ErrorMessage` muestra un mensaje en
+pantalla sin reemplazarlo ni resumirlo en el servicio. No hay interceptores de errores,
+reintentos automáticos ni un sistema adicional de manejo de errores.
+
+Al ingresar se cargan los datos reales. Se actualizan cada diez segundos, con el botón
+**Actualizar datos** y después de cada escritura. Mientras se guarda, los controles
+operativos se deshabilitan para evitar envíos repetidos. Si falla una recarga después
+de una escritura confirmada, se cierra el formulario y se muestra el error global.
+
+## Conexiones disponibles
+
+Todas las rutas parten de `/api`.
+
+| Recurso   | Lectura                                              | Escrituras                                                                                                |
+| --------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Mesas     | `POST /mesas/obtener`                                | `POST /mesas`, `PUT /mesas/:id`, `DELETE /mesas/:id`, `PATCH /mesas/:id/abrir`, `PATCH /mesas/:id/cerrar` |
+| Comidas   | `POST /comidas/obtener`                              | `POST /comidas`, `PUT /comidas/:id`, `DELETE /comidas/:id`, `PATCH /comidas/:id/disponibilidad`           |
+| Pedidos   | `POST /pedidos/obtener`                              | `POST /pedidos`, `PUT /pedidos/:id`, `PATCH /pedidos/:id/estado`, `/cancelar`, `/despachar`               |
+| Resúmenes | `POST /resumenes/obtener`, `POST /resumenes/detalle` | `POST /resumenes`, `DELETE /resumenes/:id`                                                                |
+
+Las funciones exportadas tienen nombres explícitos: `obtenerMesas`, `cargarMesas`,
+`editarMesa`, `abrirMesa`, `cerrarMesa`, `eliminarMesa`, sus equivalentes de comidas,
+`cargarPedido`, `editarPedido`, `cambiarEstadoPedido` y las operaciones de resúmenes.
+
+## Circuito y parámetros
+
+1. **Administrador:** crea mesas con número y capacidad (1 a 30) y platos con categoría,
+   nombre, descripción, precio, imagen HTTPS opcional y disponibilidad.
+2. **Mozo:** abre una mesa indicando comensales y crea el pedido. Las comidas envían
+   `id_comida`, `cantidad` (1 a 99) y `notas` (hasta 300 caracteres). El servidor asigna
+   IDs, visita y fecha; guarda los precios y nombres de los platos.
+3. **Pedidos:** los pedidos pendientes pueden editarse; los precios de sus ítems se
+   vuelven a fijar al guardar la edición. Los cambios posteriores de la carta no
+   modifican los importes históricos ya guardados.
+4. **Chef:** cambia `pendiente → preparacion → listo`. **Mozo:** confirma `entregado`.
+   Mozo o administrador pueden cancelar pedidos activos. Cada cambio guarda actor y fecha.
+5. La mesa se cierra cuando no tiene pedidos activos. Reabrirla inicia otra visita.
+   El borrado lógico de mesas y comidas conserva los pedidos y sus referencias.
+6. **Administrador → Resúmenes guardados:** consulta, crea, ve detalles y elimina resúmenes.
+   Se ingresan tipo, ganancias, pedidos y cancelados; las posiciones de platos son opcionales.
+   Las ganancias se ingresan explícitamente y no se confunden con el consumo del salón.
+
+Las categorías anteriores `Entrada`, `Principal`, `Postre` y `Bebida` se muestran con
+los nombres plurales del frontend. Los registros antiguos sin fecha, mozo o historial
+no reciben valores inventados. Los importes anteriores que no tenían precio histórico
+usan el precio disponible en la base; los nuevos pedidos sí guardan su propio precio.
+
+## Usuarios locales
+
+Seleccionar un rol y completar Usuario y Contraseña con valores ficticios. El acceso
+conserva su comportamiento anterior: no comprueba credenciales contra el backend.
+Los perfiles existentes se recuperan de la copia anterior y sus cambios se guardan
+bajo `nacar.users.v1`, sin copiar mesas, platos ni pedidos a localStorage.
+Crear, editar, restablecer y borrar usuarios continúa siendo local. No se consultan
+ni modifican `usuarios` ni `sesiones_usuarios` desde esta integración. El nombre e ID
+del mozo local se guardan únicamente como datos del pedido; no autentican al actor.
+
+## Formato y verificaciones
+
+```sh
+npm run format
+npm run format:check
+npm run lint
+npm run build
+```
+
+Prettier formatea el frontend completo (fuentes, estilos, configuración, HTML y documentación).
+Excluye dependencias, compilados, archivos temporales y el lockfile generado.
+
+Desde `backend/`, `npm test` crea una base temporal, copia únicamente la estructura
+operativa y comprueba la API, transacciones, migración repetible, historial, precios,
+visitas y resúmenes. También ejecuta `frontend/tests/store.integration.mjs` con el store
+y Axios reales contra esa API. La base temporal se elimina al finalizar; las pruebas
+no escriben pedidos de prueba en la base del restaurante. Requiere permisos de MySQL
+para crear y eliminar esa base temporal, además de las dependencias de ambas carpetas.
