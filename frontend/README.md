@@ -1,5 +1,9 @@
 # NÁCAR Restaurante
 
+El SQL de instalación y el diagrama actualizado están en [database/README.md](database/README.md).
+La importación se verificó en una base temporal MariaDB. La base local `restaurante`
+presenta un error del motor (1932); consultar esa guía antes de importar o iniciar.
+
 Frontend React + TypeScript conectado a la API Express/MySQL de `../backend`.
 Mesas, comidas, pedidos y resúmenes se leen y guardan en el servidor. Los usuarios,
 el acceso por roles y sus contraseñas siguen siendo locales, sin conexiones de usuarios.
@@ -60,6 +64,26 @@ Al ingresar se cargan los datos reales. Se actualizan cada diez segundos, con el
 operativos se deshabilitan para evitar envíos repetidos. Si falla una recarga después
 de una escritura confirmada, se cierra el formulario y se muestra el error global.
 
+El chef puede arrastrar desde el asa de cada comanda para reordenarla dentro de su
+estado; también puede usar las flechas del teclado con el asa enfocada. Admite mouse
+y pantallas táctiles. La prioridad se conserva con filtros y paginación, y el resto
+del personal recibe un aviso SSE y actualiza inmediatamente al cambiar el orden.
+También se consulta al abrir **Pedidos**, al actualizar y cada diez segundos.
+Los pedidos activos se muestran primero por prioridad; el historial conserva su
+orden por fecha. Los nuevos van al final de la cola.
+Para arrastrar entre pedidos de distintas páginas de cocina, **Ver todos para
+reordenar** despliega la cola completa del estado.
+
+La prioridad vive solo en la memoria de una instancia del backend. No se escribe
+en MySQL ni en el almacenamiento local del navegador. Reiniciar el backend vuelve
+a ordenar por antigüedad. La ruta `PATCH /api/pedidos/:id/prioridad` recibe
+`{ destino: ID, antes: boolean }`; el listado incorpora el campo `prioridad`.
+
+`GET /api/pedidos/eventos` mantiene una conexión SSE por pantalla con sesión iniciada.
+El navegador reconecta automáticamente si se interrumpe; al conectar o reconectar
+vuelve a consultar los datos. La conexión se cierra al salir de la sesión. Si hay
+un proxy en producción, debe permitir streaming SSE sin acumular las respuestas.
+
 ## Conexiones disponibles
 
 Todas las rutas parten de `/api`.
@@ -78,7 +102,7 @@ Las funciones exportadas tienen nombres explícitos: `obtenerMesas`, `cargarMesa
 ## Circuito y parámetros
 
 1. **Administrador:** crea mesas con número y capacidad (1 a 30) y platos con categoría,
-   nombre, descripción, precio, imagen HTTPS opcional y disponibilidad.
+   nombre, descripción, precio y disponibilidad. Las imágenes no se usan.
 2. **Mozo:** abre una mesa indicando comensales y crea el pedido. Las comidas envían
    `id_comida`, `cantidad` (1 a 99) y `notas` (hasta 300 caracteres). El servidor asigna
    IDs, visita y fecha; guarda los precios y nombres de los platos.
@@ -119,6 +143,20 @@ npm run build
 
 Prettier formatea el frontend completo (fuentes, estilos, configuración, HTML y documentación).
 Excluye dependencias, compilados, archivos temporales y el lockfile generado.
+
+Pruebas de prioridad sin MySQL (requieren dependencias de frontend y backend):
+
+```sh
+# Desde frontend/
+node --test tests/priority.integration.mjs
+# Desde backend/
+node --test tests/prioridad.test.js tests/prioridad-api.test.js tests/prioridad-sse.test.js
+```
+
+Verifican la cola en memoria, los movimientos, la limpieza, las rutas HTTP y la
+lectura del orden del chef por el mozo usando Axios, avisos SSE a varios clientes,
+reconexión y avisos durante una carga. Las filas de MySQL se simulan;
+se comprueba que reordenar no escribe en SQL ni en localStorage.
 
 Desde `backend/`, `npm test` crea una base temporal, copia únicamente la estructura
 operativa y comprueba la API, transacciones, migración repetible, historial, precios,

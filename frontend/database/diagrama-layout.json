@@ -1,0 +1,195 @@
+{
+  "tables": {
+    "usuarios": {
+      "x": 40,
+      "y": 670,
+      "w": 350,
+      "h": 244,
+      "rows": [
+        "PK    id_usuario: INT",
+        "·     usuario: VARCHAR(100)",
+        "·     nombre: VARCHAR(80)",
+        "·     tipo: VARCHAR(20)",
+        "·     password_hash: VARCHAR(255)",
+        "·     activo: TINYINT(1)",
+        "·     creado_en: DATETIME(3)"
+      ]
+    },
+    "sesiones_usuarios": {
+      "x": 440,
+      "y": 670,
+      "w": 350,
+      "h": 216,
+      "rows": [
+        "PK    id_sesion: INT",
+        "FK    id_usuario: INT",
+        "·     token_hash: CHAR(64)",
+        "·     creado_en: DATETIME(3)",
+        "·     expira_en: DATETIME(3)",
+        "·     revocado_en: DATETIME(3) ?"
+      ]
+    },
+    "mesas": {
+      "x": 40,
+      "y": 110,
+      "w": 350,
+      "h": 244,
+      "rows": [
+        "PK    id_mesa: INT",
+        "·     numero: INT ?",
+        "·     cantidad_personas: INT",
+        "·     estado: VARCHAR(30)",
+        "·     comensales: INT",
+        "·     servicio_id: VARCHAR(64) ?",
+        "·     eliminado: TINYINT(1)"
+      ]
+    },
+    "comidas": {
+      "x": 1240,
+      "y": 110,
+      "w": 350,
+      "h": 272,
+      "rows": [
+        "PK    id_comida: INT",
+        "·     tipo: VARCHAR(30)",
+        "·     nombre: VARCHAR(100)",
+        "·     descripcion: TEXT",
+        "·     precio: DECIMAL(12,2)",
+        "·     disponible: TINYINT(1)",
+        "·     eliminado: TINYINT(1)",
+        "·     imagen: VARCHAR(2000)"
+      ]
+    },
+    "pedidos": {
+      "x": 440,
+      "y": 110,
+      "w": 350,
+      "h": 328,
+      "rows": [
+        "PK    id_pedidos: INT",
+        "FK    id_mesa: INT",
+        "FK    id_mesero: INT ?",
+        "·     estado: VARCHAR(30)",
+        "·     numero_mesa: INT ?",
+        "·     servicio_id: VARCHAR(64) ?",
+        "·     mozo_id: VARCHAR(200) ?",
+        "·     mozo_nombre: VARCHAR(80) ?",
+        "·     creado_en: DATETIME(3) ?",
+        "·     historial: LONGTEXT ?"
+      ]
+    },
+    "pedidos_comida": {
+      "x": 840,
+      "y": 110,
+      "w": 350,
+      "h": 216,
+      "rows": [
+        "PK/FK id_pedido: INT",
+        "PK/FK id_comida: INT",
+        "·     cantidad: INT",
+        "·     notas: VARCHAR(300)",
+        "·     nombre_comida: VARCHAR(100) ?",
+        "·     precio_unitario: DECIMAL(12,2) ?"
+      ]
+    },
+    "resumenes": {
+      "x": 840,
+      "y": 670,
+      "w": 350,
+      "h": 216,
+      "rows": [
+        "PK    id_resumen: INT",
+        "·     tipo: VARCHAR(100)",
+        "·     ganancias: DECIMAL(16,2)",
+        "·     pedidos: INT",
+        "·     pedidos_cancelados: INT",
+        "·     fecha: DATETIME(3)"
+      ]
+    },
+    "resumen_comida": {
+      "x": 1240,
+      "y": 670,
+      "w": 350,
+      "h": 132,
+      "rows": [
+        "PK/FK id_resumen: INT",
+        "PK/FK id_comida: INT",
+        "·     posicion: INT"
+      ]
+    }
+  },
+  "edges": [
+    [
+      "mesas",
+      "pedidos",
+      "1 : 0..N",
+      [
+        [390, 235],
+        [440, 235]
+      ],
+      [398, 222]
+    ],
+    [
+      "pedidos",
+      "pedidos_comida",
+      "1 : 0..N",
+      [
+        [790, 235],
+        [840, 235]
+      ],
+      [798, 222]
+    ],
+    [
+      "comidas",
+      "pedidos_comida",
+      "1 : 0..N",
+      [
+        [1240, 290],
+        [1190, 290]
+      ],
+      [1198, 277]
+    ],
+    [
+      "usuarios",
+      "sesiones_usuarios",
+      "1 : 0..N",
+      [
+        [390, 810],
+        [440, 810]
+      ],
+      [398, 797]
+    ],
+    [
+      "usuarios",
+      "pedidos",
+      "Usuario opcional por pedido (id_mesero)",
+      [
+        [215, 670],
+        [215, 580],
+        [615, 580],
+        [615, 438]
+      ],
+      [270, 565]
+    ],
+    [
+      "resumenes",
+      "resumen_comida",
+      "1 : 0..N",
+      [
+        [1190, 800],
+        [1240, 800]
+      ],
+      [1198, 787]
+    ],
+    [
+      "comidas",
+      "resumen_comida",
+      "1 : 0..N",
+      [
+        [1415, 382],
+        [1415, 670]
+      ],
+      [1428, 555]
+    ]
+  ]
+}

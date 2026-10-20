@@ -27,6 +27,16 @@ export const orderTotal = (order: Order) =>
   order.items.reduce((total, item) => total + item.quantity * item.unitPrice, 0)
 export const isActive = (order: Order) =>
   !['entregado', 'cancelado'].includes(order.status)
+// Los activos comparten la cola del servidor; los finalizados quedan al final.
+export const compareOrderPriority = (first: Order, second: Order) =>
+  Number(!isActive(first)) - Number(!isActive(second)) ||
+  (isActive(first) && isActive(second)
+    ? (first.priority ?? Number.MAX_SAFE_INTEGER) -
+        (second.priority ?? Number.MAX_SAFE_INTEGER) ||
+      (Date.parse(first.createdAt) || 0) - (Date.parse(second.createdAt) || 0)
+    : (Date.parse(second.createdAt) || 0) -
+      (Date.parse(first.createdAt) || 0)) ||
+  first.id.localeCompare(second.id, undefined, { numeric: true })
 export const serviceOrders = (data: RestaurantData, table: RestaurantTable) =>
   data.orders.filter(
     (order) =>

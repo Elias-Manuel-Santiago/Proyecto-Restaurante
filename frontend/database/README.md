@@ -1,0 +1,102 @@
+# Base de datos NÁCAR
+
+`restaurante.sql` instala las ocho tablas del diagrama, ajustadas al backend actual.
+Se verificó en MariaDB **10.4.32** con importación real, migración repetida, 37 solicitudes
+HTTP y el store del frontend. También se probaron restricciones, claves compuestas,
+cascadas, protección de históricos y las relaciones futuras de usuarios y sesiones.
+El SQL utiliza sintaxis compatible con MySQL **8.0.16+**; no se ejecutó en ese motor.
+
+## Importación
+
+El archivo requiere una base **vacía seleccionada**. No contiene `DROP`, `USE`,
+cuentas, contraseñas ni datos de ejemplo. No migra tablas existentes: si encuentra
+una tabla con el mismo nombre, falla en lugar de ocultar una estructura incompatible.
+El DDL no es atómico: si una importación falla a mitad, revisar las tablas creadas
+antes de reintentar en esa misma base.
+
+En phpMyAdmin, crear una base vacía (por ejemplo, `restaurante_nacar`), seleccionarla
+y usar **Importar → restaurante.sql**. También se puede usar el cliente MySQL:
+
+```sql
+CREATE DATABASE restaurante_nacar CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE restaurante_nacar;
+SOURCE C:/Users/Elias/Documents/GitHub/Proyecto Restaurante/frontend/database/restaurante.sql;
+```
+
+En PowerShell, desde `backend/`, conectar el backend a esa base:
+
+```powershell
+$env:DB_DATABASE = 'restaurante_nacar'
+npm run migrate
+npm start
+```
+
+La variable debe estar definida cada vez que se inicie el backend. Desde `frontend/`,
+ejecutar `npm run dev`. Crear las mesas y platos desde la interfaz; no se necesita
+insertar usuarios SQL para operar en esta etapa.
+
+## Problema encontrado en la base local
+
+El servidor devuelve `10.4.32-MariaDB` y lista las ocho tablas de `restaurante`, pero
+`SHOW CREATE TABLE mesas`, `usuarios` y `sesiones_usuarios` devuelve el error **1932:
+Table … doesn't exist in engine**. La base existente no puede considerarse operativa.
+No se modificó ni se intentó reparar. La comprobación se realizó en una base temporal
+independiente, eliminada al terminar. Si hay datos que recuperar, conservar los archivos
+originales y resolver ese problema antes de reemplazar la base.
+
+## Ajustes respecto del diagrama original
+
+- Se mantienen las ocho tablas y los nombres en minúsculas usados por la API.
+  Se conserva `pedidos.id_pedidos` y su referencia `pedidos_comida.id_pedido`.
+- Las tablas intermedias tienen PK compuestas. Una comida aparece una sola vez por
+  pedido, con cantidad de 1 a 99; también una sola vez por resumen.
+- Mesas incluyen número único reutilizable tras borrado lógico, capacidad, ocupación,
+  comensales, identificador de visita y borrado lógico. `cantidad_personas` es capacidad.
+- Pedidos incluyen fecha, número histórico de mesa, visita, datos descriptivos del mozo
+  local e historial JSON serializado. La prioridad de cocina continúa solo en memoria.
+- Cada ítem conserva nombre y precio de venta. Su modificación posterior en la carta
+  no altera las ventas anteriores. Se admiten valores históricos nulos por compatibilidad
+  con el listado y la migración; los pedidos nuevos completan estos campos desde la API.
+- Se usan importes `DECIMAL`, indicadores 0/1 y restricciones de categorías, estados,
+  cantidades, capacidades y JSON. Las reglas entre filas (transiciones, pedidos activos,
+  apertura/cierre) se aplican en las transacciones existentes de la API.
+- Las FK impiden borrar físicamente mesas o comidas referenciadas. El borrado lógico
+  conserva ventas. Borrar un resumen elimina sus posiciones mediante `ON DELETE CASCADE`,
+  que necesita la consulta de borrado actual. Borrar físicamente un pedido elimina sus
+  ítems, aunque la API solo cancela pedidos.
+- Resúmenes tienen fecha automática. Ganancias y contadores son valores ingresados
+  manualmente, no cálculos automáticos de ventas. `pedidos` y `pedidos_cancelados` se
+  mantienen como contadores independientes: el sistema actual no establece que el segundo
+  sea un subconjunto del primero. Se permiten posiciones empatadas y se impiden negativas.
+- Usuarios añaden identificador de acceso único, nombre y estado activo; roles `admin`,
+  `chef`, `mozo`. Sesiones añaden creación, vencimiento, revocación y token hash SHA-256
+  único (64 caracteres hexadecimales). Son previsiones de estructura, sin endpoints de
+  autenticación ni cuentas iniciales. El código futuro deberá generar y validar los hashes.
+- `pedidos.id_mesero` es una FK **nullable**: hoy la API escribe `NULL`; el mozo local se
+  guarda en `mozo_id`/`mozo_nombre`. El acceso simulado y los perfiles locales existentes
+  permanecen como estaban. Borrar un usuario deja esa FK en `NULL` y elimina sus sesiones.
+- Las imágenes no se solicitan ni se muestran en la carta. Se conserva la columna vacía
+  `comidas.imagen` porque las consultas actuales del backend la incluyen; eliminarla sin
+  modificar ese backend rompería crear/editar platos. No es necesaria para operar.
+
+## Diagrama y reproducción
+
+- `diagrama.png`: imagen para consultar y compartir.
+- `diagrama.svg`: versión vectorial, con todas las columnas y su nulabilidad.
+- `diagrama.drawio`: versión editable en diagrams.net.
+- `generar-diagrama.py`: obtiene columnas, tipos y claves del SQL y genera SVG/draw.io.
+- `render-diagrama.ps1`: genera el PNG en Windows con System.Drawing.
+
+```powershell
+python database/generar-diagrama.py
+powershell -NoProfile -File database/render-diagrama.ps1
+node database/verify.mjs
+```
+
+La verificación requiere las dependencias de frontend y backend y MySQL/MariaDB local
+con la conexión actual (`localhost`, `root`, contraseña vacía). Crea y elimina únicamente
+una base con nombre aleatorio `codex_restaurante_test_*`; no usa los datos de `restaurante`.
+El log del escenario queda en `.verification/schema-api.log`.
+
+Referencias oficiales: [claves foráneas y acciones de borrado](https://dev.mysql.com/doc/refman/8.0/en/create-table-foreign-keys.html)
+y [restricciones CHECK desde MySQL 8.0.16](https://docs.oracle.com/cd/E17952_01/mysql-8.0-en/create-table-check-constraints.html).

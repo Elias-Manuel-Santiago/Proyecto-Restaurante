@@ -45,6 +45,7 @@ export interface PedidoCreado extends CrearPedidoParametros {
 // El listado es un JOIN: cada fila representa un ítem, no un pedido completo.
 export interface PedidoFilaApi {
   id_pedidos: number
+  prioridad?: number | null
   id_mesa: number
   estado: OrderStatus
   numero_mesa: number
@@ -82,6 +83,18 @@ interface MensajeApi {
 }
 
 const api = axios.create({ baseURL: import.meta.env.VITE_API_ROUTE || '/api' })
+
+/** EventSource reconecta solo; al abrir también recuperamos cambios perdidos. */
+export function suscribirPrioridadPedidos(onChange: () => void) {
+  const events = new EventSource(api.getUri({ url: '/pedidos/eventos' }))
+  events.addEventListener('open', onChange)
+  events.addEventListener('prioridad', onChange)
+  return () => {
+    events.removeEventListener('open', onChange)
+    events.removeEventListener('prioridad', onChange)
+    events.close()
+  }
+}
 
 /** Devuelve la respuesta Axios o el mismo error completo, sin transformarlo. */
 async function consultar<T>(
@@ -139,6 +152,15 @@ export const eliminarComida = (id: number) =>
 // Pedidos: el servidor asigna ID y estado inicial pendiente.
 export const obtenerPedidos = () =>
   consultar<PedidoFilaApi[]>('POST', '/pedidos/obtener', {})
+export const moverPrioridadPedido = (
+  id: string,
+  targetId: string,
+  before: boolean,
+) =>
+  consultar<MensajeApi>('PATCH', `/pedidos/${id}/prioridad`, {
+    destino: Number(targetId),
+    antes: before,
+  })
 export const cargarPedido = (pedido: CrearPedidoParametros) =>
   consultar<PedidoCreado>('POST', '/pedidos', pedido)
 export const editarPedido = (id: number, comidas: ComidaPedido[]) =>

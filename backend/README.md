@@ -77,3 +77,35 @@ rollback, precios históricos y resúmenes. También prueba el store y Axios del
 contra la API real de esa base. No copia usuarios ni datos del restaurante y elimina
 la base temporal al terminar. Requiere dependencias de ambas carpetas y permisos para
 crear/eliminar la base temporal. Los errores de validación esperados se imprimen completos.
+
+## Prioridad temporal de cocina
+
+La cola de pedidos activos se guarda solo en memoria del proceso Express, sin
+escrituras en MySQL ni migraciones. Al reiniciar, se reconstruye por antigüedad;
+los pedidos nuevos se agregan al final y los entregados/cancelados se retiran.
+Se conserva la prioridad al avanzar de estado.
+
+El listado POST /api/pedidos/obtener agrega prioridad (posición desde 1) a cada
+fila activa; en pedidos finalizados devuelve null. PATCH /api/pedidos/:id/prioridad
+recibe { destino: ID, antes: boolean } y mueve un pedido respecto de otro del
+mismo estado, conservando los pedidos ocultos por filtros o paginación.
+La interfaz habilita esta acción para el chef, según el esquema actual de roles
+locales: la API existente no autentica usuarios ni verifica roles en el servidor.
+
+Pruebas de la cola sin MySQL: node --test tests/prioridad.test.js.
+
+
+## Avisos de prioridad en vivo (SSE)
+
+GET /api/pedidos/eventos mantiene un stream text/event-stream. Cada movimiento
+confirmado emite el evento prioridad con data {} a todos los clientes conectados;
+los movimientos inválidos no emiten avisos. El frontend consulta el orden actual
+al recibir el evento y al abrir/reabrir la conexión. EventSource reconecta
+automáticamente; cerrar sesión cierra el stream. Los datos siguen en memoria.
+
+Se envía un comentario de mantenimiento cada 25 segundos, sin refrescar datos.
+Las conexiones y sus temporizadores se eliminan al desconectar. El proxy de
+producción debe permitir streaming sin buffering (se envía X-Accel-Buffering: no).
+La consulta periódica de diez segundos se conserva para los demás cambios.
+
+Pruebas sin MySQL: node --test tests/prioridad*.test.js.

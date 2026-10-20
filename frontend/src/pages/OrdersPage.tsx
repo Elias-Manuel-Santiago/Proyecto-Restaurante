@@ -1,6 +1,6 @@
 import { OrderComposer } from '../components/OrderComposer'
 import { ErrorMessage } from '../components/ErrorMessage'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { OrderCard } from '../components/OrderCard'
 import {
   OrderFilters,
@@ -8,7 +8,8 @@ import {
 } from '../components/OrderFilters'
 import { ConfirmDialog, Dialog } from '../components/Dialog'
 import { useRestaurant } from '../state/useRestaurant'
-import { isActive } from '../state/model'
+import { compareOrderPriority, isActive } from '../state/model'
+import { restaurantStore } from '../state/store'
 import { statusLabels } from '../types'
 
 const pageSize = 12
@@ -29,6 +30,9 @@ export function OrdersPage({ history = false }: { history?: boolean }) {
   const [notice, setNotice] = useState('')
   const [page, setPage] = useState(1)
   const resultsRef = useRef<HTMLParagraphElement>(null)
+  useEffect(() => {
+    void restaurantStore.refresh(true)
+  }, [])
   const search = query.trim().toLocaleLowerCase()
   const visibleOrders = data.orders
     .filter(
@@ -45,9 +49,11 @@ export function OrdersPage({ history = false }: { history?: boolean }) {
           )),
     )
     .sort(
-      (first, second) =>
-        (Date.parse(second.createdAt) || 0) -
-        (Date.parse(first.createdAt) || 0),
+      history
+        ? (first, second) =>
+            (Date.parse(second.createdAt) || 0) -
+            (Date.parse(first.createdAt) || 0)
+        : compareOrderPriority,
     )
   const pageCount = Math.max(1, Math.ceil(visibleOrders.length / pageSize))
   const currentPage = Math.min(page, pageCount)
@@ -125,7 +131,9 @@ export function OrdersPage({ history = false }: { history?: boolean }) {
             </>
           )}
         </p>
-        <span>Hasta {pageSize} por página</span>
+        <span>
+          {history ? '' : 'Prioridad de cocina · '}Hasta {pageSize} por página
+        </span>
       </div>
       {notice && (
         <p className="notice" role="status">

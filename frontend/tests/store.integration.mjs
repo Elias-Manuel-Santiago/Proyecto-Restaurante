@@ -104,6 +104,69 @@ try {
   assert.ok(order.createdAt)
   assert.equal(order.items[0].unitPrice, 1550)
   assert.equal(order.waiterId, store.getSnapshot().session.id)
+  const { compareOrderPriority } = await import(
+    pathToFileURL(await compile(path.join(root, 'src/state/model.ts')))
+  )
+  assert.equal(
+    await store.act({
+      type: 'createOrder',
+      tableId: mesa.id,
+      items: [{ dishId: dish.id, quantity: 1, notes: 'Segunda comanda' }],
+    }),
+    '',
+  )
+  const extra = store
+    .getSnapshot()
+    .data.orders.find(
+      (item) => item.tableId === mesa.id && item.id !== order.id,
+    )
+  assert.ok(extra)
+  assert.ok(
+    (await store.act({
+      type: 'reorderOrder',
+      id: extra.id,
+      targetId: order.id,
+      before: true,
+    })) instanceof Error,
+    'Solo el chef puede priorizar desde la interfaz',
+  )
+  store.logout()
+  store.login('chef')
+  assert.equal(
+    await store.act({
+      type: 'reorderOrder',
+      id: extra.id,
+      targetId: order.id,
+      before: true,
+    }),
+    '',
+  )
+  store.logout()
+  store.login('mozo')
+  assert.equal(await store.refresh(), null)
+  const prioritized = store
+    .getSnapshot()
+    .data.orders.filter((item) => item.tableId === mesa.id)
+    .sort(compareOrderPriority)
+  assert.deepEqual(
+    prioritized.map((item) => item.id),
+    [extra.id, order.id],
+    'El mozo carga desde el backend la prioridad definida por el chef',
+  )
+  assert.equal(
+    await store.act({
+      type: 'transition',
+      id: extra.id,
+      status: 'cancelado',
+    }),
+    '',
+  )
+  assert.equal(
+    store.getSnapshot().data.orders.find((item) => item.id === extra.id)
+      .priority,
+    null,
+    'Los pedidos finalizados se retiran de la cola',
+  )
   assert.equal(
     await store.act({
       type: 'editOrder',

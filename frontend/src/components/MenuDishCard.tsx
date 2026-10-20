@@ -10,20 +10,6 @@ export function MenuDishCard({
 }) {
   return (
     <article className="dish-card">
-      {dish.image ? (
-        <img
-          src={dish.image}
-          alt=""
-          loading="lazy"
-          onError={(event) => {
-            event.currentTarget.style.display = 'none'
-          }}
-        />
-      ) : (
-        <div className="dish-placeholder" aria-hidden="true">
-          N
-        </div>
-      )}
       <div className="dish-card-content">
         <div className="dish-meta">
           <span className="eyebrow">{dish.category}</span>

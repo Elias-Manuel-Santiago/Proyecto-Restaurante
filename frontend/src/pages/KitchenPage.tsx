@@ -2,6 +2,8 @@ import { ErrorMessage } from '../components/ErrorMessage'
 import { useEffect, useRef, useState } from 'react'
 import { Dialog } from '../components/Dialog'
 import { OrderCard } from '../components/OrderCard'
+import { PriorityOrder } from '../components/PriorityOrder'
+import { compareOrderPriority } from '../state/model'
 import { useRestaurant } from '../state/useRestaurant'
 import { statusLabels, type Order } from '../types'
 
@@ -20,21 +22,26 @@ function KitchenLane({
   now,
   onDetail,
   onAdvance,
+  onMove,
+  canReorder,
 }: {
   status: KitchenStatus
   orders: Order[]
   now: number
   onDetail: (id: string) => void
   onAdvance: (order: Order) => void
+  onMove: (id: string, targetId: string, before: boolean) => void
+  canReorder: boolean
 }) {
   const [page, setPage] = useState(1)
+  const [showAll, setShowAll] = useState(false)
+  const [dropTarget, setDropTarget] = useState<string | null>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const pageCount = Math.max(1, Math.ceil(orders.length / pageSize))
   const currentPage = Math.min(page, pageCount)
-  const pageOrders = orders.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize,
-  )
+  const pageOrders = showAll
+    ? orders
+    : orders.slice((currentPage - 1) * pageSize, currentPage * pageSize)
   const goToPage = (next: number) => {
     setPage(next)
     headingRef.current?.focus({ preventScroll: true })
@@ -58,7 +65,7 @@ function KitchenLane({
           </h2>
           <p>{stateDescriptions[status]}</p>
         </div>
-        {orders.length > pageSize && (
+        {orders.length > pageSize && !showAll && (
           <nav
             className="kitchen-pagination"
             aria-label={`Páginas de ${statusLabels[status].toLocaleLowerCase()}`}
@@ -84,29 +91,49 @@ function KitchenLane({
             </button>
           </nav>
         )}
+        {orders.length > pageSize && (
+          <button
+            className="secondary-button"
+            disabled={!canReorder}
+            aria-expanded={showAll}
+            onClick={() => setShowAll(!showAll)}
+          >
+            {showAll ? 'Volver a páginas' : 'Ver todos para reordenar'}
+          </button>
+        )}
       </header>
       <div className="kitchen-orders-grid">
         {pageOrders.map((order) => (
-          <OrderCard key={order.id} order={order} kitchen now={now}>
-            <button
-              className="secondary-button"
-              aria-label={`Ver detalle del pedido #${order.id}`}
-              onClick={() => onDetail(order.id)}
-            >
-              Ver detalle
-            </button>
-            {status !== 'listo' && (
+          <PriorityOrder
+            key={order.id}
+            id={order.id}
+            ids={orders.map((item) => item.id)}
+            disabled={!canReorder}
+            isTarget={dropTarget === order.id}
+            onMove={onMove}
+            onTargetChange={setDropTarget}
+          >
+            <OrderCard order={order} kitchen now={now}>
               <button
-                className="primary-button"
-                aria-label={`${status === 'pendiente' ? 'Iniciar preparación' : 'Marcar listo'} del pedido #${order.id}`}
-                onClick={() => onAdvance(order)}
+                className="secondary-button"
+                aria-label={`Ver detalle del pedido #${order.id}`}
+                onClick={() => onDetail(order.id)}
               >
-                {status === 'pendiente'
-                  ? 'Iniciar preparación'
-                  : 'Marcar listo'}
+                Ver detalle
               </button>
-            )}
-          </OrderCard>
+              {status !== 'listo' && (
+                <button
+                  className="primary-button"
+                  aria-label={`${status === 'pendiente' ? 'Iniciar preparación' : 'Marcar listo'} del pedido #${order.id}`}
+                  onClick={() => onAdvance(order)}
+                >
+                  {status === 'pendiente'
+                    ? 'Iniciar preparación'
+                    : 'Marcar listo'}
+                </button>
+              )}
+            </OrderCard>
+          </PriorityOrder>
         ))}
         {!orders.length && (
           <p className="empty-state">
@@ -119,7 +146,7 @@ function KitchenLane({
 }
 
 export function KitchenPage() {
-  const { data, act } = useRestaurant()
+  const { data, session, busy, loading, act } = useRestaurant()
   const [now, setNow] = useState(() => Date.now())
   const [table, setTable] = useState('')
   const [waiter, setWaiter] = useState('')
@@ -149,17 +176,18 @@ export function KitchenPage() {
             item.dishName.toLocaleLowerCase().includes(search),
           )),
     )
-    .sort(
-      (first, second) =>
-        (Date.parse(first.createdAt) || 0) -
-        (Date.parse(second.createdAt) || 0),
-    )
+    .sort(compareOrderPriority)
   const waiterOptions = Array.from(
     new Map(
       data.orders.map((order) => [order.waiterId, order.waiterName]),
     ).entries(),
   )
   const detail = data.orders.find((order) => order.id === detailId)
+  const move = async (id: string, targetId: string, before: boolean) => {
+    const message = await act({ type: 'reorderOrder', id, targetId, before })
+    setError(message)
+    setNotice(message ? '' : `Prioridad del pedido #${id} actualizada.`)
+  }
   const advance = async (order: Order) => {
     const nextStatus = order.status === 'pendiente' ? 'preparacion' : 'listo'
     const message = await act({
@@ -187,7 +215,10 @@ export function KitchenPage() {
         <div>
           <span className="eyebrow">Cocina · Comandas en vivo</span>
           <h1>Al ritmo de la cocina</h1>
-          <p>Comandas por estado, de lado a lado. Primero lo que espera.</p>
+          <p>
+            Arrastrá desde el asa para priorizar dentro de cada estado. El salón
+            verá el mismo orden.
+          </p>
         </div>
         <time className="kitchen-clock" aria-label="Hora actual">
           {new Date(now).toLocaleTimeString('es-AR', { hour12: false })}
@@ -292,7 +323,7 @@ export function KitchenPage() {
             (order) => !statusFilter || order.status === statusFilter,
           ).length
         }{' '}
-        comandas coinciden · Más antiguas primero
+        comandas coinciden · Prioridad de cocina
       </p>
       {error && <ErrorMessage error={error} />}
       {notice && (
@@ -311,6 +342,8 @@ export function KitchenPage() {
               now={now}
               onDetail={setDetailId}
               onAdvance={advance}
+              onMove={move}
+              canReorder={session?.role === 'chef' && !busy && !loading}
             />
           ))}
       </div>

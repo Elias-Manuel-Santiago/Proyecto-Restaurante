@@ -98,19 +98,6 @@ export function DishEditor({
             </select>
           </label>
         </div>
-        <label>
-          Imagen HTTPS (opcional)
-          <input
-            type="url"
-            maxLength={2000}
-            pattern="https://.*"
-            placeholder="https://…"
-            value={draft.image}
-            onChange={(event) =>
-              setDraft({ ...draft, image: event.target.value })
-            }
-          />
-        </label>
         <label className="check-label">
           <input
             type="checkbox"

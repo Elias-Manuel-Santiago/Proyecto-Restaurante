@@ -60,6 +60,7 @@ export interface StatusEvent {
 }
 export interface Order {
   id: string
+  priority?: number | null
   tableId: string
   tableNumber: number
   serviceId: string

@@ -10,6 +10,7 @@ import { AdminPage } from './pages/AdminPage'
 import { UsersPage } from './pages/UsersPage'
 import { useRestaurant } from './state/useRestaurant'
 import { restaurantStore } from './state/store'
+import { suscribirPrioridadPedidos } from './services/apiAccess'
 import { roleRoutes } from './state/model'
 import type { AppRoute } from './types'
 import './App.css'
@@ -42,11 +43,17 @@ function App() {
   useEffect(() => {
     if (!session) return
     void restaurantStore.refresh()
+    const unsubscribe = suscribirPrioridadPedidos(() => {
+      void restaurantStore.refreshAfterEvent()
+    })
     const timer = window.setInterval(() => {
       const state = restaurantStore.getSnapshot()
       if (!state.busy && !state.loading) void restaurantStore.refresh(true)
     }, 10000)
-    return () => window.clearInterval(timer)
+    return () => {
+      unsubscribe()
+      window.clearInterval(timer)
+    }
   }, [session])
   const navigate = (to: AppRoute) => {
     if (!session || !roleRoutes[session.role].includes(to)) {

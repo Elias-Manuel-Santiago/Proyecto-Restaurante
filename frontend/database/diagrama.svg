@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1630" height="1120" viewBox="0 0 1630 1120">
+<rect width="1630" height="1120" fill="#f1f5f9"/>
+<style>text{font-family:Consolas,monospace;fill:#172033}.row{font-size:13px}.title{font-family:Segoe UI,sans-serif;font-weight:700}</style>
+<text class="title" x="40" y="42" font-size="27">NÁCAR · Modelo de base de datos</text>
+<text x="40" y="72" font-size="14">MariaDB 10.4+ / MySQL 8.0.16+ · 8 tablas · PK: primaria · FK: foránea · ?: nullable</text>
+<rect x="40" y="670" width="350" height="244" rx="6" fill="white" stroke="#94a3b8"/>
+<path d="M46,670 H384 Q390,670 390,676 V710 H40 V676 Q40,670 46,670" fill="#6d28d9"/>
+<text class="title" x="54" y="697" font-size="18" style="fill:white">usuarios</text>
+<text class="row" x="52" y="732">PK    id_usuario: INT</text>
+<text class="row" x="52" y="760">·     usuario: VARCHAR(100)</text>
+<text class="row" x="52" y="788">·     nombre: VARCHAR(80)</text>
+<text class="row" x="52" y="816">·     tipo: VARCHAR(20)</text>
+<text class="row" x="52" y="844">·     password_hash: VARCHAR(255)</text>
+<text class="row" x="52" y="872">·     activo: TINYINT(1)</text>
+<text class="row" x="52" y="900">·     creado_en: DATETIME(3)</text>
+<rect x="440" y="670" width="350" height="216" rx="6" fill="white" stroke="#94a3b8"/>
+<path d="M446,670 H784 Q790,670 790,676 V710 H440 V676 Q440,670 446,670" fill="#6d28d9"/>
+<text class="title" x="454" y="697" font-size="18" style="fill:white">sesiones_usuarios</text>
+<text class="row" x="452" y="732">PK    id_sesion: INT</text>
+<text class="row" x="452" y="760">FK    id_usuario: INT</text>
+<text class="row" x="452" y="788">·     token_hash: CHAR(64)</text>
+<text class="row" x="452" y="816">·     creado_en: DATETIME(3)</text>
+<text class="row" x="452" y="844">·     expira_en: DATETIME(3)</text>
+<text class="row" x="452" y="872">·     revocado_en: DATETIME(3) ?</text>
+<rect x="40" y="110" width="350" height="244" rx="6" fill="white" stroke="#94a3b8"/>
+<path d="M46,110 H384 Q390,110 390,116 V150 H40 V116 Q40,110 46,110" fill="#0f766e"/>
+<text class="title" x="54" y="137" font-size="18" style="fill:white">mesas</text>
+<text class="row" x="52" y="172">PK    id_mesa: INT</text>
+<text class="row" x="52" y="200">·     numero: INT ?</text>
+<text class="row" x="52" y="228">·     cantidad_personas: INT</text>
+<text class="row" x="52" y="256">·     estado: VARCHAR(30)</text>
+<text class="row" x="52" y="284">·     comensales: INT</text>
+<text class="row" x="52" y="312">·     servicio_id: VARCHAR(64) ?</text>
+<text class="row" x="52" y="340">·     eliminado: TINYINT(1)</text>
+<rect x="1240" y="110" width="350" height="272" rx="6" fill="white" stroke="#94a3b8"/>
+<path d="M1246,110 H1584 Q1590,110 1590,116 V150 H1240 V116 Q1240,110 1246,110" fill="#0f766e"/>
+<text class="title" x="1254" y="137" font-size="18" style="fill:white">comidas</text>
+<text class="row" x="1252" y="172">PK    id_comida: INT</text>
+<text class="row" x="1252" y="200">·     tipo: VARCHAR(30)</text>
+<text class="row" x="1252" y="228">·     nombre: VARCHAR(100)</text>
+<text class="row" x="1252" y="256">·     descripcion: TEXT</text>
+<text class="row" x="1252" y="284">·     precio: DECIMAL(12,2)</text>
+<text class="row" x="1252" y="312">·     disponible: TINYINT(1)</text>
+<text class="row" x="1252" y="340">·     eliminado: TINYINT(1)</text>
+<text class="row" x="1252" y="368">·     imagen: VARCHAR(2000)</text>
+<rect x="440" y="110" width="350" height="328" rx="6" fill="white" stroke="#94a3b8"/>
+<path d="M446,110 H784 Q790,110 790,116 V150 H440 V116 Q440,110 446,110" fill="#0f766e"/>
+<text class="title" x="454" y="137" font-size="18" style="fill:white">pedidos</text>
+<text class="row" x="452" y="172">PK    id_pedidos: INT</text>
+<text class="row" x="452" y="200">FK    id_mesa: INT</text>
+<text class="row" x="452" y="228">FK    id_mesero: INT ?</text>
+<text class="row" x="452" y="256">·     estado: VARCHAR(30)</text>
+<text class="row" x="452" y="284">·     numero_mesa: INT ?</text>
+<text class="row" x="452" y="312">·     servicio_id: VARCHAR(64) ?</text>
+<text class="row" x="452" y="340">·     mozo_id: VARCHAR(200) ?</text>
+<text class="row" x="452" y="368">·     mozo_nombre: VARCHAR(80) ?</text>
+<text class="row" x="452" y="396">·     creado_en: DATETIME(3) ?</text>
+<text class="row" x="452" y="424">·     historial: LONGTEXT ?</text>
+<rect x="840" y="110" width="350" height="216" rx="6" fill="white" stroke="#94a3b8"/>
+<path d="M846,110 H1184 Q1190,110 1190,116 V150 H840 V116 Q840,110 846,110" fill="#0f766e"/>
+<text class="title" x="854" y="137" font-size="18" style="fill:white">pedidos_comida</text>
+<text class="row" x="852" y="172">PK/FK id_pedido: INT</text>
+<text class="row" x="852" y="200">PK/FK id_comida: INT</text>
+<text class="row" x="852" y="228">·     cantidad: INT</text>
+<text class="row" x="852" y="256">·     notas: VARCHAR(300)</text>
+<text class="row" x="852" y="284">·     nombre_comida: VARCHAR(100) ?</text>
+<text class="row" x="852" y="312">·     precio_unitario: DECIMAL(12,2) ?</text>
+<rect x="840" y="670" width="350" height="216" rx="6" fill="white" stroke="#94a3b8"/>
+<path d="M846,670 H1184 Q1190,670 1190,676 V710 H840 V676 Q840,670 846,670" fill="#0f766e"/>
+<text class="title" x="854" y="697" font-size="18" style="fill:white">resumenes</text>
+<text class="row" x="852" y="732">PK    id_resumen: INT</text>
+<text class="row" x="852" y="760">·     tipo: VARCHAR(100)</text>
+<text class="row" x="852" y="788">·     ganancias: DECIMAL(16,2)</text>
+<text class="row" x="852" y="816">·     pedidos: INT</text>
+<text class="row" x="852" y="844">·     pedidos_cancelados: INT</text>
+<text class="row" x="852" y="872">·     fecha: DATETIME(3)</text>
+<rect x="1240" y="670" width="350" height="132" rx="6" fill="white" stroke="#94a3b8"/>
+<path d="M1246,670 H1584 Q1590,670 1590,676 V710 H1240 V676 Q1240,670 1246,670" fill="#0f766e"/>
+<text class="title" x="1254" y="697" font-size="18" style="fill:white">resumen_comida</text>
+<text class="row" x="1252" y="732">PK/FK id_resumen: INT</text>
+<text class="row" x="1252" y="760">PK/FK id_comida: INT</text>
+<text class="row" x="1252" y="788">·     posicion: INT</text>
+<polyline points="390,235 440,235" fill="none" stroke="#475569" stroke-width="2"/>
+<text x="398" y="222" font-size="9">1 : 0..N</text>
+<polyline points="790,235 840,235" fill="none" stroke="#475569" stroke-width="2"/>
+<text x="798" y="222" font-size="9">1 : 0..N</text>
+<polyline points="1240,290 1190,290" fill="none" stroke="#475569" stroke-width="2"/>
+<text x="1198" y="277" font-size="9">1 : 0..N</text>
+<polyline points="390,810 440,810" fill="none" stroke="#475569" stroke-width="2"/>
+<text x="398" y="797" font-size="9">1 : 0..N</text>
+<polyline points="215,670 215,580 615,580 615,438" fill="none" stroke="#475569" stroke-width="2"/>
+<text x="270" y="565" font-size="11">Usuario opcional por pedido (id_mesero)</text>
+<polyline points="1190,800 1240,800" fill="none" stroke="#475569" stroke-width="2"/>
+<text x="1198" y="787" font-size="9">1 : 0..N</text>
+<polyline points="1415,382 1415,670" fill="none" stroke="#475569" stroke-width="2"/>
+<text x="1428" y="555" font-size="9">1 : 0..N</text>
+<text x="40" y="1040" font-size="14">Violeta: acceso futuro. id_mesero admite NULL; mozo_id y mozo_nombre describen al perfil local.</text>
+<text x="40" y="1067" font-size="14">Nombre y precio del ítem se guardan al pedir. imagen se conserva vacía por compatibilidad con la API.</text>
+<text x="40" y="1094" font-size="14">Cada vínculo une un padre con cero o muchos hijos. El detalle y sus restricciones están en restaurante.sql.</text>
+</svg>

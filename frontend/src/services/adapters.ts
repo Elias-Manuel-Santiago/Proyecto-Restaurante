@@ -14,6 +14,7 @@ export function adaptarPedidos(filas: PedidoFilaApi[]): Order[] {
           : (fila.historial ?? [])
       pedido = {
         id,
+        priority: fila.prioridad ?? null,
         tableId: String(fila.id_mesa),
         tableNumber: Number(fila.numero_mesa),
         serviceId: fila.servicio_id,
@@ -78,6 +79,6 @@ export function adaptarComidas(comidas: ComidaApi[]): MenuDish[] {
     category: categorias[comida.tipo] ?? 'Principales',
     price: Number(comida.precio),
     available: Boolean(Number(comida.disponible)),
-    image: comida.imagen ?? '',
+    image: '',
   }))
 }

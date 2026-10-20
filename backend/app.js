@@ -1,3 +1,5 @@
+import { crearEventosPrioridad } from "./modules/eventos-prioridad.js";
+import { crearColaPrioridad } from "./modules/prioridad.js";
 import express from "express";
 import * as restaurante from "./modules/restaurante.js";
 import {
@@ -6,6 +8,9 @@ import {
   borrarResumen,
   listarDatosDeUnResumen,
 } from "./modules/consultas.js";
+
+const prioridad = crearColaPrioridad();
+const eventosPrioridad = crearEventosPrioridad();
 
 export const app = express();
 app.use((req, res, next) => {
@@ -100,7 +105,21 @@ ruta("delete", "/api/comidas/:id", async ({ params }) => {
   return mensaje("Comida eliminada.");
 });
 
-ruta("post", "/api/pedidos/obtener", () => restaurante.listarTodosLosPedidos());
+app.get("/api/pedidos/eventos", (req, res) => eventosPrioridad.conectar(res));
+
+ruta("post", "/api/pedidos/obtener", async () =>
+  prioridad.listar(await restaurante.listarTodosLosPedidos()),
+);
+ruta("patch", "/api/pedidos/:id/prioridad", async ({ params, body }) => {
+  prioridad.mover(
+    await restaurante.listarTodosLosPedidos(),
+    Number(params.id),
+    body?.destino,
+    body?.antes,
+  );
+  eventosPrioridad.avisar();
+  return mensaje("Prioridad actualizada.");
+});
 ruta(
   "post",
   "/api/pedidos",

@@ -65,6 +65,7 @@ type RemoteAction =
   | { type: 'editOrder'; id: string; items: import('../types').DraftItem[] }
   | { type: 'createSummary'; summary: api.ResumenParametros }
   | { type: 'deleteSummary'; id: number }
+  | { type: 'reorderOrder'; id: string; targetId: string; before: boolean }
 const allowed: Record<RemoteAction['type'], Role[]> = {
   openTable: ['mozo', 'admin'],
   closeTable: ['mozo', 'admin'],
@@ -78,10 +79,18 @@ const allowed: Record<RemoteAction['type'], Role[]> = {
   deleteTable: ['admin'],
   createSummary: ['admin'],
   deleteSummary: ['admin'],
+  reorderOrder: ['chef'],
 }
 let refreshing: Promise<Error | null> | null = null
 
 export const restaurantStore = {
+  /** No pierde avisos recibidos mientras otra consulta aún devuelve el orden anterior. */
+  async refreshAfterEvent(): Promise<void> {
+    const version = sessionVersion
+    if (refreshing) await refreshing
+    if (snapshot.session && version === sessionVersion)
+      await restaurantStore.refresh(true)
+  },
   /** Recarga datos reales; no hay fallback a mocks si la API falla. */
   async refresh(background = false): Promise<Error | null> {
     if (refreshing) return refreshing
@@ -149,6 +158,13 @@ export const restaurantStore = {
         throw new Error('Este cambio corresponde a otro rol.')
       let result
       switch (action.type) {
+        case 'reorderOrder':
+          result = await api.moverPrioridadPedido(
+            action.id,
+            action.targetId,
+            action.before,
+          )
+          break
         case 'openTable':
           result = await api.abrirMesa(Number(action.id), action.diners)
           break
@@ -197,7 +213,7 @@ export const restaurantStore = {
             descripcion: dish.description,
             tipo: dish.category,
             precio: dish.price,
-            imagen: dish.image,
+            imagen: '',
             disponible: dish.available,
           }
           result = snapshot.data.dishes.some((item) => item.id === dish.id)
