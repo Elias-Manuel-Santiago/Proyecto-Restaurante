@@ -1,7 +1,9 @@
 import db from "./db.js";
+import { migrarStock } from "./migrate-stock.js";
 
 // Migración aditiva: no elimina pedidos, comidas, mesas ni tablas de usuarios.
 export async function migrar() {
+  await migrarStock();
   const columnas = {
     mesas: {
       eliminado: "TINYINT(1) NOT NULL DEFAULT 0",

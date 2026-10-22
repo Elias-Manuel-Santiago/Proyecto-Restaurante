@@ -1,6 +1,6 @@
 # Base de datos NÁCAR
 
-`restaurante.sql` instala las ocho tablas del diagrama, ajustadas al backend actual.
+`restaurante.sql` instala las once tablas del diagrama, ajustadas al backend actual.
 Se verificó en MariaDB **10.4.32** con importación real, migración repetida, 37 solicitudes
 HTTP y el store del frontend. También se probaron restricciones, claves compuestas,
 cascadas, protección de históricos y las relaciones futuras de usuarios y sesiones.
@@ -44,9 +44,80 @@ No se modificó ni se intentó reparar. La comprobación se realizó en una base
 independiente, eliminada al terminar. Si hay datos que recuperar, conservar los archivos
 originales y resolver ese problema antes de reemplazar la base.
 
+## Inventario: incremento de tablas
+
+Esta entrega agrega exactamente las columnas del diagrama acordado:
+
+| Tabla          | Columnas                                                                |
+| -------------- | ----------------------------------------------------------------------- |
+| `Unidades`     | `id_unidad` (PK autoincremental), `nombre`                              |
+| `Stock`        | `id_stock` (PK autoincremental), `nombre`, `cantidad`, `id_unidad` (FK) |
+| `comida_stock` | `id_comida` (FK), `id_stock` (FK), ambas forman la PK compuesta         |
+
+`comida_stock.id_comida` referencia la tabla existente `comidas.id_comida`.
+Las otras FK son `Stock.id_unidad → Unidades.id_unidad` y
+`comida_stock.id_stock → Stock.id_stock`. Se usan nombres de tabla `Unidades` y
+`Stock` tal como fueron pedidos. Windows puede almacenarlos en minúsculas según
+`lower_case_table_names`; se debe conservar el mismo uso de mayúsculas en el SQL.
+
+Los nombres son obligatorios, de hasta 100 caracteres, y no admiten cadenas vacías
+o solo espacios. `cantidad` usa `DECIMAL(12,3)`, admite cero y fracciones, tiene valor
+inicial cero y rechaza negativos. Cada cantidad se expresa en la unidad del insumo;
+no hay conversiones automáticas entre unidades. No se agregan unidades ni insumos
+de ejemplo. No se impone unicidad a los nombres.
+
+Las FK usan `RESTRICT`: una unidad o insumo referenciado no puede borrarse ni
+cambiar su identificador. El vínculo con comidas respeta el borrado lógico actual.
+La PK compuesta impide repetir un mismo insumo dentro de un plato. El insumo puede
+aparecer en varios platos y cada plato puede tener varios insumos.
+
+### Base existente
+
+No importar `restaurante.sql` sobre una base existente. Conservar una copia de
+respaldo, verificar la base elegida y, desde `backend/`, ejecutar:
+
+```powershell
+$env:DB_DATABASE = 'nombre_de_la_base_existente'
+npm run migrate:stock
+```
+
+Este comando valida `comidas.id_comida` y las tablas de inventario que ya existan
+antes del primer `CREATE`. Comprueba motor InnoDB, columnas, tipos, nulabilidad,
+autoincrementos, PK, FK y restricciones CHECK. Si encuentra una estructura
+incompatible, informa el problema y no intenta alterarla ni repararla. Puede
+repetirse sobre las tablas compatibles sin borrar sus datos. El DDL no es atómico:
+un error del motor o una interrupción durante la creación puede dejar tablas
+parcialmente creadas; revisar el error antes de reintentar.
+
+El SQL aditivo está en `inventario.sql`. Se recomienda el comando anterior en lugar
+de importarlo manualmente: `IF NOT EXISTS` por sí solo no valida tablas existentes.
+`npm run migrate` también incluye esta migración y conserva las operaciones
+anteriores del migrador. Para una instalación nueva, `restaurante.sql` ya incluye
+las once tablas y no requiere importar por separado `inventario.sql`.
+
+### Alcance y pruebas
+
+Todavía no hay pantallas ni endpoints de inventario, descuento automático,
+disponibilidad por insumos ni reintegro por cancelación. `comida_stock` guarda
+composición, pero no cuánto consume cada plato. Agregar `cantidad_requerida`
+requiere otra aprobación; no se presupone una unidad por plato ni se descuentan
+pedidos históricos. Delivery y pagos permanecen fuera de esta entrega.
+
+Desde `backend/`, `node --test tests/stock.test.js` crea su propia base temporal y
+prueba migración sobre las ocho tablas anteriores, conservación de estructuras y
+datos, repetición, fracciones, cero, FK, duplicados, nombres, negativos y rechazo
+de estructuras incompatibles antes de crear tablas faltantes. El test verifica
+que el inventario del SQL completo coincida con `inventario.sql`. No usa datos
+del restaurante. Requiere MySQL/MariaDB local con la conexión de pruebas actual.
+
+La integración se verificó en una instancia aislada de MariaDB 10.4.32, con datos
+y archivos separados de XAMPP. La prueba existente de API se ajustó para quitar
+la FK futura de usuarios sin perder la coma entre las demás restricciones.
+
 ## Ajustes respecto del diagrama original
 
-- Se mantienen las ocho tablas y los nombres en minúsculas usados por la API.
+- Se mantienen las ocho tablas anteriores y los nombres en minúsculas usados por la API.
+  Se agregan las tres tablas de inventario descritas arriba.
   Se conserva `pedidos.id_pedidos` y su referencia `pedidos_comida.id_pedido`.
 - Las tablas intermedias tienen PK compuestas. Una comida aparece una sola vez por
   pedido, con cantidad de 1 a 99; también una sola vez por resumen.

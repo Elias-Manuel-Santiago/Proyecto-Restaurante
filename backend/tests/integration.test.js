@@ -22,10 +22,11 @@ test("API y migración con MySQL en una base aislada", async () => {
     ]) {
       const [[fila]] = await conexion.query(`SHOW CREATE TABLE ${tabla}`);
       // No se incluye la FK de usuarios: se prueba la exclusión pedida.
-      const sql = fila["Create Table"].replace(
-        /,\n\s*CONSTRAINT[^\n]*REFERENCES `usuarios`[^\n]*/g,
-        "",
-      );
+      const sql = fila["Create Table"]
+        .split("\n")
+        .filter((linea) => !/CONSTRAINT.*REFERENCES `usuarios`/.test(linea))
+        .join("\n")
+        .replace(/,\n\)/g, "\n)");
       await conexion.query(`USE \`${nombre}\``);
       await conexion.query(sql);
       // SHOW CREATE de la próxima tabla debe consultar la base original.

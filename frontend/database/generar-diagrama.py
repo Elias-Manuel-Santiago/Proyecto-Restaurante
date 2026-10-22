@@ -12,6 +12,7 @@ positions = {
     'pedidos_comida': (840, 110), 'comidas': (1240, 110),
     'usuarios': (40, 670), 'sesiones_usuarios': (440, 670),
     'resumenes': (840, 670), 'resumen_comida': (1240, 670),
+    'Unidades': (40, 1150), 'Stock': (440, 1150), 'comida_stock': (840, 1150),
 }
 tables = {}
 for name, body in re.findall(r'CREATE TABLE (\w+) \((.*?)\n\) ENGINE', sql, re.S):
@@ -37,13 +38,16 @@ edges = [
     ('usuarios', 'pedidos', 'Usuario opcional por pedido (id_mesero)', [(215,670),(215,580),(615,580),(615,tables['pedidos']['y']+tables['pedidos']['h'])], (270,565)),
     ('resumenes', 'resumen_comida', '1 : 0..N', [(1190,800),(1240,800)], (1198,787)),
     ('comidas', 'resumen_comida', '1 : 0..N', [(1415,tables['comidas']['y']+tables['comidas']['h']),(1415,670)], (1428,555)),
+    ('Unidades', 'Stock', '1 : 0..N', [(390,1200),(440,1200)], (398,1187)),
+    ('Stock', 'comida_stock', '1 : 0..N', [(790,1225),(840,1225)], (798,1212)),
+    ('comidas', 'comida_stock', 'comidas 1 : 0..N comida_stock', [(1415,382),(1610,382),(1610,1080),(1015,1080),(1015,1150)], (1220,1065)),
 ]
 
-svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="1630" height="1120" viewBox="0 0 1630 1120">',
-       '<rect width="1630" height="1120" fill="#f1f5f9"/>',
+svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="1630" height="1550" viewBox="0 0 1630 1550">',
+       '<rect width="1630" height="1550" fill="#f1f5f9"/>',
        '<style>text{font-family:Consolas,monospace;fill:#172033}.row{font-size:13px}.title{font-family:Segoe UI,sans-serif;font-weight:700}</style>',
        '<text class="title" x="40" y="42" font-size="27">NÁCAR · Modelo de base de datos</text>',
-       '<text x="40" y="72" font-size="14">MariaDB 10.4+ / MySQL 8.0.16+ · 8 tablas · PK: primaria · FK: foránea · ?: nullable</text>']
+       '<text x="40" y="72" font-size="14">MariaDB 10.4+ / MySQL 8.0.16+ · 11 tablas · PK: primaria · FK: foránea · ?: nullable</text>']
 for name, t in tables.items():
     x, y, w, h = (t[k] for k in ('x','y','w','h'))
     color = '#6d28d9' if name in ('usuarios','sesiones_usuarios') else '#0f766e'
@@ -56,14 +60,15 @@ for source, target, label, pts, labelpos in edges:
     points = ' '.join(f'{x},{y}' for x,y in pts)
     svg += [f'<polyline points="{points}" fill="none" stroke="#475569" stroke-width="2"/>',
             f'<text x="{labelpos[0]}" y="{labelpos[1]}" font-size="{9 if label == "1 : 0..N" else 11}">{escape(label)}</text>']
-svg += ['<text x="40" y="1040" font-size="14">Violeta: acceso futuro. id_mesero admite NULL; mozo_id y mozo_nombre describen al perfil local.</text>',
-        '<text x="40" y="1067" font-size="14">Nombre y precio del ítem se guardan al pedir. imagen se conserva vacía por compatibilidad con la API.</text>',
-        '<text x="40" y="1094" font-size="14">Cada vínculo une un padre con cero o muchos hijos. El detalle y sus restricciones están en restaurante.sql.</text>', '</svg>']
+svg += ['<text x="40" y="1440" font-size="14">Violeta: acceso futuro. id_mesero admite NULL; mozo_id y mozo_nombre describen al perfil local.</text>',
+        '<text x="40" y="1467" font-size="14">Nombre y precio del ítem se guardan al pedir. imagen se conserva vacía por compatibilidad con la API.</text>',
+        '<text x="40" y="1494" font-size="14">Cada vínculo une un padre con cero o muchos hijos. El detalle y sus restricciones están en restaurante.sql.</text>',
+        '<text x="40" y="1521" font-size="14">Inventario: composición del plato. La cantidad de insumo por plato queda pendiente de aprobación.</text>', '</svg>']
 (BASE/'diagrama.svg').write_text('\n'.join(svg), encoding='utf-8')
 
 mxfile = ET.Element('mxfile', host='app.diagrams.net')
 diagram = ET.SubElement(mxfile, 'diagram', name='Restaurante', id='restaurante')
-model = ET.SubElement(diagram, 'mxGraphModel', pageWidth='1700', pageHeight='1200', page='1')
+model = ET.SubElement(diagram, 'mxGraphModel', pageWidth='1700', pageHeight='1600', page='1')
 root = ET.SubElement(model, 'root')
 ET.SubElement(root, 'mxCell', id='0')
 ET.SubElement(root, 'mxCell', id='1', parent='0')
