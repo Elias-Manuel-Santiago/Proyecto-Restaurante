@@ -1,7 +1,7 @@
 ﻿$ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
 $layout = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'diagrama-layout.json') -Raw -Encoding utf8 | ConvertFrom-Json
-$bitmap = [System.Drawing.Bitmap]::new(3260,3100)
+$bitmap = [System.Drawing.Bitmap]::new(3260,3300)
 $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
 $graphics.ScaleTransform(2,2)
 $graphics.SmoothingMode = 'AntiAlias'
@@ -17,7 +17,7 @@ $note = [System.Drawing.Font]::new('Consolas',10.5)
 $pen = [System.Drawing.Pen]::new([System.Drawing.ColorTranslator]::FromHtml('#475569'),2)
 try {
   $graphics.DrawString('NÁCAR · Modelo de base de datos',$title,$ink,40,12)
-  $graphics.DrawString('MariaDB 10.4+ / MySQL 8.0.16+ · 11 tablas · PK: primaria · FK: foránea · ?: nullable',$note,$ink,40,52)
+  $graphics.DrawString('MariaDB 10.4+ / MySQL 8.0.16+ · 12 tablas · PK: primaria · FK: foránea · ?: nullable',$note,$ink,40,52)
   foreach ($property in $layout.tables.PSObject.Properties) {
     $name = $property.Name
     $table = $property.Value
@@ -41,10 +41,10 @@ try {
     $labelFont = if ($edge[2] -eq '1 : 0..N') { $cardinality } else { $small }
     $graphics.DrawString([string]$edge[2],$labelFont,$ink,[single]$edge[4][0],[single]($edge[4][1]-14))
   }
-  $graphics.DrawString('Violeta: acceso futuro. id_mesero admite NULL; mozo_id y mozo_nombre describen al perfil local.',$note,$ink,40,1422)
-  $graphics.DrawString('Nombre y precio del ítem se guardan al pedir. imagen se conserva vacía por compatibilidad con la API.',$note,$ink,40,1449)
-  $graphics.DrawString('Cada vínculo une un padre con cero o muchos hijos. El detalle y sus restricciones están en restaurante.sql.',$note,$ink,40,1476)
-  $graphics.DrawString('Inventario: composición del plato. La cantidad de insumo por plato queda pendiente de aprobación.',$note,$ink,40,1503)
+  $graphics.DrawString('Violeta: acceso futuro. id_mesero admite NULL; mozo_id y mozo_nombre describen al perfil local.',$note,$ink,40,1522)
+  $graphics.DrawString('Nombre y precio del ítem se guardan al pedir. imagen se conserva vacía por compatibilidad con la API.',$note,$ink,40,1549)
+  $graphics.DrawString('Cada vínculo une un padre con cero o muchos hijos. El detalle y sus restricciones están en restaurante.sql.',$note,$ink,40,1576)
+  $graphics.DrawString('Inventario: composición del plato. La cantidad de insumo por plato queda pendiente de aprobación.',$note,$ink,40,1603)
   $bitmap.Save((Join-Path $PSScriptRoot 'diagrama.png'),[System.Drawing.Imaging.ImageFormat]::Png)
 } finally {
   $graphics.Dispose(); $bitmap.Dispose(); $ink.Dispose(); $font.Dispose()

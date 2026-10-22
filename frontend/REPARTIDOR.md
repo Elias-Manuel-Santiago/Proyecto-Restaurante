@@ -1,93 +1,71 @@
-# SCRUM-33: vista del repartidor
+# Repartidor conectado a SQL
 
-Entrega de frontend. El repartidor usa el mismo acceso de demostración por rol que
-mozo, chef y administrador. No se agregó una API de acceso, no se modificó el backend
-y no se ejecutaron migraciones ni cambios de base de datos.
+Los envíos se registran desde **Pedidos → Crear envío**, con destinatario, dirección,
+indicaciones, repartidor y platos. Cocina usa los mismos pedidos y estados del salón.
+Reparto consulta sus asignaciones en SQL cada 10 segundos y al pulsar Actualizar.
+No hay ejemplos, demo ni reemplazo por datos ficticios si falla la conexión.
 
-## Probar la pantalla
+## Instalación sobre una base existente
 
-Desde la carpeta del frontend:
+Requiere Node.js 22.16+ o 24 y MySQL/MariaDB en ejecución. En `backend/`:
 
-```sh
+```powershell
+Copy-Item .env.example .env
 npm ci
-npm run dev
+npm run migrate
+npm start
 ```
 
-1. Abrir la dirección que informa Vite.
-2. Elegir **Repartidor** en la pantalla de acceso. Completar usuario y contraseña
-   ficticios; el acceso actual sigue siendo una demostración, sin verificar credenciales.
-3. La ruta `/reparto` muestra un aviso de integración pendiente, sin afirmar que
-   se consultaron entregas reales.
-4. Pulsar **Ver demostración** para cargar cuatro entregas ficticias.
-5. Buscar por pedido, cliente o dirección y filtrar por estado.
-6. Abrir **Ver detalle** para consultar contenido, observaciones e indicaciones.
-7. **Retirar pedido** cambia un ejemplo de Listo para retirar a En camino.
-   **Confirmar entrega** cambia un ejemplo de En camino a Entregado. Ambas acciones
-   requieren confirmación y actualizan los contadores. Cancelar el diálogo no cambia datos.
-8. **Reiniciar demo** restablece los ejemplos y limpia los filtros; **Salir de la demo**
-   vuelve a la pantalla inicial y elimina los cambios de la demostración.
+Editar `.env` con DB_HOST, DB_PORT, DB_USER, DB_PASSWORD y DB_DATABASE de la base
+real **antes de migrar**. Conservar el `.env` existente si ya está configurado.
+La migración completa incluye inventario y reparto; `npm run migrate:reparto` sirve
+si la base ya tiene todas las migraciones anteriores. Las credenciales no se suben.
+No importar `restaurante.sql` encima de una base existente: ese archivo instala
+una base vacía. Configurar VITE_API_ROUTE si la API no usa el proxy local de Vite.
 
-Las entregas de ejemplo viven solo en memoria y se descartan al salir de la vista o
-recargar. No se guardan en localStorage ni se mezclan con los pedidos reales de mesas.
-El rol no puede ejecutar acciones de mesas, menú o cocina mediante el store actual.
-La vista no llama a la API del salón ni abre SSE o consultas periódicas.
+En otra terminal, desde `frontend/`, ejecutar `npm ci` y `npm run dev`.
+Cada integrante debe configurar y migrar su propia base. Descargar código o hacer
+merge en GitHub no ejecuta SQL ni conecta automáticamente las bases de dos equipos.
 
-## Perfiles guardados anteriormente
+## Probar el circuito
 
-Una instalación sin perfiles guardados incluye un perfil Repartidor demo. Si ya hay
-perfiles locales, se conservan exactamente como estaban: no se reemplazan ni se
-agregan usuarios automáticamente. Si el botón Repartidor aparece deshabilitado,
-ingresar como administrador y crear desde **Equipo** un usuario con rol Repartidor.
-No es necesario borrar el almacenamiento del navegador.
+1. Como administrador, tener al menos un plato disponible y un perfil activo con rol
+   Repartidor en Equipo. Se conservan todos los perfiles locales anteriores.
+2. Como mozo o administrador, abrir Pedidos, pulsar Crear envío y completar los datos.
+   Elegir platos y enviar a cocina. El envío queda guardado con `id_mesa = NULL`.
+3. Como chef, pasar ese pedido por En preparación y Listo.
+4. Ingresar con el perfil del repartidor asignado. Consultar el detalle y Retirar pedido.
+5. Confirmar entrega. Al recargar, el envío sigue Entregado y el pedido también.
+6. Un envío se puede cancelar desde Pedidos antes del retiro. Luego no se permite.
+   No se puede retirar antes de que cocina lo marque listo, saltar estados ni cambiar
+   un envío asignado a otro identificador de repartidor.
 
-## Guía para quienes conecten los pedidos de reparto
+## Modelo y operaciones
 
-El contrato de presentación propuesto está en `src/types/delivery.ts`. La composición
-de la pantalla no depende de SQL ni de una respuesta concreta del backend. Hoy los
-pedidos del salón requieren mesa y no incluyen dirección de envío; por eso no se
-convierten pedidos de mesa en envíos ni se inventan direcciones para datos reales.
+`envios.id_pedido` es PK y FK a `pedidos.id_pedidos` (un pedido, cero o un envío).
+La tabla contiene destinatario, dirección, indicaciones, identificador y nombre del
+repartidor, estado, retirado_en y entregado_en. Los platos siguen en pedidos_comida.
+El único cambio en pedidos permite NULL en id_mesa; se conservan los pedidos y FK.
+La migración es repetible y rechaza una tabla envios existente incompatible.
+Las transacciones bloquean pedido y envío, revierten altas inválidas y permiten
+reintentos de retiro/entrega sin duplicar el historial ni cambiar la hora de retiro.
 
-La pantalla necesita estos datos, cuyos nombres de API y tablas debe acordar el equipo:
+- POST /api/envios: registra el pedido y su envío en una sola transacción.
+- POST /api/envios/obtener: consulta por repartidor_id y omite cancelados.
+- PATCH /api/envios/:id/estado: confirma en_camino o entregado.
 
-| Campo de presentación | Contenido                                      |
-| --------------------- | ---------------------------------------------- |
-| `id`                  | Identificador del envío/pedido que corresponda |
-| `customerName`        | Nombre del destinatario                        |
-| `address`             | Dirección de entrega                           |
-| `addressNotes`        | Referencias e indicaciones opcionales          |
-| `items`               | Nombre, cantidad y observaciones de cada plato |
-| `status`              | Estado del reparto según el mapeo acordado     |
+Los perfiles y el acceso siguen siendo los locales del proyecto: el identificador
+asignado se comprueba en SQL, pero todavía no existe autenticación de servidor.
+Para trabajar desde dispositivos distintos, el perfil debe conservar el mismo ID;
+crear dos perfiles con el mismo nombre no los convierte en el mismo usuario.
+El registro y los permisos con sesión de servidor son el próximo incremento.
+Inventario mantiene exactamente sus tres tablas: no se agregó consumo automático,
+ni cantidades por plato. No se implementaron pagos ni geolocalización.
 
-Los estados **propuestos para la demostración** son `listo`, `en_camino` y `entregado`.
-No reemplazan ni amplían el `OrderStatus` existente del salón. El equipo debe confirmar
-la correspondencia con su circuito real, cuándo se asigna un repartidor y qué entregas
-puede consultar. La selección de envíos y los permisos reales deberán comprobarse en
-el servidor cuando se conecte; el acceso local actual no autentica al usuario.
+## Verificación
 
-Para integrar los datos reales, usar las convenciones existentes: solicitudes en
-services, adaptación del contrato al modelo de presentación y estado remoto separado
-de la demostración. Los componentes DeliveryCard y DeliveryDetail reciben sus datos
-por props. Sustituir o extender el hook de entregas al incorporar la fuente acordada;
-la demo debe seguir siendo explícita y nunca actuar como fallback de una API fallida.
-Confirmar cambios con el servidor antes de presentarlos como guardados y manejar
-errores, duplicados y transiciones inválidas.
-
-No se entregan consultas SQL sobre tablas de delivery inexistentes. Esta guía indica
-los datos y operaciones necesarios para que los responsables de backend definan la
-integración sobre su modelo. No se agregó pago, geolocalización ni cancelación de envíos.
-
-## Verificaciones
-
-```sh
-npm run lint
-npm run build
-node --test tests/courier.integration.mjs tests/priority.integration.mjs
-npx prettier --check --end-of-line auto .
-```
-
-La prueba nueva comprueba conservación de perfiles anteriores, creación local de un
-repartidor desde administración, acceso y ruta correctos, rutas iniciales de los otros
-roles y ausencia de llamadas HTTP al actualizar o intentar acciones del salón.
-No requiere iniciar MySQL. La prueba de prioridad existente sigue usando filas
-simuladas. También se verifican visualmente el recorrido de demo, los filtros,
-diálogos, reinicio y adaptación a pantallas pequeñas.
+Desde backend: `npm test` (requiere una base configurada con el esquema instalado).
+Cada escenario SQL usa una base temporal que elimina al terminar. Incluye pedidos
+de mesa, envío completo, cancelaciones, rollback y reintentos concurrentes.
+Desde frontend: `npm run lint`, `npm run build` y
+`node --test tests/courier.integration.mjs tests/priority.integration.mjs`.
