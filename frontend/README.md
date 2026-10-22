@@ -1,5 +1,9 @@
 # NÁCAR Restaurante
 
+La vista de repartidor y su demostración opcional se documentan en
+[REPARTIDOR.md](REPARTIDOR.md). Usa el acceso local por rol existente y no requiere
+API nueva de acceso ni modificaciones de base de datos.
+
 El SQL de instalación y el diagrama actualizado están en [database/README.md](database/README.md).
 La importación se verificó en una base temporal MariaDB. La base local `restaurante`
 presenta un error del motor (1932); consultar esa guía antes de importar o iniciar.
