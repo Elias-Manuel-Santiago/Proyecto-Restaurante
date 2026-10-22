@@ -5,6 +5,12 @@ import { readFile } from "node:fs/promises";
 import mysql from "mysql2/promise";
 import db from "../modules/db.js";
 import { migrarAutenticacion } from "../modules/migrate-auth.js";
+import {
+  cargarAccesosPruebas,
+  sembrarUsuarios,
+  equipo,
+} from "../modules/seed-usuarios.js";
+import argon2 from "argon2";
 
 test("acceso: migra el esquema anterior sin borrar cuentas, claves ni sesiones", async () => {
   const nombre = `codex_restaurante_test_${randomBytes(6).toString("hex")}`;
@@ -60,6 +66,34 @@ test("acceso: migra el esquema anterior sin borrar cuentas, claves ni sesiones",
       pool.query(
         "INSERT INTO usuarios (usuario,nombre,tipo,password_hash) VALUES ('anterior','Duplicado','mozo','hash')",
       ),
+    );
+    const accesos = await cargarAccesosPruebas({});
+    await assert.rejects(
+      cargarAccesosPruebas({ NODE_ENV: "production" }),
+      /solo para pruebas/,
+    );
+    assert.equal(
+      (await sembrarUsuarios({ incluirEquipo: true, env: accesos, pool }))
+        .length,
+      5,
+    );
+    for (const username of ["elias", ...equipo.map((u) => u.username)]) {
+      const [[cuenta]] = await pool.query(
+        "SELECT password_hash FROM usuarios WHERE usuario=?",
+        [username],
+      );
+      const clave =
+        username === "elias"
+          ? accesos.ADMIN_PASSWORD
+          : accesos[`SEED_PASSWORD_${username.toUpperCase()}`];
+      assert.ok(
+        await argon2.verify(cuenta.password_hash, clave),
+        `La clave compartida debe permitir ingresar a ${username}`,
+      );
+    }
+    assert.deepEqual(
+      await sembrarUsuarios({ incluirEquipo: true, env: accesos, pool }),
+      [],
     );
   } finally {
     if (pool) await pool.end();

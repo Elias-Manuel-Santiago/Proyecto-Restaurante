@@ -1,5 +1,6 @@
 import db from "./db.js";
 import { pathToFileURL } from "node:url";
+import { readFile } from "node:fs/promises";
 import { hashClave, claveValida } from "./autenticacion.js";
 
 export const equipo = [
@@ -8,6 +9,20 @@ export const equipo = [
   { username: "santiago", name: "Santiago Oviedo", role: "repartidor" },
   { username: "nehuen", name: "Parrondo Nehuen", role: "mozo" },
 ];
+
+// Carga explícita para la presentación del equipo; no cambia el acceso normal.
+export async function cargarAccesosPruebas(entorno = process.env) {
+  if (entorno.NODE_ENV === "production")
+    throw new Error(
+      "La carga de accesos compartidos está disponible solo para pruebas.",
+    );
+  return JSON.parse(
+    await readFile(
+      new URL("../accesos-equipo-pruebas.json", import.meta.url),
+      "utf8",
+    ),
+  );
+}
 
 export async function sembrarUsuarios({
   incluirEquipo = false,
@@ -83,8 +98,10 @@ if (
   import.meta.url === pathToFileURL(process.argv[1]).href
 ) {
   try {
+    const compartidos = process.argv.includes("--equipo-pruebas");
     const usuarios = await sembrarUsuarios({
-      incluirEquipo: process.argv.includes("--equipo"),
+      incluirEquipo: compartidos || process.argv.includes("--equipo"),
+      env: compartidos ? await cargarAccesosPruebas() : process.env,
     });
     console.log(
       usuarios.length

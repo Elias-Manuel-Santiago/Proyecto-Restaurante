@@ -1,5 +1,6 @@
 # NÁCAR Restaurante
 
+Para la presentación: [accesos compartidos del equipo](../backend/ACCESOS-EQUIPO.md).
 La vista de repartidor está conectada a la API y a SQL. La configuración y el
 circuito completo están en [REPARTIDOR.md](REPARTIDOR.md).
 

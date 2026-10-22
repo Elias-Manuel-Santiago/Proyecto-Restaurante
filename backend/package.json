@@ -12,7 +12,8 @@
     "test": "node --test tests/*.test.js",
     "migrate:auth": "node modules/migrate-auth.js",
     "seed:admin": "node modules/seed-usuarios.js",
-    "seed:equipo": "node modules/seed-usuarios.js --equipo"
+    "seed:equipo": "node modules/seed-usuarios.js --equipo",
+    "seed:equipo:pruebas": "node modules/seed-usuarios.js --equipo-pruebas"
   },
   "keywords": [],
   "author": "",

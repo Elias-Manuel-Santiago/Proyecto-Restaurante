@@ -2,7 +2,10 @@
 
 Requiere Node.js 22.16+ o 24, MySQL 8.0.16+ / MariaDB 10.4+ y una base operativa.
 Cada integrante configura su conexión local: GitHub comparte código y esquema,
-pero no sincroniza usuarios, contraseñas ni pedidos entre computadoras.
+pero no sincroniza pedidos ni cambios de cuentas entre computadoras.
+Para cargar las mismas cinco cuentas de la presentación, usar
+[ACCESOS-EQUIPO.md](ACCESOS-EQUIPO.md): incluye las claves compartidas de prueba
+y el comando npm run seed:equipo:pruebas.
 
 ## Actualizar una instalación existente
 
@@ -14,7 +17,9 @@ Copy-Item .env.example .env
 
 Configurar DB_HOST, DB_PORT, DB_USER, DB_PASSWORD y DB_DATABASE. Definir
 ADMIN_USERNAME (por defecto elias), ADMIN_NAME y una ADMIN_PASSWORD de 10 a 128
-caracteres. No publicar el .env ni compartir contraseñas mediante commits.
+caracteres. El .env conserva la configuración privada de esa computadora.
+Este flujo permite claves propias; las de la presentación están en el archivo de
+accesos compartidos indicado arriba.
 
 ```powershell
 npm ci
@@ -52,7 +57,9 @@ npm run seed:equipo
 | santiago                 | Santiago Oviedo                      | Repartidor    |
 | nehuen                   | Parrondo Nehuen                      | Mozo          |
 
-No hay contraseñas de fábrica. Las cuentas existentes se conservan; repetir el
+El flujo privado no tiene contraseñas de fábrica. La presentación puede cargar
+explícitamente las claves de accesos-equipo-pruebas.json. Las cuentas existentes
+se conservan; repetir el
 script no duplica cuentas ni altera nombres, roles o claves. Desde Equipo el admin
 puede crear otros administradores, editar perfiles, restablecer contraseñas y
 desactivar cuentas. No hay registro público ni eliminación física de usuarios.
