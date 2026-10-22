@@ -2,7 +2,7 @@ export type TableStatus = 'ocupada' | 'desocupada'
 export type OrderStatus =
   'pendiente' | 'preparacion' | 'listo' | 'entregado' | 'cancelado'
 
-export type Role = 'mozo' | 'chef' | 'admin'
+export type Role = 'mozo' | 'chef' | 'admin' | 'repartidor'
 export type AppRoute =
   | '/mesas'
   | '/menu'
@@ -11,6 +11,7 @@ export type AppRoute =
   | '/admin'
   | '/historial'
   | '/usuarios'
+  | '/reparto'
 export const categories = [
   'Entradas',
   'Principales',
@@ -28,6 +29,7 @@ export const roleLabels: Record<Role, string> = {
   mozo: 'Mozo',
   chef: 'Chef',
   admin: 'Administrador',
+  repartidor: 'Repartidor',
 }
 export interface Waiter {
   id: string

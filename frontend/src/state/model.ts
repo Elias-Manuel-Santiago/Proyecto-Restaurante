@@ -1,6 +1,7 @@
 import { waiters } from '../mocks/restaurant'
 import type {
   DemoUser,
+  AppRoute,
   DraftItem,
   MenuDish,
   Order,
@@ -46,7 +47,17 @@ export const roleRoutes: Record<Role, string[]> = {
   mozo: ['/mesas', '/menu', '/pedidos'],
   chef: ['/cocina', '/menu'],
   admin: ['/admin', '/mesas', '/menu', '/pedidos', '/historial', '/usuarios'],
+  repartidor: ['/reparto'],
 }
+
+export const homeRoute = (role?: Role): AppRoute =>
+  role === 'repartidor'
+    ? '/reparto'
+    : role === 'chef'
+      ? '/cocina'
+      : role === 'admin'
+        ? '/admin'
+        : '/mesas'
 
 export function createInitialData(): RestaurantData {
   return {
@@ -61,6 +72,12 @@ export function createInitialData(): RestaurantData {
         active: true,
       })),
       { id: 'chef-1', name: 'Chef demo', role: 'chef', active: true },
+      {
+        id: 'repartidor-1',
+        name: 'Repartidor demo',
+        role: 'repartidor',
+        active: true,
+      },
       {
         id: 'admin-1',
         name: 'Administrador demo',
@@ -81,7 +98,7 @@ export function validUsers(value: unknown): value is DemoUser[] {
       typeof user.name === 'string' &&
       user.name.trim() &&
       user.name.length <= 80 &&
-      ['mozo', 'chef', 'admin'].includes(user.role) &&
+      ['mozo', 'chef', 'admin', 'repartidor'].includes(user.role) &&
       typeof user.active === 'boolean' &&
       ((user.username === undefined && user.credential === undefined) ||
         (validUsername(user.username) && validCredential(user.credential))),

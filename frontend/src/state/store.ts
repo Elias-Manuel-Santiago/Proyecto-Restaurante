@@ -93,6 +93,8 @@ export const restaurantStore = {
   },
   /** Recarga datos reales; no hay fallback a mocks si la API falla. */
   async refresh(background = false): Promise<Error | null> {
+    // La vista de reparto aún no tiene API: no consulta recursos del salón.
+    if (snapshot.session?.role === 'repartidor') return null
     if (refreshing) return refreshing
     refreshing = (async () => {
       snapshot = { ...snapshot, loading: !background }
