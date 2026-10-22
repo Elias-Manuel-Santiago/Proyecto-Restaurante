@@ -1,3 +1,5 @@
+import * as pagos from "./modules/pagos.js";
+import * as modalidades from "./modules/modalidades-envio.js";
 import { registrarAcceso } from "./modules/rutas-acceso.js";
 import { vigilarSesion } from "./modules/autenticacion.js";
 import { crearEventosPrioridad } from "./modules/eventos-prioridad.js";
@@ -56,6 +58,22 @@ function ruta(metodo, url, operacion, status = 200) {
 }
 const mensaje = (message) => ({ message });
 
+ruta("get", "/api/modalidades-envio", () => modalidades.listarModalidades());
+ruta("put", "/api/modalidades-envio/:codigo", async ({ params, body }) => {
+  await modalidades.guardarModalidad(params.codigo, body);
+  return mensaje("Modalidad guardada.");
+});
+ruta("post", "/api/pagos/:id", ({ params, body }) =>
+  pagos.iniciarPago(params.id, body.proveedor || "mercadopago"),
+);
+ruta("get", "/api/pagos/:id", ({ params }) => pagos.consultarPago(params.id));
+ruta("post", "/api/pagos/:id/reembolsar", ({ params, usuario }) =>
+  pagos.reembolsarPago(params.id, usuario.name),
+);
+
+ruta("post", "/api/pagos/:id/cancelar", ({ params, usuario }) =>
+  pagos.cancelarPago(params.id, usuario.name),
+);
 ruta("post", "/api/envios/obtener", ({ body }) =>
   repartos.listarEnvios(body.repartidor_id),
 );
@@ -65,8 +83,8 @@ ruta(
   async ({ body }) => ({ id_pedido: await repartos.crearEnvio(body) }),
   201,
 );
-ruta("patch", "/api/envios/:id/estado", async ({ params, body }) => {
-  await repartos.cambiarEstadoEnvio(params.id, body);
+ruta("patch", "/api/envios/:id/estado", async ({ params, body, usuario }) => {
+  await repartos.cambiarEstadoEnvio(params.id, body, usuario);
   return mensaje("Envío actualizado.");
 });
 
@@ -129,9 +147,14 @@ app.get("/api/pedidos/eventos", (req, res) => {
   vigilarSesion(req, res);
 });
 
-ruta("post", "/api/pedidos/obtener", async () =>
-  prioridad.listar(await restaurante.listarTodosLosPedidos()),
-);
+ruta("post", "/api/pedidos/obtener", async ({ usuario }) => {
+  const filas = await restaurante.listarTodosLosPedidos();
+  return prioridad.listar(
+    usuario.role === "chef"
+      ? filas.filter((p) => !p.pago_requerido || p.pago_estado === "aprobado")
+      : filas,
+  );
+});
 ruta("patch", "/api/pedidos/:id/prioridad", async ({ params, body }) => {
   prioridad.mover(
     await restaurante.listarTodosLosPedidos(),

@@ -1,3 +1,4 @@
+import { probarPagos } from "./pagos-scenario.js";
 import { crearClientes, rolSolicitud } from "./clientes-auth.js";
 import { probarAuth } from "./auth-scenario.js";
 import assert from "node:assert/strict";
@@ -170,6 +171,7 @@ try {
   });
   assert.equal(frontendCode, 0, "El frontend debe operar contra la API real");
   await probarRepartos(request, db, clientes);
+  await probarPagos(request, db, clientes);
   await probarAuth(base, db, clientes);
   const preflight = await fetch(base + "/pedidos/1/estado", {
     method: "OPTIONS",

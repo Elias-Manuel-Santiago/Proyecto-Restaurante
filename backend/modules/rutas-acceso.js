@@ -69,13 +69,18 @@ export function registrarAcceso(app) {
   app.use("/api", (req, res, next) => {
     const path = req.path;
     let permitidos = [];
-    if (path.startsWith("/usuarios")) permitidos = ["admin"];
+    if (path.startsWith("/pagos")) permitidos = ["mozo", "admin"];
+    else if (path.startsWith("/modalidades-envio"))
+      permitidos = req.method === "GET" ? ["mozo", "admin"] : ["admin"];
+    else if (path.startsWith("/usuarios")) permitidos = ["admin"];
     else if (path.startsWith("/resumenes")) permitidos = ["admin"];
     else if (path.startsWith("/envios"))
       permitidos =
         path === "/envios" && req.method === "POST"
           ? ["mozo", "admin"]
-          : ["repartidor"];
+          : req.method === "PATCH"
+            ? ["mozo", "admin", "repartidor"]
+            : ["repartidor"];
     else if (path.startsWith("/mesas"))
       permitidos =
         path === "/mesas/obtener"

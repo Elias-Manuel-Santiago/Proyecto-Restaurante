@@ -1,3 +1,4 @@
+import { exigirPago, asegurarSinCobro } from "./pagos.js";
 import { randomUUID } from "node:crypto";
 import db from "./db.js";
 
@@ -304,7 +305,7 @@ export async function crearPedido(
       { status: "pendiente", at: ahora.toISOString(), actor: mozo_nombre },
     ];
     const [resultado] = await conexion.query(
-      "INSERT INTO pedidos (id_mesa,id_mesero,estado,numero_mesa,servicio_id,mozo_id,mozo_nombre,creado_en,historial) VALUES (?,?,'pendiente',?,?,?,?,?,?)",
+      "INSERT INTO pedidos (id_mesa,id_mesero,estado,numero_mesa,servicio_id,mozo_id,mozo_nombre,creado_en,historial,pago_requerido) VALUES (?,?,'pendiente',?,?,?,?,?,?,0)",
       [
         id_mesa,
         id_mesero,
@@ -331,6 +332,7 @@ export async function editarPedido(id, comidas) {
       pedido?.estado === "pendiente",
       "Solo se pueden editar pedidos pendientes.",
     );
+    await asegurarSinCobro(conexion, id);
     await conexion.query("DELETE FROM pedidos_comida WHERE id_pedido=?", [id]);
     await guardarItems(conexion, id, comidas);
   });
@@ -357,6 +359,8 @@ export async function cambiarEstadoPedido(id, estado, actor) {
       estados[pedido.estado]?.includes(estado),
       "Transición de estado inválida.",
     );
+    if (estado !== "cancelado") await exigirPago(conexion, pedido);
+    if (estado === "cancelado") await asegurarSinCobro(conexion, id);
     if (pedido.id_mesa === null) {
       const [[envio]] = await conexion.query(
         "SELECT estado FROM envios WHERE id_pedido=? FOR UPDATE",
@@ -385,9 +389,10 @@ export async function cambiarEstadoPedido(id, estado, actor) {
 export async function listarTodosLosPedidos() {
   const [filas] = await db.query(`SELECT p.*, pc.id_comida,pc.cantidad,pc.notas,
     COALESCE(pc.nombre_comida,c.nombre) AS comida_nombre,
-    COALESCE(pc.precio_unitario,c.precio) AS precio, e.estado AS envio_estado
+    COALESCE(pc.precio_unitario,c.precio) AS precio, e.estado AS envio_estado, em.modalidad_codigo,em.costo AS costo_envio,m.nombre AS modalidad_nombre,m.requiere_direccion,m.requiere_repartidor,pg.estado AS pago_estado,pg.importe AS pago_importe
     FROM pedidos p LEFT JOIN pedidos_comida pc ON p.id_pedidos=pc.id_pedido
     LEFT JOIN comidas c ON pc.id_comida=c.id_comida
-    LEFT JOIN envios e ON e.id_pedido=p.id_pedidos ORDER BY p.id_pedidos DESC`);
+    LEFT JOIN envios e ON e.id_pedido=p.id_pedidos
+    LEFT JOIN envio_modalidad em ON em.id_pedido=p.id_pedidos LEFT JOIN modalidades_envio m ON m.codigo=em.modalidad_codigo LEFT JOIN pagos pg ON pg.id_pedido=p.id_pedidos ORDER BY p.id_pedidos DESC`);
   return filas;
 }
