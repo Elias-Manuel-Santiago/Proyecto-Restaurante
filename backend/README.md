@@ -24,6 +24,13 @@ Se admite `PATCH`, necesario para estados, disponibilidad y apertura/cierre de m
   en varias tablas usan transacciones y revierten ante errores.
 - `modules/consultas.js`: consultas de resúmenes y sus posiciones.
 - `modules/migrate.js`: migración repetible de los campos que necesita el frontend.
+- `modules/migrate-stock.js`: migración aditiva de las tres tablas de inventario.
+
+`npm run migrate:stock` crea únicamente `Unidades`, `Stock` y `comida_stock`,
+validando primero las estructuras existentes. La FK de comidas usa `comidas.id_comida`.
+No agrega rutas HTTP ni modifica cantidades por pedidos. La migración general
+también incluye este paso. El esquema, el alcance y las pruebas están documentados
+en `../frontend/database/README.md`.
 
 Las rutas y ejemplos de uso se documentan también en `../frontend/README.md`.
 

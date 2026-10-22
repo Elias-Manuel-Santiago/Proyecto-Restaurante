@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <mxfile host="app.diagrams.net">
   <diagram name="Restaurante" id="restaurante">
-    <mxGraphModel pageWidth="1700" pageHeight="1200" page="1">
+    <mxGraphModel pageWidth="1700" pageHeight="1600" page="1">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -28,6 +28,15 @@
         </mxCell>
         <mxCell id="resumen_comida" value="&lt;b&gt;resumen_comida&lt;/b&gt;&lt;hr/&gt;PK/FK&amp;nbsp;id_resumen:&amp;nbsp;INT&lt;br/&gt;PK/FK&amp;nbsp;id_comida:&amp;nbsp;INT&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;posicion:&amp;nbsp;INT" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#0f766e;">
           <mxGeometry as="geometry" x="1240" y="670" width="350" height="132" />
+        </mxCell>
+        <mxCell id="Unidades" value="&lt;b&gt;Unidades&lt;/b&gt;&lt;hr/&gt;PK&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;id_unidad:&amp;nbsp;INT&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;nombre:&amp;nbsp;VARCHAR(100)" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#0f766e;">
+          <mxGeometry as="geometry" x="40" y="1150" width="350" height="104" />
+        </mxCell>
+        <mxCell id="Stock" value="&lt;b&gt;Stock&lt;/b&gt;&lt;hr/&gt;PK&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;id_stock:&amp;nbsp;INT&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;nombre:&amp;nbsp;VARCHAR(100)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;cantidad:&amp;nbsp;DECIMAL(12,3)&lt;br/&gt;FK&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;id_unidad:&amp;nbsp;INT" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#0f766e;">
+          <mxGeometry as="geometry" x="440" y="1150" width="350" height="160" />
+        </mxCell>
+        <mxCell id="comida_stock" value="&lt;b&gt;comida_stock&lt;/b&gt;&lt;hr/&gt;PK/FK&amp;nbsp;id_comida:&amp;nbsp;INT&lt;br/&gt;PK/FK&amp;nbsp;id_stock:&amp;nbsp;INT" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#0f766e;">
+          <mxGeometry as="geometry" x="840" y="1150" width="350" height="104" />
         </mxCell>
         <mxCell id="rel0" value="1 : 0..N" edge="1" parent="1" source="mesas" target="pedidos" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
           <mxGeometry as="geometry" relative="1">
@@ -65,6 +74,25 @@
         <mxCell id="rel6" value="1 : 0..N" edge="1" parent="1" source="comidas" target="resumen_comida" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel7" value="1 : 0..N" edge="1" parent="1" source="Unidades" target="Stock" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel8" value="1 : 0..N" edge="1" parent="1" source="Stock" target="comida_stock" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel9" value="comidas 1 : 0..N comida_stock" edge="1" parent="1" source="comidas" target="comida_stock" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="1610" y="382" />
+              <mxPoint x="1610" y="1080" />
+              <mxPoint x="1015" y="1080" />
+            </Array>
           </mxGeometry>
         </mxCell>
       </root>

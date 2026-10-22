@@ -116,6 +116,32 @@
         "PK/FK id_comida: INT",
         "·     posicion: INT"
       ]
+    },
+    "Unidades": {
+      "x": 40,
+      "y": 1150,
+      "w": 350,
+      "h": 104,
+      "rows": ["PK    id_unidad: INT", "·     nombre: VARCHAR(100)"]
+    },
+    "Stock": {
+      "x": 440,
+      "y": 1150,
+      "w": 350,
+      "h": 160,
+      "rows": [
+        "PK    id_stock: INT",
+        "·     nombre: VARCHAR(100)",
+        "·     cantidad: DECIMAL(12,3)",
+        "FK    id_unidad: INT"
+      ]
+    },
+    "comida_stock": {
+      "x": 840,
+      "y": 1150,
+      "w": 350,
+      "h": 104,
+      "rows": ["PK/FK id_comida: INT", "PK/FK id_stock: INT"]
     }
   },
   "edges": [
@@ -190,6 +216,39 @@
         [1415, 670]
       ],
       [1428, 555]
+    ],
+    [
+      "Unidades",
+      "Stock",
+      "1 : 0..N",
+      [
+        [390, 1200],
+        [440, 1200]
+      ],
+      [398, 1187]
+    ],
+    [
+      "Stock",
+      "comida_stock",
+      "1 : 0..N",
+      [
+        [790, 1225],
+        [840, 1225]
+      ],
+      [798, 1212]
+    ],
+    [
+      "comidas",
+      "comida_stock",
+      "comidas 1 : 0..N comida_stock",
+      [
+        [1415, 382],
+        [1610, 382],
+        [1610, 1080],
+        [1015, 1080],
+        [1015, 1150]
+      ],
+      [1220, 1065]
     ]
   ]
 }
