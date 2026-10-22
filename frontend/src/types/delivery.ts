@@ -1,4 +1,5 @@
-export type DeliveryStatus = 'en_cocina' | 'listo' | 'en_camino' | 'entregado'
+export type DeliveryStatus =
+  'esperando_pago' | 'en_cocina' | 'listo' | 'en_camino' | 'entregado'
 
 export interface ShippingMode {
   codigo: string
@@ -41,6 +42,8 @@ export interface DeliveryRow {
   indicaciones: string
   estado: 'pendiente' | 'en_camino' | 'entregado'
   estado_pedido: string
+  pago_requerido?: number
+  pago_estado?: string | null
   id_comida: number
   nombre_comida: string
   cantidad: number
@@ -57,6 +60,7 @@ export interface Delivery {
 }
 
 export const deliveryStatusLabels: Record<DeliveryStatus, string> = {
+  esperando_pago: 'Esperando pago',
   en_cocina: 'En cocina',
   listo: 'Listo para retirar',
   en_camino: 'En camino',

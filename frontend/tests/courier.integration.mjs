@@ -146,6 +146,23 @@ test('sesión: ignora accesos locales, exige credenciales, restaura cuenta y man
       2,
     )
     assert.equal(adaptarEnvios([row])[0].status, 'en_cocina')
+    const unpaid = { ...row, pago_requerido: 1, pago_estado: null }
+    assert.equal(adaptarEnvios([unpaid])[0].status, 'esperando_pago')
+    assert.equal(
+      adaptarEnvios([{ ...unpaid, estado_pedido: 'listo' }])[0].status,
+      'esperando_pago',
+      'No ofrece retirar un pedido con pago sin aprobar',
+    )
+    assert.equal(
+      adaptarEnvios([{ ...unpaid, pago_estado: 'aprobado' }])[0].status,
+      'en_cocina',
+    )
+    assert.equal(
+      adaptarEnvios([
+        { ...unpaid, pago_estado: 'aprobado', estado_pedido: 'listo' },
+      ])[0].status,
+      'listo',
+    )
     assert.equal(
       adaptarEnvios([{ ...row, estado_pedido: 'listo' }])[0].status,
       'listo',

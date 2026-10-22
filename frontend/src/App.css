@@ -2347,6 +2347,11 @@ body:has(dialog[open]) {
   color: var(--muted);
 }
 
+.delivery-status--esperando_pago {
+  background: #f7e8ce;
+  color: #75501b;
+}
+
 .payment-share {
   display: grid;
   gap: 0.75rem;

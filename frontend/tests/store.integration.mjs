@@ -103,6 +103,60 @@ try {
   await store.logout()
   await store.login('test_mozo', process.env.TEST_AUTH_PASSWORD)
   await store.refresh()
+  assert.ok(
+    store
+      .getSnapshot()
+      .data.users.some((user) => user.role === 'repartidor' && user.active),
+  )
+  assert.equal(
+    await store.act({
+      type: 'createDelivery',
+      delivery: {
+        modalidad: 'retiro_local',
+        costo_confirmado: '0.00',
+        destinatario: 'Cliente registrado por el mozo',
+        direccion: '',
+        indicaciones: '',
+        repartidor_id: '',
+        repartidor_nombre: '',
+      },
+      items: [{ dishId: dish.id, quantity: 1, notes: 'Retiro de prueba' }],
+    }),
+    '',
+  )
+  const deliveryOrder = store
+    .getSnapshot()
+    .data.orders.find((item) => item.kind === 'delivery')
+  assert.ok(deliveryOrder)
+  assert.equal(deliveryOrder.waiterId, store.getSnapshot().session.id)
+  assert.equal(deliveryOrder.paymentRequired, true)
+  await store.logout()
+  await store.login('test_chef', process.env.TEST_AUTH_PASSWORD)
+  await store.refresh()
+  assert.ok(
+    store
+      .getSnapshot()
+      .data.orders.some((item) => item.id === deliveryOrder.id),
+    'El chef ve el envío pendiente de pago',
+  )
+  assert.ok(
+    (await store.act({
+      type: 'transition',
+      id: deliveryOrder.id,
+      status: 'preparacion',
+    })) instanceof Error,
+  )
+  await store.logout()
+  await store.login('test_mozo', process.env.TEST_AUTH_PASSWORD)
+  await store.refresh()
+  assert.equal(
+    await store.act({
+      type: 'transition',
+      id: deliveryOrder.id,
+      status: 'cancelado',
+    }),
+    '',
+  )
   assert.equal(
     await store.act({
       type: 'createOrder',

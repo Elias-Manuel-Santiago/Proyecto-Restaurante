@@ -33,6 +33,14 @@ export function DeliveryCard({
           </li>
         ))}
       </ul>
+      {delivery.status === 'esperando_pago' && (
+        <p className="muted">
+          El mozo debe gestionar el cobro antes de cocina.
+        </p>
+      )}
+      {delivery.status === 'en_cocina' && (
+        <p className="muted">Podés retirarlo cuando el chef lo marque listo.</p>
+      )}
       <div className="card-actions">
         <button
           className="secondary-button"

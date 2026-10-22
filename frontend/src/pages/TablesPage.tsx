@@ -4,6 +4,7 @@ import { OrderCard } from '../components/OrderCard'
 import { TableCard } from '../components/TableCard'
 import { ConfirmDialog, Dialog } from '../components/Dialog'
 import { OrderComposer } from '../components/OrderComposer'
+import { DeliveryEditor } from '../components/DeliveryEditor'
 import { Stats } from '../components/Stats'
 import { useRestaurant } from '../state/useRestaurant'
 import { isActive, money, orderTotal, serviceOrders } from '../state/model'
@@ -17,6 +18,7 @@ export function TablesPage() {
   const [error, setError] = useState<string | Error>('')
   const [confirmClose, setConfirmClose] = useState(false)
   const [composing, setComposing] = useState(false)
+  const [creatingDelivery, setCreatingDelivery] = useState(false)
   const selected = data.tables.find((table) => table.id === selectedId)
   const selectedOrders = selected ? serviceOrders(data, selected) : []
   const select = (table: RestaurantTable) => {
@@ -40,6 +42,14 @@ export function TablesPage() {
           <i />
           Turno actual
         </span>
+        {(session?.role === 'mozo' || session?.role === 'admin') && (
+          <button
+            className="primary-button"
+            onClick={() => setCreatingDelivery(true)}
+          >
+            Crear envío
+          </button>
+        )}
       </section>
       <Stats
         items={[
@@ -200,6 +210,9 @@ export function TablesPage() {
       )}
       {selected && composing && (
         <OrderComposer table={selected} onClose={() => setComposing(false)} />
+      )}
+      {creatingDelivery && (
+        <DeliveryEditor onClose={() => setCreatingDelivery(false)} />
       )}
       {selected && confirmClose && (
         <ConfirmDialog

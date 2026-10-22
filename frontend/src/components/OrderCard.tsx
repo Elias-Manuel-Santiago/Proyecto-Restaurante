@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { statusLabels, type Order, type Waiter } from '../types'
-import { money, orderTotal } from '../state/model'
+import { isActive, isAwaitingPayment, money, orderTotal } from '../state/model'
 
 interface Props {
   order: Order
@@ -67,6 +67,24 @@ export function OrderCard({
         <p className="muted">
           Pago: {order.paymentStatus || 'sin iniciar'}
           {order.shippingCost ? ` · Envío: ${money(order.shippingCost)}` : ''}
+        </p>
+      )}
+      {order.kind === 'delivery' && order.courierName && (
+        <p className="muted">Repartidor: {order.courierName}</p>
+      )}
+      {order.kind === 'delivery' && isActive(order) && (
+        <p className="muted">
+          {isAwaitingPayment(order)
+            ? 'Esperando pago. El mozo puede iniciar o consultar el cobro desde Pedidos.'
+            : order.deliveryStatus === 'en_camino'
+              ? order.requiresCourier === false
+                ? 'En camino con cadetería. El mozo debe confirmar la entrega.'
+                : 'En camino. El repartidor debe confirmar la entrega.'
+              : order.status === 'listo'
+                ? order.requiresCourier === false
+                  ? 'Listo para que el mozo confirme el retiro o la salida.'
+                  : 'Listo. El repartidor asignado puede iniciar el viaje desde Mis entregas.'
+                : 'En la cola de cocina. El chef debe iniciar la preparación y marcarlo listo.'}
         </p>
       )}
       {(summary || kitchen) && (

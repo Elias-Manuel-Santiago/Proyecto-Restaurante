@@ -61,6 +61,7 @@ export interface PedidoFilaApi {
   estado: OrderStatus
   numero_mesa: number | null
   envio_estado?: string | null
+  repartidor_nombre?: string | null
   pago_requerido?: number
   pago_estado?: string | null
   costo_envio?: string | number | null
