@@ -15,7 +15,7 @@ CREATE TABLE usuarios (
   creado_en DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   PRIMARY KEY (id_usuario),
   UNIQUE KEY usuarios_usuario_unique (usuario),
-  CONSTRAINT usuarios_tipo_check CHECK (tipo IN ('admin','chef','mozo')),
+  CONSTRAINT usuarios_tipo_check CHECK (tipo IN ('admin','chef','mozo','repartidor')),
   CONSTRAINT usuarios_activo_check CHECK (activo IN (0,1))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

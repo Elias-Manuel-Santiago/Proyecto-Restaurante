@@ -1,9 +1,11 @@
+import { migrarAutenticacion } from "./migrate-auth.js";
 import db from "./db.js";
 import { migrarStock } from "./migrate-stock.js";
 import { migrarReparto } from "./migrate-reparto.js";
 
 // Migración aditiva: no elimina pedidos, comidas, mesas ni tablas de usuarios.
 export async function migrar() {
+  await migrarAutenticacion();
   await migrarStock();
   const columnas = {
     mesas: {

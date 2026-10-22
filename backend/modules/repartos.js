@@ -23,6 +23,12 @@ export async function crearEnvio(datos) {
     "Indicaciones inválidas.",
   );
   return transaccion(async (conexion) => {
+    const [[repartidor]] = await conexion.query(
+      "SELECT id_usuario,nombre FROM usuarios WHERE id_usuario=? AND tipo='repartidor' AND activo=1 FOR UPDATE",
+      [datos.repartidor_id],
+    );
+    comprobar(repartidor, "El repartidor elegido ya no está habilitado.");
+    datos = { ...datos, repartidor_nombre: repartidor.nombre };
     const ahora = new Date();
     const historial = JSON.stringify([
       {
@@ -32,8 +38,14 @@ export async function crearEnvio(datos) {
       },
     ]);
     const [pedido] = await conexion.query(
-      "INSERT INTO pedidos (id_mesa,id_mesero,estado,mozo_id,mozo_nombre,creado_en,historial) VALUES (NULL,NULL,'pendiente',?,?,?,?)",
-      [datos.mozo_id, datos.mozo_nombre, ahora, historial],
+      "INSERT INTO pedidos (id_mesa,id_mesero,estado,mozo_id,mozo_nombre,creado_en,historial) VALUES (NULL,?,'pendiente',?,?,?,?)",
+      [
+        datos.id_mesero ?? null,
+        datos.mozo_id,
+        datos.mozo_nombre,
+        ahora,
+        historial,
+      ],
     );
     await guardarItems(conexion, pedido.insertId, datos.comidas);
     await conexion.query(
