@@ -58,7 +58,11 @@ test("inventario: migración aditiva, repetible, restricciones y compatibilidad"
       "La instalación nueva y la migración deben crear el mismo inventario",
     );
     for (const sql of esquema.filter(
-      (sql) => !nuevas.includes(sql) && !/^CREATE TABLE envios\b/.test(sql),
+      (sql) =>
+        !nuevas.includes(sql) &&
+        !/^CREATE TABLE (envios|modalidades_envio|envio_modalidad|pagos)\b/.test(
+          sql,
+        ),
     ))
       await conexion.query(sql);
     const [antes] = await conexion.query("SHOW TABLES");

@@ -2,10 +2,10 @@
 CREATE TABLE IF NOT EXISTS envios (
   id_pedido INT NOT NULL,
   destinatario VARCHAR(100) NOT NULL,
-  direccion VARCHAR(300) NOT NULL,
+  direccion VARCHAR(300) NULL,
   indicaciones VARCHAR(300) NOT NULL DEFAULT '',
-  repartidor_id VARCHAR(200) NOT NULL,
-  repartidor_nombre VARCHAR(80) NOT NULL,
+  repartidor_id VARCHAR(200) NULL,
+  repartidor_nombre VARCHAR(80) NULL,
   estado VARCHAR(20) NOT NULL DEFAULT 'pendiente',
   retirado_en DATETIME(3) NULL,
   entregado_en DATETIME(3) NULL,
