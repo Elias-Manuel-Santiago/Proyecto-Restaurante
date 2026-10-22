@@ -1,0 +1,98 @@
+classDiagram
+direction TB
+class PaymentDialog {
+  <<component>>
+  order: Order
+  payment: Payment | null
+  +refresh()
+  +run(action)
+}
+class ApiAccess {
+  <<module>>
+  +iniciarPago(id)
+  +obtenerPago(id)
+  +cancelarPago(id)
+  +reembolsarPago(id)
+}
+class Pagos {
+  <<module>>
+  +iniciarPago(id, proveedor)
+  +consultarPago(id)
+  +cancelarPago(id, actor)
+  +reembolsarPago(id, actor)
+  +exigirPago(conexion, pedido)
+}
+class RegistroPasarelas {
+  <<module>>
+  proveedores: Map
+  +registrarPasarela(codigo, adaptador)
+  +obtenerPasarela(codigo)
+}
+class PaymentShare {
+  <<component>>
+  url: string
+  orderId: string
+  Portapapeles: enlace público
+}
+class Pedido {
+  <<SQLObject>>
+  id_pedidos: INT (PK)
+  estado: VARCHAR(30)
+  pago_requerido: TINYINT(1)
+}
+class Pago {
+  <<SQLObject>>
+  id_pago: CHAR(36) (PK)
+  id_pedido: INT (FK, UNIQUE)
+  proveedor: VARCHAR(40)
+  estado: VARCHAR(20)
+  importe: DECIMAL(12,2)
+  moneda: CHAR(3)
+  preferencia_id: VARCHAR(200)
+  checkout_url: VARCHAR(2048)
+  referencia_pasarela: VARCHAR(100)
+  reembolso_id: VARCHAR(100)
+}
+class PasarelaPago {
+  <<interface>>
+  +preparar?()
+  +crear(pago)
+  +consultar(pago)
+  +cancelar(pago)
+  +reembolsar(pago)
+}
+class CheckoutPublico {
+  <<DTO>>
+  preferencia_id: string
+  checkout_url: string
+}
+class PagoQr {
+  <<module>>
+  +crearQrPago(enlace)
+}
+class MercadoPagoAPI {
+  <<external>>
+}
+class AdaptadorMercadoPago {
+  <<adapter>>
+  nombre: string
+  +preparar()
+  +crear(pago)
+  +consultar(pago)
+  +cancelar(pago)
+  +reembolsar(pago)
+}
+PaymentDialog ..> ApiAccess : usa
+ApiAccess ..> Pagos : HTTP
+Pagos ..> RegistroPasarelas : elige
+PaymentDialog ..> PaymentShare : muestra
+Pagos ..> Pago : guarda / consulta
+Pagos ..> Pedido : valida estado
+RegistroPasarelas ..> PasarelaPago : devuelve contrato
+Pedido "1" -- "0..1" Pago : tiene
+PaymentShare ..> CheckoutPublico : comparte URL
+PaymentShare ..> PagoQr : genera QR
+AdaptadorMercadoPago ..|> PasarelaPago : implementa
+AdaptadorMercadoPago ..> MercadoPagoAPI : HTTPS
+note for PasarelaPago "Contrato estructural documentado; implementado por un objeto JavaScript."
+note for Pagos "El código usa módulos y funciones; estos símbolos no implican clases class."

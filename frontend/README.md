@@ -1,3 +1,5 @@
+Envíos y cobros de prueba: ver [configuración y circuito completo](../backend/ENVIOS-PAGOS.md).
+
 # NÁCAR Restaurante
 
 Para la presentación: [accesos compartidos del equipo](../backend/ACCESOS-EQUIPO.md).

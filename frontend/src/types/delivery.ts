@@ -1,6 +1,32 @@
 export type DeliveryStatus = 'en_cocina' | 'listo' | 'en_camino' | 'entregado'
 
+export interface ShippingMode {
+  codigo: string
+  nombre: string
+  costo: string | number | null
+  requiere_direccion: boolean | number
+  requiere_repartidor: boolean | number
+  activo: boolean | number
+}
+export interface Payment {
+  id_pago: string
+  id_pedido: number
+  estado:
+    | 'pendiente'
+    | 'aprobado'
+    | 'rechazado'
+    | 'cancelado'
+    | 'cancelando'
+    | 'reembolsando'
+    | 'reembolsado'
+  importe: string | number
+  checkout_url?: string | null
+  metodo?: string | null
+}
 export interface DeliveryDraft {
+  modalidad: string
+  modalidad_nombre?: string
+  costo_confirmado?: string
   destinatario: string
   direccion: string
   indicaciones: string

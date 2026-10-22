@@ -1,3 +1,4 @@
+import { registrarPasarela } from "../modules/pasarelas.js";
 import assert from "node:assert/strict";
 
 export async function probarRepartos(request, db, clientes) {
@@ -13,7 +14,27 @@ export async function probarRepartos(request, db, clientes) {
     },
     201,
   );
+  registrarPasarela("prueba", {
+    crear: async (pago) => ({
+      preferencia_id: pago.id_pago,
+      checkout_url: "https://www.mercadopago.com.ar/prueba",
+    }),
+    consultar: async (pago) => ({
+      estado: "aprobado",
+      referencia_pasarela: pago.id_pago,
+      metodo: "prueba",
+    }),
+    reembolsar: async (pago) => ({ reembolso_id: pago.id_pago }),
+  });
+  await request("PUT", "/modalidades-envio/moto_propia", {
+    nombre: "Moto propia",
+    costo: "100.00",
+    requiere_direccion: true,
+    requiere_repartidor: true,
+    activo: true,
+  });
   const datos = {
+    modalidad: "moto_propia",
     destinatario: "Destinatario de prueba",
     direccion: "Dirección de prueba 123",
     indicaciones: "Timbre",
@@ -76,6 +97,20 @@ export async function probarRepartos(request, db, clientes) {
     );
   await cambiar("en_camino", 400);
   await request("PUT", `/pedidos/${id}`, { comidas: datos.comidas });
+  await request(
+    "PATCH",
+    `/pedidos/${id}/estado`,
+    { estado: "preparacion", actor: "Chef" },
+    400,
+  );
+  assert.equal(
+    (await request("POST", "/pedidos/obtener", {}, 200, "chef")).some(
+      (p) => p.id_pedidos === id,
+    ),
+    false,
+  );
+  await request("POST", `/pagos/${id}`, { proveedor: "prueba" });
+  await request("GET", `/pagos/${id}`);
   for (const estado of ["preparacion", "listo"])
     await request("PATCH", `/pedidos/${id}/estado`, { estado, actor: "Chef" });
   await request(

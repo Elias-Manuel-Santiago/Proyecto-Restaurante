@@ -64,12 +64,13 @@
       "x": 440,
       "y": 110,
       "w": 350,
-      "h": 328,
+      "h": 356,
       "rows": [
         "PK    id_pedidos: INT",
         "FK    id_mesa: INT ?",
         "FK    id_mesero: INT ?",
         "·     estado: VARCHAR(30)",
+        "·     pago_requerido: TINYINT(1)",
         "·     numero_mesa: INT ?",
         "·     servicio_id: VARCHAR(64) ?",
         "·     mozo_id: VARCHAR(200) ?",
@@ -151,17 +152,99 @@
       "rows": [
         "PK/FK id_pedido: INT",
         "·     destinatario: VARCHAR(100)",
-        "·     direccion: VARCHAR(300)",
+        "·     direccion: VARCHAR(300) ?",
         "·     indicaciones: VARCHAR(300)",
-        "·     repartidor_id: VARCHAR(200)",
-        "·     repartidor_nombre: VARCHAR(80)",
+        "·     repartidor_id: VARCHAR(200) ?",
+        "·     repartidor_nombre: VARCHAR(80) ?",
         "·     estado: VARCHAR(20)",
         "·     retirado_en: DATETIME(3) ?",
         "·     entregado_en: DATETIME(3) ?"
       ]
+    },
+    "modalidades_envio": {
+      "x": 40,
+      "y": 1600,
+      "w": 350,
+      "h": 216,
+      "rows": [
+        "PK    codigo: VARCHAR(40)",
+        "·     nombre: VARCHAR(80)",
+        "·     costo: DECIMAL(12,2) ?",
+        "·     requiere_direccion: TINYINT(1)",
+        "·     requiere_repartidor: TINYINT(1)",
+        "·     activo: TINYINT(1)"
+      ]
+    },
+    "envio_modalidad": {
+      "x": 440,
+      "y": 1600,
+      "w": 350,
+      "h": 132,
+      "rows": [
+        "PK/FK id_pedido: INT",
+        "FK    modalidad_codigo: VARCHAR(40)",
+        "·     costo: DECIMAL(12,2)"
+      ]
+    },
+    "pagos": {
+      "x": 840,
+      "y": 1600,
+      "w": 350,
+      "h": 412,
+      "rows": [
+        "PK    id_pago: CHAR(36)",
+        "FK    id_pedido: INT",
+        "·     proveedor: VARCHAR(40)",
+        "·     estado: VARCHAR(20)",
+        "·     importe: DECIMAL(12,2)",
+        "·     moneda: CHAR(3)",
+        "·     preferencia_id: VARCHAR(200) ?",
+        "·     checkout_url: VARCHAR(2048) ?",
+        "·     referencia_pasarela: VARCHAR(100) ?",
+        "·     metodo: VARCHAR(80) ?",
+        "·     reembolso_id: VARCHAR(100) ?",
+        "·     creado_en: DATETIME(3)",
+        "·     actualizado_en: DATETIME(3)"
+      ]
     }
   },
   "edges": [
+    [
+      "modalidades_envio",
+      "envio_modalidad",
+      "1 : 0..N",
+      [
+        [390, 1730],
+        [440, 1730]
+      ],
+      [398, 1717]
+    ],
+    [
+      "envios",
+      "envio_modalidad",
+      "envio 1 : 0..1 modalidad",
+      [
+        [1240, 1320],
+        [1220, 1320],
+        [1220, 1540],
+        [615, 1540],
+        [615, 1600]
+      ],
+      [645, 1527]
+    ],
+    [
+      "pedidos",
+      "pagos",
+      "pedido 1 : 0..1 pago",
+      [
+        [790, 415],
+        [825, 415],
+        [825, 1510],
+        [1015, 1510],
+        [1015, 1600]
+      ],
+      [855, 1497]
+    ],
     [
       "pedidos",
       "envios",
@@ -223,7 +306,7 @@
         [215, 670],
         [215, 580],
         [615, 580],
-        [615, 438]
+        [615, 466]
       ],
       [270, 565]
     ],

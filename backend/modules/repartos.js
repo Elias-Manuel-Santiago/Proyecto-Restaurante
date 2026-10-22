@@ -1,17 +1,12 @@
+import { validarModalidad } from "./modalidades-envio.js";
+import { exigirPago } from "./pagos.js";
 import db from "./db.js";
 import { comprobar, transaccion, guardarItems } from "./restaurante.js";
 
 const texto = (valor, max) =>
   typeof valor === "string" && valor.trim().length > 0 && valor.length <= max;
 export async function crearEnvio(datos) {
-  comprobar(
-    texto(datos.destinatario, 100) && texto(datos.direccion, 300),
-    "Completá destinatario y dirección.",
-  );
-  comprobar(
-    texto(datos.repartidor_id, 200) && texto(datos.repartidor_nombre, 80),
-    "Elegí un repartidor.",
-  );
+  comprobar(texto(datos.destinatario, 100), "Completá el destinatario.");
   comprobar(
     texto(datos.mozo_id, 200) && texto(datos.mozo_nombre, 80),
     "Indicá quién registra el envío.",
@@ -23,12 +18,20 @@ export async function crearEnvio(datos) {
     "Indicaciones inválidas.",
   );
   return transaccion(async (conexion) => {
-    const [[repartidor]] = await conexion.query(
-      "SELECT id_usuario,nombre FROM usuarios WHERE id_usuario=? AND tipo='repartidor' AND activo=1 FOR UPDATE",
-      [datos.repartidor_id],
+    const modalidad = await validarModalidad(conexion, datos);
+    comprobar(
+      !modalidad.requiere_direccion || texto(datos.direccion, 300),
+      "Completá la dirección de entrega.",
     );
-    comprobar(repartidor, "El repartidor elegido ya no está habilitado.");
-    datos = { ...datos, repartidor_nombre: repartidor.nombre };
+    let repartidor = null;
+    if (modalidad.requiere_repartidor) {
+      comprobar(texto(datos.repartidor_id, 200), "Elegí el repartidor.");
+      [[repartidor]] = await conexion.query(
+        "SELECT id_usuario,nombre FROM usuarios WHERE id_usuario=? AND tipo='repartidor' AND activo=1 FOR UPDATE",
+        [datos.repartidor_id],
+      );
+      comprobar(repartidor, "El repartidor ya no está habilitado.");
+    }
     const ahora = new Date();
     const historial = JSON.stringify([
       {
@@ -38,7 +41,7 @@ export async function crearEnvio(datos) {
       },
     ]);
     const [pedido] = await conexion.query(
-      "INSERT INTO pedidos (id_mesa,id_mesero,estado,mozo_id,mozo_nombre,creado_en,historial) VALUES (NULL,?,'pendiente',?,?,?,?)",
+      "INSERT INTO pedidos (id_mesa,id_mesero,estado,mozo_id,mozo_nombre,creado_en,historial,pago_requerido) VALUES (NULL,?,'pendiente',?,?,?,?,1)",
       [
         datos.id_mesero ?? null,
         datos.mozo_id,
@@ -53,11 +56,15 @@ export async function crearEnvio(datos) {
       [
         pedido.insertId,
         datos.destinatario.trim(),
-        datos.direccion.trim(),
+        modalidad.requiere_direccion ? datos.direccion.trim() : null,
         datos.indicaciones?.trim() || "",
-        datos.repartidor_id,
-        datos.repartidor_nombre.trim(),
+        repartidor ? String(repartidor.id_usuario) : null,
+        repartidor?.nombre || null,
       ],
+    );
+    await conexion.query(
+      "INSERT INTO envio_modalidad (id_pedido,modalidad_codigo,costo) VALUES (?,?,?)",
+      [pedido.insertId, modalidad.codigo, modalidad.costo],
     );
     return pedido.insertId;
   });
@@ -76,10 +83,10 @@ export async function listarEnvios(repartidor) {
   return filas;
 }
 
-export async function cambiarEstadoEnvio(id, datos) {
+export async function cambiarEstadoEnvio(id, datos, actor) {
   comprobar(
-    texto(datos.repartidor_id, 200) && texto(datos.actor, 80),
-    "Indicá el repartidor y su nombre.",
+    actor && texto(datos.actor, 80),
+    "Ingresá nuevamente para continuar.",
   );
   comprobar(
     ["en_camino", "entregado"].includes(datos.estado),
@@ -95,17 +102,28 @@ export async function cambiarEstadoEnvio(id, datos) {
       "SELECT * FROM envios WHERE id_pedido=? FOR UPDATE",
       [id],
     );
-    comprobar(
-      pedido && envio && envio.repartidor_id === datos.repartidor_id,
-      "El envío no está asignado a este repartidor.",
+    comprobar(pedido && envio, "El envío no está asignado a este repartidor.");
+    const [[modalidad]] = await conexion.query(
+      "SELECT m.* FROM envio_modalidad em JOIN modalidades_envio m ON m.codigo=em.modalidad_codigo WHERE em.id_pedido=?",
+      [id],
     );
+    const interno = modalidad ? Boolean(modalidad.requiere_repartidor) : true;
+    const retiro = modalidad ? !modalidad.requiere_direccion : false;
+    comprobar(
+      interno
+        ? actor.role === "repartidor" && envio.repartidor_id === actor.id
+        : ["mozo", "admin"].includes(actor.role),
+      "La entrega corresponde a otro rol o repartidor.",
+    );
+    await exigirPago(conexion, pedido);
     if (envio.estado === datos.estado && pedido.estado !== "cancelado") return; // Reintento seguro.
     comprobar(
       pedido.estado === "listo",
       "El pedido debe estar listo en cocina y no cancelado.",
     );
     comprobar(
-      (envio.estado === "pendiente" && datos.estado === "en_camino") ||
+      (envio.estado === "pendiente" &&
+        datos.estado === (retiro ? "entregado" : "en_camino")) ||
         (envio.estado === "en_camino" && datos.estado === "entregado"),
       "Transición de envío inválida.",
     );

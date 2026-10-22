@@ -1,3 +1,4 @@
+import { migrarEnviosPagos } from "./migrate-envios-pagos.js";
 import { migrarAutenticacion } from "./migrate-auth.js";
 import db from "./db.js";
 import { migrarStock } from "./migrate-stock.js";
@@ -56,6 +57,7 @@ export async function migrar() {
     "UPDATE mesas m SET estado='ocupada', comensales=GREATEST(comensales,1), servicio_id=CONCAT('anterior-',m.id_mesa) WHERE servicio_id IS NULL AND EXISTS (SELECT 1 FROM pedidos p WHERE p.id_mesa=m.id_mesa AND p.estado IN ('pendiente','preparacion','listo'))",
   );
   await migrarReparto();
+  await migrarEnviosPagos();
 }
 
 if (process.argv[1]?.endsWith("migrate.js")) {

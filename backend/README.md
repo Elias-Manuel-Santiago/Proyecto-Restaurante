@@ -4,14 +4,22 @@ Para la presentación: [accesos compartidos del equipo](ACCESOS-EQUIPO.md).
 API Express con MySQL y consultas parametrizadas. Incluye autenticación real, sesiones SQL y permisos por rol.
 Ver [LOGIN.md](LOGIN.md) antes de iniciar o actualizar.
 
+Envíos, modalidades y Mercado Pago de prueba: [ENVIOS-PAGOS.md](ENVIOS-PAGOS.md).
+
 ## Ejecutar
 
 ```sh
 npm ci
-npm run migrate
-npm run seed:admin
-npm start
+npm run iniciar:equipo
 ```
+
+`iniciar:equipo` prepara la base y los accesos y luego inicia el servidor.
+`preparar:equipo` también puede ejecutarse por separado. Usa la conexión de `.env` (si falta, crea la configuración local
+predeterminada de XAMPP), instala las tablas si la base está vacía o migra la
+existente, crea las cuentas de prueba que falten y configura Mercado Pago de
+prueba. No cambia las contraseñas de cuentas existentes. XAMPP/MySQL debe estar
+iniciado; si tu conexión es diferente, ajustar `DB_*` antes de ejecutarlo.
+Se puede repetir. Para cuentas privadas siguen disponibles `migrate` y `seed:admin`.
 
 `npm run dev` reinicia el servidor al editar archivos. El puerto predeterminado es
 3005; puede cambiarse con `PORT`. La conexión existente está en `modules/db.js` y usa

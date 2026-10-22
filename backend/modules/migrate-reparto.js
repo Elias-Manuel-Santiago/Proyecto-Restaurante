@@ -45,7 +45,11 @@ export async function migrarReparto(pool = db) {
             (campo) =>
               campo.Field === nombre &&
               campo.Type.replace(/^int\(\d+\)/, "int") === tipo &&
-              campo.Null === (nombre.endsWith("_en") ? "YES" : "NO"),
+              (campo.Null === (nombre.endsWith("_en") ? "YES" : "NO") ||
+                (["direccion", "repartidor_id", "repartidor_nombre"].includes(
+                  nombre,
+                ) &&
+                  campo.Null === "YES")),
           ),
         ) ||
         !claves.some(

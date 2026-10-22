@@ -37,6 +37,7 @@ api.alVencerSesion(() =>
 )
 
 type RemoteAction =
+  | { type: 'advanceDelivery'; id: string; status: 'en_camino' | 'entregado' }
   | {
       type: 'createDelivery'
       delivery: import('../types/delivery').DeliveryDraft
@@ -49,6 +50,7 @@ type RemoteAction =
   | { type: 'reorderOrder'; id: string; targetId: string; before: boolean }
 const allowed: Record<RemoteAction['type'], Role[]> = {
   createDelivery: ['mozo', 'admin'],
+  advanceDelivery: ['mozo', 'admin'],
   openTable: ['mozo', 'admin'],
   closeTable: ['mozo', 'admin'],
   createOrder: ['mozo'],
@@ -152,6 +154,14 @@ export const restaurantStore = {
         throw new Error('Este cambio corresponde a otro rol.')
       let result
       switch (action.type) {
+        case 'advanceDelivery':
+          result = await api.actualizarEnvio(
+            action.id,
+            actor.id,
+            actor.name,
+            action.status,
+          )
+          break
         case 'createDelivery':
           result = await api.cargarEnvio({
             ...action.delivery,
