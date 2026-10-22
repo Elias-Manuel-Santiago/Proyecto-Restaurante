@@ -2341,3 +2341,8 @@ body:has(dialog[open]) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+.delivery-status--en_cocina {
+  background: var(--surface-alt);
+  color: var(--muted);
+}

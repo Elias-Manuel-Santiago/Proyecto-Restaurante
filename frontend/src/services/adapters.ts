@@ -14,8 +14,10 @@ export function adaptarPedidos(filas: PedidoFilaApi[]): Order[] {
           : (fila.historial ?? [])
       pedido = {
         id,
+        kind: fila.id_mesa === null ? 'delivery' : 'mesa',
+        deliveryStatus: fila.envio_estado ?? undefined,
         priority: fila.prioridad ?? null,
-        tableId: String(fila.id_mesa),
+        tableId: fila.id_mesa === null ? '' : String(fila.id_mesa),
         tableNumber: Number(fila.numero_mesa),
         serviceId: fila.servicio_id,
         status: fila.estado,

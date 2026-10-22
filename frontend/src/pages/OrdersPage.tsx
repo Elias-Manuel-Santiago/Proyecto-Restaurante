@@ -1,4 +1,5 @@
 import { OrderComposer } from '../components/OrderComposer'
+import { DeliveryEditor } from '../components/DeliveryEditor'
 import { ErrorMessage } from '../components/ErrorMessage'
 import { useEffect, useRef, useState } from 'react'
 import { OrderCard } from '../components/OrderCard'
@@ -29,6 +30,7 @@ export function OrdersPage({ history = false }: { history?: boolean }) {
   const [error, setError] = useState<string | Error>('')
   const [notice, setNotice] = useState('')
   const [page, setPage] = useState(1)
+  const [creatingDelivery, setCreatingDelivery] = useState(false)
   const resultsRef = useRef<HTMLParagraphElement>(null)
   useEffect(() => {
     void restaurantStore.refresh(true)
@@ -81,12 +83,21 @@ export function OrdersPage({ history = false }: { history?: boolean }) {
           <span className="eyebrow">
             {history ? 'Archivo del servicio' : 'Seguimiento en vivo'}
           </span>
-          <h1>{history ? 'Historial de pedidos' : 'Pedidos del salón'}</h1>
+          <h1>{history ? 'Historial de pedidos' : 'Pedidos del servicio'}</h1>
           <p>
             De la primera comanda a la entrega. Cada paso, en un mismo lugar.
           </p>
         </div>
         <span className="service-label">{visibleOrders.length} comandas</span>
+        {!history &&
+          (session?.role === 'mozo' || session?.role === 'admin') && (
+            <button
+              className="primary-button"
+              onClick={() => setCreatingDelivery(true)}
+            >
+              Crear envío
+            </button>
+          )}
       </section>
       <OrderFilters
         values={filters}
@@ -154,23 +165,25 @@ export function OrdersPage({ history = false }: { history?: boolean }) {
             >
               Ver detalle
             </button>
-            {session?.role === 'mozo' && order.status === 'listo' && (
-              <button
-                className="primary-button"
-                aria-label={`Marcar entregado el pedido #${order.id}`}
-                onClick={async () => {
-                  const message = await act({
-                    type: 'transition',
-                    id: order.id,
-                    status: 'entregado',
-                  })
-                  setError(message)
-                  if (!message) setNotice(`Pedido #${order.id} entregado.`)
-                }}
-              >
-                Marcar entregado
-              </button>
-            )}
+            {session?.role === 'mozo' &&
+              order.kind !== 'delivery' &&
+              order.status === 'listo' && (
+                <button
+                  className="primary-button"
+                  aria-label={`Marcar entregado el pedido #${order.id}`}
+                  onClick={async () => {
+                    const message = await act({
+                      type: 'transition',
+                      id: order.id,
+                      status: 'entregado',
+                    })
+                    setError(message)
+                    if (!message) setNotice(`Pedido #${order.id} entregado.`)
+                  }}
+                >
+                  Marcar entregado
+                </button>
+              )}
             {order.status === 'pendiente' &&
               (session?.role === 'mozo' || session?.role === 'admin') && (
                 <button
@@ -181,6 +194,7 @@ export function OrdersPage({ history = false }: { history?: boolean }) {
                 </button>
               )}
             {isActive(order) &&
+              order.deliveryStatus !== 'en_camino' &&
               (session?.role === 'mozo' || session?.role === 'admin') && (
                 <button
                   className="text-button danger-text"
@@ -257,7 +271,10 @@ export function OrdersPage({ history = false }: { history?: boolean }) {
           </ol>
         </Dialog>
       )}
-      {editing && editTable && (
+      {creatingDelivery && (
+        <DeliveryEditor onClose={() => setCreatingDelivery(false)} />
+      )}
+      {editing && (editTable || editing.kind === 'delivery') && (
         <OrderComposer
           table={editTable}
           order={editing}

@@ -123,7 +123,10 @@ export function AdminPage({
           {recent.map((order) => (
             <div className="recent-order" key={order.id}>
               <span>
-                <strong>#{order.id}</strong> · Mesa {order.tableNumber}
+                <strong>#{order.id}</strong> ·{' '}
+                {order.kind === 'delivery'
+                  ? 'Envío'
+                  : `Mesa ${order.tableNumber}`}
                 <small>
                   {money(orderTotal(order))} · {order.waiterName}
                 </small>

@@ -74,7 +74,7 @@ export function createInitialData(): RestaurantData {
       { id: 'chef-1', name: 'Chef demo', role: 'chef', active: true },
       {
         id: 'repartidor-1',
-        name: 'Repartidor demo',
+        name: 'Repartidor',
         role: 'repartidor',
         active: true,
       },
