@@ -19,7 +19,7 @@ no sincroniza los datos ni necesita un servidor compartido.
    MySQL/MariaDB. Si ya hay `.env`, conservar su conexión SQL. Si falta, el
    preparador usa la conexión habitual de XAMPP (`127.0.0.1:3306`, `root`, clave
    vacía, base `restaurante`); ajustar `DB_*` si esa PC usa otra conexión.
-2. En `backend/`: `npm ci`, `npm run preparar:equipo`, `npm start`.
+2. En `backend/`: `npm ci`, `npm run iniciar:equipo` (prepara la base y arranca).
 3. En `frontend/`: `npm ci`, `npm run dev`.
 
 `preparar:equipo` instala las 15 tablas si la base está vacía, o aplica migraciones
@@ -71,9 +71,15 @@ el formulario estaba abierto. Los importes se suman en centavos en el servidor.
 2. Elegir modalidad y completar destinatario, dirección/indicaciones cuando
    corresponda, repartidor interno si corresponde y comidas.
 3. Registrar el pedido. En su tarjeta abrir **Cobrar pedido → Iniciar cobro**.
-4. Abrir Mercado Pago. En HTTP local no hay regreso automático: después del
-   checkout volver a NÁCAR y usar **Consultar estado** (también consulta cada 10 s
-   mientras el diálogo está abierto). No cerrar el backend durante la prueba.
+4. Mostrar el **QR del pedido** al cliente, que lo escanea con la cámara de su
+   teléfono y paga en el checkout público de Mercado Pago. Para delivery usar
+   **Copiar enlace de pago** y compartirlo por el canal habitual. El cliente no
+   necesita cuenta de NÁCAR ni acceso al admin. El QR se genera localmente y
+   codifica la URL HTTPS del checkout; no es un QR fijo de transferencia ni una
+   integración de Point. El backend puede seguir en localhost: el teléfono abre
+   Mercado Pago en Internet, sin conectarse a la PC del restaurante.
+   En la prueba usar el comprador de prueba, incluso en el teléfono. El diálogo
+   consulta el estado cada 10 s y tiene **Consultar estado**. No cerrar el backend.
 5. Solo una aprobación consultada al servidor habilita Cocina. La URL de regreso,
    un parámetro del navegador o un clic del usuario no aprueban el pago.
 6. Chef pasa pendiente → preparación → listo.
@@ -158,6 +164,9 @@ público para esta entrega local. El backend debe tener acceso a Internet.
   escenario completo de API/store en una base temporal que se elimina al terminar.
 - `node --test tests/courier.integration.mjs tests/priority.integration.mjs`,
   `npm run lint` y `npm run build` en frontend.
+- `node --test tests/payment-qr.integration.mjs`: genera el PNG y lo decodifica
+  con un lector independiente para comprobar el checkout exacto; rechaza enlaces
+  ajenos a Mercado Pago y URLs HTTP. El portapapeles tiene alternativa manual.
 - Verificación externa del 22/10/2026: preferencia real de Checkout Pro creada
   desde un pedido SQL, consulta pendiente con Cocina bloqueada, compra con saldo
   ficticio del comprador NÁCAR, aprobación guardada en SQL y transición a Cocina
@@ -173,3 +182,12 @@ público para esta entrega local. El backend debe tener acceso a Internet.
 Se probó en MariaDB 10.4.32 aislada, sin modificar la base real del restaurante.
 El control de consumo de stock sigue pendiente de acordar la cantidad por plato;
 no se alteró `Unidades`, `Stock` ni `comida_stock`. Tampoco se agregó modo oscuro.
+
+## Diagrama de la integración
+
+`diagrama-clases-mercadopago.png` es la imagen para compartir; `.drawio` y `.mmd`
+son editables, y `.svg` permite ampliar sin pérdida. Representa el contrato de
+pasarela, módulos, componentes funcionales y objetos SQL reales, con sus estereotipos;
+el backend no declara clases JavaScript. Para reproducirlo ejecutar
+`python generar-diagrama-pagos.py` y `powershell -File render-diagrama-pagos.ps1`
+desde `backend/`. Los archivos no contienen credenciales ni datos de clientes.

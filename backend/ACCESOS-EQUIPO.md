@@ -24,8 +24,7 @@ indicado en su nombre. No son contraseñas de conexión a MySQL ni tokens de ses
 
 ```powershell
 npm ci
-npm run preparar:equipo
-npm start
+npm run iniciar:equipo
 ```
 
 Desde frontend ejecutar npm ci y npm run dev. Ingresar con uno de los usuarios de la

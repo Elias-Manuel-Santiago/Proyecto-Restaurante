@@ -10,11 +10,11 @@ Envíos, modalidades y Mercado Pago de prueba: [ENVIOS-PAGOS.md](ENVIOS-PAGOS.md
 
 ```sh
 npm ci
-npm run preparar:equipo
-npm start
+npm run iniciar:equipo
 ```
 
-`preparar:equipo` usa la conexión de `.env` (si falta, crea la configuración local
+`iniciar:equipo` prepara la base y los accesos y luego inicia el servidor.
+`preparar:equipo` también puede ejecutarse por separado. Usa la conexión de `.env` (si falta, crea la configuración local
 predeterminada de XAMPP), instala las tablas si la base está vacía o migra la
 existente, crea las cuentas de prueba que falten y configura Mercado Pago de
 prueba. No cambia las contraseñas de cuentas existentes. XAMPP/MySQL debe estar

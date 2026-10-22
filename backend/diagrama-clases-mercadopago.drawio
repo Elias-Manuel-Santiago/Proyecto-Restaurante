@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Integración Mercado Pago" id="pagos">
+    <mxGraphModel pageWidth="1620" pageHeight="1500" page="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="PaymentDialog" value="«componente funcional»&lt;br/&gt;&lt;b&gt;PaymentDialog&lt;/b&gt;&lt;hr/&gt;order: Order&lt;br/&gt;payment: Payment | null&lt;br/&gt;+refresh()&lt;br/&gt;+run(action)" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#244769;">
+          <mxGeometry as="geometry" x="40" y="140" width="340" height="198" />
+        </mxCell>
+        <mxCell id="ApiAccess" value="«módulo · apiAccess.ts»&lt;br/&gt;&lt;b&gt;ApiAccess&lt;/b&gt;&lt;hr/&gt;+iniciarPago(id)&lt;br/&gt;+obtenerPago(id)&lt;br/&gt;+cancelarPago(id)&lt;br/&gt;+reembolsarPago(id)" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#244769;">
+          <mxGeometry as="geometry" x="440" y="140" width="340" height="198" />
+        </mxCell>
+        <mxCell id="Pagos" value="«módulo · pagos.js»&lt;br/&gt;&lt;b&gt;Pagos&lt;/b&gt;&lt;hr/&gt;+iniciarPago(id, proveedor)&lt;br/&gt;+consultarPago(id)&lt;br/&gt;+cancelarPago(id, actor)&lt;br/&gt;+reembolsarPago(id, actor)&lt;br/&gt;+exigirPago(conexion, pedido)" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#244769;">
+          <mxGeometry as="geometry" x="840" y="140" width="340" height="226" />
+        </mxCell>
+        <mxCell id="RegistroPasarelas" value="«módulo · pasarelas.js»&lt;br/&gt;&lt;b&gt;RegistroPasarelas&lt;/b&gt;&lt;hr/&gt;proveedores: Map&lt;br/&gt;+registrarPasarela(codigo, adaptador)&lt;br/&gt;+obtenerPasarela(codigo)" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#244769;">
+          <mxGeometry as="geometry" x="1240" y="140" width="340" height="170" />
+        </mxCell>
+        <mxCell id="PaymentShare" value="«componente funcional»&lt;br/&gt;&lt;b&gt;PaymentShare&lt;/b&gt;&lt;hr/&gt;url: string&lt;br/&gt;orderId: string&lt;br/&gt;QR y enlace para el cliente&lt;br/&gt;Portapapeles: enlace público" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#244769;">
+          <mxGeometry as="geometry" x="40" y="500" width="340" height="198" />
+        </mxCell>
+        <mxCell id="Pedido" value="«objeto SQL · pedidos»&lt;br/&gt;&lt;b&gt;Pedido&lt;/b&gt;&lt;hr/&gt;id_pedidos: INT (PK)&lt;br/&gt;estado: VARCHAR(30)&lt;br/&gt;pago_requerido: TINYINT(1)" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#244769;">
+          <mxGeometry as="geometry" x="440" y="500" width="340" height="170" />
+        </mxCell>
+        <mxCell id="Pago" value="«objeto SQL · pagos»&lt;br/&gt;&lt;b&gt;Pago&lt;/b&gt;&lt;hr/&gt;id_pago: CHAR(36) (PK)&lt;br/&gt;id_pedido: INT (FK, UNIQUE)&lt;br/&gt;proveedor: VARCHAR(40)&lt;br/&gt;estado: VARCHAR(20)&lt;br/&gt;importe: DECIMAL(12,2)&lt;br/&gt;moneda: CHAR(3)&lt;br/&gt;preferencia_id: VARCHAR(200)&lt;br/&gt;checkout_url: VARCHAR(2048)&lt;br/&gt;referencia_pasarela: VARCHAR(100)&lt;br/&gt;reembolso_id: VARCHAR(100)" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#244769;">
+          <mxGeometry as="geometry" x="840" y="500" width="340" height="366" />
+        </mxCell>
+        <mxCell id="PasarelaPago" value="«contrato estructural»&lt;br/&gt;&lt;b&gt;PasarelaPago&lt;/b&gt;&lt;hr/&gt;+preparar?()&lt;br/&gt;+crear(pago)&lt;br/&gt;+consultar(pago)&lt;br/&gt;+cancelar(pago)&lt;br/&gt;+reembolsar(pago)" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#244769;">
+          <mxGeometry as="geometry" x="1240" y="500" width="340" height="226" />
+        </mxCell>
+        <mxCell id="CheckoutPublico" value="«objeto devuelto por crear()»&lt;br/&gt;&lt;b&gt;CheckoutPublico&lt;/b&gt;&lt;hr/&gt;preferencia_id: string&lt;br/&gt;checkout_url: string&lt;br/&gt;Cliente paga fuera de NÁCAR" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#244769;">
+          <mxGeometry as="geometry" x="40" y="1040" width="340" height="170" />
+        </mxCell>
+        <mxCell id="PagoQr" value="«módulo · pagoQr.ts»&lt;br/&gt;&lt;b&gt;PagoQr&lt;/b&gt;&lt;hr/&gt;+crearQrPago(enlace)&lt;br/&gt;Devuelve PNG como data URL&lt;br/&gt;Codifica solo el checkout HTTPS" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#244769;">
+          <mxGeometry as="geometry" x="440" y="1040" width="340" height="170" />
+        </mxCell>
+        <mxCell id="MercadoPagoAPI" value="«servicio externo HTTPS»&lt;br/&gt;&lt;b&gt;MercadoPagoAPI&lt;/b&gt;&lt;hr/&gt;GET /users/me&lt;br/&gt;POST /checkout/preferences&lt;br/&gt;GET /v1/payments/search&lt;br/&gt;PUT /checkout/preferences/{id}&lt;br/&gt;PUT /v1/payments/{id}&lt;br/&gt;POST /v1/payments/{id}/refunds" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#244769;">
+          <mxGeometry as="geometry" x="840" y="1040" width="340" height="254" />
+        </mxCell>
+        <mxCell id="AdaptadorMercadoPago" value="«objeto registrado · mercadopago»&lt;br/&gt;&lt;b&gt;AdaptadorMercadoPago&lt;/b&gt;&lt;hr/&gt;nombre: string&lt;br/&gt;+preparar()&lt;br/&gt;+crear(pago)&lt;br/&gt;+consultar(pago)&lt;br/&gt;+cancelar(pago)&lt;br/&gt;+reembolsar(pago)" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#244769;">
+          <mxGeometry as="geometry" x="1240" y="1040" width="340" height="254" />
+        </mxCell>
+        <mxCell id="e0" value="usa" edge="1" parent="1" source="PaymentDialog" target="ApiAccess" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=12;dashed=1;endArrow=open;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e1" value="HTTP" edge="1" parent="1" source="ApiAccess" target="Pagos" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=12;dashed=1;endArrow=open;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" value="elige" edge="1" parent="1" source="Pagos" target="RegistroPasarelas" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=12;dashed=1;endArrow=open;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" value="muestra" edge="1" parent="1" source="PaymentDialog" target="PaymentShare" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=12;dashed=1;endArrow=open;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" value="guarda / consulta" edge="1" parent="1" source="Pagos" target="Pago" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=12;dashed=1;endArrow=open;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" value="valida estado" edge="1" parent="1" source="Pagos" target="Pedido" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=12;dashed=1;endArrow=open;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="900" y="420" />
+              <mxPoint x="610" y="420" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" value="devuelve contrato" edge="1" parent="1" source="RegistroPasarelas" target="PasarelaPago" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=12;dashed=1;endArrow=open;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" value="1       0..1" edge="1" parent="1" source="Pedido" target="Pago" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=12;endArrow=none;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" value="comparte URL" edge="1" parent="1" source="PaymentShare" target="CheckoutPublico" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=12;dashed=1;endArrow=open;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" value="genera QR" edge="1" parent="1" source="PaymentShare" target="PagoQr" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=12;dashed=1;endArrow=open;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="410" y="620" />
+              <mxPoint x="410" y="1140" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10" value="implementa" edge="1" parent="1" source="AdaptadorMercadoPago" target="PasarelaPago" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=12;dashed=1;endArrow=block;endFill=0;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e11" value="HTTPS" edge="1" parent="1" source="AdaptadorMercadoPago" target="MercadoPagoAPI" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=12;dashed=1;endArrow=open;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nota" value="Los rectángulos con «módulo» o «componente» representan funciones reales; el código no declara clases JavaScript.&lt;br/&gt;PasarelaPago es un contrato estructural documentado: el registro permite agregar adaptadores sin reescribir pedidos.&lt;br/&gt;Pedido y Pago son objetos del modelo relacional (atributos principales). Relación: un pedido tiene cero o un pago.&lt;br/&gt;El QR y el enlace abren el checkout público del pedido en el celular del cliente; no comparten la sesión del administrador.&lt;br/&gt;NÁCAR confirma el pago consultando la API; cancelación previa al despacho solicita devolución con clave idempotente." vertex="1" parent="1" style="text;html=1;whiteSpace=wrap;align=left;fontSize=14;">
+          <mxGeometry as="geometry" x="40" y="1360" width="1540" height="130" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

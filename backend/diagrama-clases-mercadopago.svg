@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1620" height="1500" viewBox="0 0 1620 1500">
+<rect width="1620" height="1500" fill="#f5f7fb"/>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L9,5 L0,10" fill="none" stroke="#475569"/></marker><marker id="triangle" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto"><path d="M0,0 L13,7 L0,14 Z" fill="white" stroke="#475569"/></marker></defs>
+<style>text{font-family:Segoe UI,sans-serif;fill:#172033}.row{font-family:Consolas,monospace;font-size:13px}.title{font-weight:700}</style>
+<text class="title" x="40" y="46" font-size="28">NÁCAR · Integración con Mercado Pago</text>
+<text x="40" y="78" font-size="16">Diagrama UML de contratos, módulos y objetos · Implementación actual · 22/10/2026</text>
+<text x="40" y="108" font-size="14">React → Axios → rutas Express /api/pagos/:id → lógica de pagos → adaptador → API Mercado Pago</text>
+<rect x="40" y="140" width="340" height="198" rx="6" fill="white" stroke="#94a3b8"/>
+<rect x="40" y="140" width="340" height="68" fill="#244769"/>
+<text x="52" y="163" font-size="12" style="fill:white">«componente funcional»</text>
+<text class="title" x="52" y="190" font-size="19" style="fill:white">PaymentDialog</text>
+<text class="row" x="52" y="234">order: Order</text>
+<text class="row" x="52" y="262">payment: Payment | null</text>
+<text class="row" x="52" y="290">+refresh()</text>
+<text class="row" x="52" y="318">+run(action)</text>
+<rect x="440" y="140" width="340" height="198" rx="6" fill="white" stroke="#94a3b8"/>
+<rect x="440" y="140" width="340" height="68" fill="#244769"/>
+<text x="452" y="163" font-size="12" style="fill:white">«módulo · apiAccess.ts»</text>
+<text class="title" x="452" y="190" font-size="19" style="fill:white">ApiAccess</text>
+<text class="row" x="452" y="234">+iniciarPago(id)</text>
+<text class="row" x="452" y="262">+obtenerPago(id)</text>
+<text class="row" x="452" y="290">+cancelarPago(id)</text>
+<text class="row" x="452" y="318">+reembolsarPago(id)</text>
+<rect x="840" y="140" width="340" height="226" rx="6" fill="white" stroke="#94a3b8"/>
+<rect x="840" y="140" width="340" height="68" fill="#244769"/>
+<text x="852" y="163" font-size="12" style="fill:white">«módulo · pagos.js»</text>
+<text class="title" x="852" y="190" font-size="19" style="fill:white">Pagos</text>
+<text class="row" x="852" y="234">+iniciarPago(id, proveedor)</text>
+<text class="row" x="852" y="262">+consultarPago(id)</text>
+<text class="row" x="852" y="290">+cancelarPago(id, actor)</text>
+<text class="row" x="852" y="318">+reembolsarPago(id, actor)</text>
+<text class="row" x="852" y="346">+exigirPago(conexion, pedido)</text>
+<rect x="1240" y="140" width="340" height="170" rx="6" fill="white" stroke="#94a3b8"/>
+<rect x="1240" y="140" width="340" height="68" fill="#244769"/>
+<text x="1252" y="163" font-size="12" style="fill:white">«módulo · pasarelas.js»</text>
+<text class="title" x="1252" y="190" font-size="19" style="fill:white">RegistroPasarelas</text>
+<text class="row" x="1252" y="234">proveedores: Map</text>
+<text class="row" x="1252" y="262">+registrarPasarela(codigo, adaptador)</text>
+<text class="row" x="1252" y="290">+obtenerPasarela(codigo)</text>
+<rect x="40" y="500" width="340" height="198" rx="6" fill="white" stroke="#94a3b8"/>
+<rect x="40" y="500" width="340" height="68" fill="#244769"/>
+<text x="52" y="523" font-size="12" style="fill:white">«componente funcional»</text>
+<text class="title" x="52" y="550" font-size="19" style="fill:white">PaymentShare</text>
+<text class="row" x="52" y="594">url: string</text>
+<text class="row" x="52" y="622">orderId: string</text>
+<text class="row" x="52" y="650">QR y enlace para el cliente</text>
+<text class="row" x="52" y="678">Portapapeles: enlace público</text>
+<rect x="440" y="500" width="340" height="170" rx="6" fill="white" stroke="#94a3b8"/>
+<rect x="440" y="500" width="340" height="68" fill="#0f766e"/>
+<text x="452" y="523" font-size="12" style="fill:white">«objeto SQL · pedidos»</text>
+<text class="title" x="452" y="550" font-size="19" style="fill:white">Pedido</text>
+<text class="row" x="452" y="594">id_pedidos: INT (PK)</text>
+<text class="row" x="452" y="622">estado: VARCHAR(30)</text>
+<text class="row" x="452" y="650">pago_requerido: TINYINT(1)</text>
+<rect x="840" y="500" width="340" height="366" rx="6" fill="white" stroke="#94a3b8"/>
+<rect x="840" y="500" width="340" height="68" fill="#0f766e"/>
+<text x="852" y="523" font-size="12" style="fill:white">«objeto SQL · pagos»</text>
+<text class="title" x="852" y="550" font-size="19" style="fill:white">Pago</text>
+<text class="row" x="852" y="594">id_pago: CHAR(36) (PK)</text>
+<text class="row" x="852" y="622">id_pedido: INT (FK, UNIQUE)</text>
+<text class="row" x="852" y="650">proveedor: VARCHAR(40)</text>
+<text class="row" x="852" y="678">estado: VARCHAR(20)</text>
+<text class="row" x="852" y="706">importe: DECIMAL(12,2)</text>
+<text class="row" x="852" y="734">moneda: CHAR(3)</text>
+<text class="row" x="852" y="762">preferencia_id: VARCHAR(200)</text>
+<text class="row" x="852" y="790">checkout_url: VARCHAR(2048)</text>
+<text class="row" x="852" y="818">referencia_pasarela: VARCHAR(100)</text>
+<text class="row" x="852" y="846">reembolso_id: VARCHAR(100)</text>
+<rect x="1240" y="500" width="340" height="226" rx="6" fill="white" stroke="#94a3b8"/>
+<rect x="1240" y="500" width="340" height="68" fill="#6d28d9"/>
+<text x="1252" y="523" font-size="12" style="fill:white">«contrato estructural»</text>
+<text class="title" x="1252" y="550" font-size="19" style="fill:white">PasarelaPago</text>
+<text class="row" x="1252" y="594">+preparar?()</text>
+<text class="row" x="1252" y="622">+crear(pago)</text>
+<text class="row" x="1252" y="650">+consultar(pago)</text>
+<text class="row" x="1252" y="678">+cancelar(pago)</text>
+<text class="row" x="1252" y="706">+reembolsar(pago)</text>
+<rect x="40" y="1040" width="340" height="170" rx="6" fill="white" stroke="#94a3b8"/>
+<rect x="40" y="1040" width="340" height="68" fill="#244769"/>
+<text x="52" y="1063" font-size="12" style="fill:white">«objeto devuelto por crear()»</text>
+<text class="title" x="52" y="1090" font-size="19" style="fill:white">CheckoutPublico</text>
+<text class="row" x="52" y="1134">preferencia_id: string</text>
+<text class="row" x="52" y="1162">checkout_url: string</text>
+<text class="row" x="52" y="1190">Cliente paga fuera de NÁCAR</text>
+<rect x="440" y="1040" width="340" height="170" rx="6" fill="white" stroke="#94a3b8"/>
+<rect x="440" y="1040" width="340" height="68" fill="#244769"/>
+<text x="452" y="1063" font-size="12" style="fill:white">«módulo · pagoQr.ts»</text>
+<text class="title" x="452" y="1090" font-size="19" style="fill:white">PagoQr</text>
+<text class="row" x="452" y="1134">+crearQrPago(enlace)</text>
+<text class="row" x="452" y="1162">Devuelve PNG como data URL</text>
+<text class="row" x="452" y="1190">Codifica solo el checkout HTTPS</text>
+<rect x="840" y="1040" width="340" height="254" rx="6" fill="white" stroke="#94a3b8"/>
+<rect x="840" y="1040" width="340" height="68" fill="#244769"/>
+<text x="852" y="1063" font-size="12" style="fill:white">«servicio externo HTTPS»</text>
+<text class="title" x="852" y="1090" font-size="19" style="fill:white">MercadoPagoAPI</text>
+<text class="row" x="852" y="1134">GET /users/me</text>
+<text class="row" x="852" y="1162">POST /checkout/preferences</text>
+<text class="row" x="852" y="1190">GET /v1/payments/search</text>
+<text class="row" x="852" y="1218">PUT /checkout/preferences/{id}</text>
+<text class="row" x="852" y="1246">PUT /v1/payments/{id}</text>
+<text class="row" x="852" y="1274">POST /v1/payments/{id}/refunds</text>
+<rect x="1240" y="1040" width="340" height="254" rx="6" fill="white" stroke="#94a3b8"/>
+<rect x="1240" y="1040" width="340" height="68" fill="#244769"/>
+<text x="1252" y="1063" font-size="12" style="fill:white">«objeto registrado · mercadopago»</text>
+<text class="title" x="1252" y="1090" font-size="19" style="fill:white">AdaptadorMercadoPago</text>
+<text class="row" x="1252" y="1134">nombre: string</text>
+<text class="row" x="1252" y="1162">+preparar()</text>
+<text class="row" x="1252" y="1190">+crear(pago)</text>
+<text class="row" x="1252" y="1218">+consultar(pago)</text>
+<text class="row" x="1252" y="1246">+cancelar(pago)</text>
+<text class="row" x="1252" y="1274">+reembolsar(pago)</text>
+<polyline points="380,250 440,250" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+<text x="393" y="236" font-size="12">usa</text>
+<polyline points="780,250 840,250" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+<text x="788" y="236" font-size="12">HTTP</text>
+<polyline points="1180,250 1240,250" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+<text x="1190" y="236" font-size="12">elige</text>
+<polyline points="210,338 210,500" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+<text x="222" y="430" font-size="12">muestra</text>
+<polyline points="1010,366 1010,500" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+<text x="1022" y="444" font-size="12">guarda / consulta</text>
+<polyline points="900,366 900,420 610,420 610,500" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+<text x="650" y="408" font-size="12">valida estado</text>
+<polyline points="1410,310 1410,500" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+<text x="1422" y="420" font-size="12">devuelve contrato</text>
+<polyline points="780,620 840,620" fill="none" stroke="#475569" stroke-width="2"/>
+<text x="782" y="605" font-size="12">1       0..1</text>
+<polyline points="210,698 210,1040" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+<text x="222" y="900" font-size="12">comparte URL</text>
+<polyline points="380,620 410,620 410,1140 440,1140" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+<text x="420" y="960" font-size="12">genera QR</text>
+<polyline points="1410,1040 1410,726" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#triangle)"/>
+<text x="1422" y="900" font-size="12">implementa</text>
+<polyline points="1240,1160 1180,1160" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+<text x="1185" y="1146" font-size="12">HTTPS</text>
+<text x="40" y="1360" font-size="14">Los rectángulos con «módulo» o «componente» representan funciones reales; el código no declara clases JavaScript.</text>
+<text x="40" y="1386" font-size="14">PasarelaPago es un contrato estructural documentado: el registro permite agregar adaptadores sin reescribir pedidos.</text>
+<text x="40" y="1412" font-size="14">Pedido y Pago son objetos del modelo relacional (atributos principales). Relación: un pedido tiene cero o un pago.</text>
+<text x="40" y="1438" font-size="14">El QR y el enlace abren el checkout público del pedido en el celular del cliente; no comparten la sesión del administrador.</text>
+<text x="40" y="1464" font-size="14">NÁCAR confirma el pago consultando la API; cancelación previa al despacho solicita devolución con clave idempotente.</text>
+</svg>

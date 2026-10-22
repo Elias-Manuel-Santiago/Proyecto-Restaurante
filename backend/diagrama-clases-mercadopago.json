@@ -1,0 +1,435 @@
+{
+  "width": 1620,
+  "height": 1500,
+  "tables": {
+    "PaymentDialog": {
+      "x": 40,
+      "y": 140,
+      "w": 340,
+      "h": 198,
+      "kind": "componente funcional",
+      "rows": [
+        "order: Order",
+        "payment: Payment | null",
+        "+refresh()",
+        "+run(action)"
+      ]
+    },
+    "ApiAccess": {
+      "x": 440,
+      "y": 140,
+      "w": 340,
+      "h": 198,
+      "kind": "módulo · apiAccess.ts",
+      "rows": [
+        "+iniciarPago(id)",
+        "+obtenerPago(id)",
+        "+cancelarPago(id)",
+        "+reembolsarPago(id)"
+      ]
+    },
+    "Pagos": {
+      "x": 840,
+      "y": 140,
+      "w": 340,
+      "h": 226,
+      "kind": "módulo · pagos.js",
+      "rows": [
+        "+iniciarPago(id, proveedor)",
+        "+consultarPago(id)",
+        "+cancelarPago(id, actor)",
+        "+reembolsarPago(id, actor)",
+        "+exigirPago(conexion, pedido)"
+      ]
+    },
+    "RegistroPasarelas": {
+      "x": 1240,
+      "y": 140,
+      "w": 340,
+      "h": 170,
+      "kind": "módulo · pasarelas.js",
+      "rows": [
+        "proveedores: Map",
+        "+registrarPasarela(codigo, adaptador)",
+        "+obtenerPasarela(codigo)"
+      ]
+    },
+    "PaymentShare": {
+      "x": 40,
+      "y": 500,
+      "w": 340,
+      "h": 198,
+      "kind": "componente funcional",
+      "rows": [
+        "url: string",
+        "orderId: string",
+        "QR y enlace para el cliente",
+        "Portapapeles: enlace público"
+      ]
+    },
+    "Pedido": {
+      "x": 440,
+      "y": 500,
+      "w": 340,
+      "h": 170,
+      "kind": "objeto SQL · pedidos",
+      "rows": [
+        "id_pedidos: INT (PK)",
+        "estado: VARCHAR(30)",
+        "pago_requerido: TINYINT(1)"
+      ]
+    },
+    "Pago": {
+      "x": 840,
+      "y": 500,
+      "w": 340,
+      "h": 366,
+      "kind": "objeto SQL · pagos",
+      "rows": [
+        "id_pago: CHAR(36) (PK)",
+        "id_pedido: INT (FK, UNIQUE)",
+        "proveedor: VARCHAR(40)",
+        "estado: VARCHAR(20)",
+        "importe: DECIMAL(12,2)",
+        "moneda: CHAR(3)",
+        "preferencia_id: VARCHAR(200)",
+        "checkout_url: VARCHAR(2048)",
+        "referencia_pasarela: VARCHAR(100)",
+        "reembolso_id: VARCHAR(100)"
+      ]
+    },
+    "PasarelaPago": {
+      "x": 1240,
+      "y": 500,
+      "w": 340,
+      "h": 226,
+      "kind": "contrato estructural",
+      "rows": [
+        "+preparar?()",
+        "+crear(pago)",
+        "+consultar(pago)",
+        "+cancelar(pago)",
+        "+reembolsar(pago)"
+      ]
+    },
+    "CheckoutPublico": {
+      "x": 40,
+      "y": 1040,
+      "w": 340,
+      "h": 170,
+      "kind": "objeto devuelto por crear()",
+      "rows": [
+        "preferencia_id: string",
+        "checkout_url: string",
+        "Cliente paga fuera de NÁCAR"
+      ]
+    },
+    "PagoQr": {
+      "x": 440,
+      "y": 1040,
+      "w": 340,
+      "h": 170,
+      "kind": "módulo · pagoQr.ts",
+      "rows": [
+        "+crearQrPago(enlace)",
+        "Devuelve PNG como data URL",
+        "Codifica solo el checkout HTTPS"
+      ]
+    },
+    "MercadoPagoAPI": {
+      "x": 840,
+      "y": 1040,
+      "w": 340,
+      "h": 254,
+      "kind": "servicio externo HTTPS",
+      "rows": [
+        "GET /users/me",
+        "POST /checkout/preferences",
+        "GET /v1/payments/search",
+        "PUT /checkout/preferences/{id}",
+        "PUT /v1/payments/{id}",
+        "POST /v1/payments/{id}/refunds"
+      ]
+    },
+    "AdaptadorMercadoPago": {
+      "x": 1240,
+      "y": 1040,
+      "w": 340,
+      "h": 254,
+      "kind": "objeto registrado · mercadopago",
+      "rows": [
+        "nombre: string",
+        "+preparar()",
+        "+crear(pago)",
+        "+consultar(pago)",
+        "+cancelar(pago)",
+        "+reembolsar(pago)"
+      ]
+    }
+  },
+  "edges": [
+    [
+      "PaymentDialog",
+      "ApiAccess",
+      "usa",
+      [
+        [
+          380,
+          250
+        ],
+        [
+          440,
+          250
+        ]
+      ],
+      [
+        393,
+        236
+      ],
+      "use"
+    ],
+    [
+      "ApiAccess",
+      "Pagos",
+      "HTTP",
+      [
+        [
+          780,
+          250
+        ],
+        [
+          840,
+          250
+        ]
+      ],
+      [
+        788,
+        236
+      ],
+      "use"
+    ],
+    [
+      "Pagos",
+      "RegistroPasarelas",
+      "elige",
+      [
+        [
+          1180,
+          250
+        ],
+        [
+          1240,
+          250
+        ]
+      ],
+      [
+        1190,
+        236
+      ],
+      "use"
+    ],
+    [
+      "PaymentDialog",
+      "PaymentShare",
+      "muestra",
+      [
+        [
+          210,
+          338
+        ],
+        [
+          210,
+          500
+        ]
+      ],
+      [
+        222,
+        430
+      ],
+      "use"
+    ],
+    [
+      "Pagos",
+      "Pago",
+      "guarda / consulta",
+      [
+        [
+          1010,
+          366
+        ],
+        [
+          1010,
+          500
+        ]
+      ],
+      [
+        1022,
+        444
+      ],
+      "use"
+    ],
+    [
+      "Pagos",
+      "Pedido",
+      "valida estado",
+      [
+        [
+          900,
+          366
+        ],
+        [
+          900,
+          420
+        ],
+        [
+          610,
+          420
+        ],
+        [
+          610,
+          500
+        ]
+      ],
+      [
+        650,
+        408
+      ],
+      "use"
+    ],
+    [
+      "RegistroPasarelas",
+      "PasarelaPago",
+      "devuelve contrato",
+      [
+        [
+          1410,
+          310
+        ],
+        [
+          1410,
+          500
+        ]
+      ],
+      [
+        1422,
+        420
+      ],
+      "use"
+    ],
+    [
+      "Pedido",
+      "Pago",
+      "1       0..1",
+      [
+        [
+          780,
+          620
+        ],
+        [
+          840,
+          620
+        ]
+      ],
+      [
+        782,
+        605
+      ],
+      "association"
+    ],
+    [
+      "PaymentShare",
+      "CheckoutPublico",
+      "comparte URL",
+      [
+        [
+          210,
+          698
+        ],
+        [
+          210,
+          1040
+        ]
+      ],
+      [
+        222,
+        900
+      ],
+      "use"
+    ],
+    [
+      "PaymentShare",
+      "PagoQr",
+      "genera QR",
+      [
+        [
+          380,
+          620
+        ],
+        [
+          410,
+          620
+        ],
+        [
+          410,
+          1140
+        ],
+        [
+          440,
+          1140
+        ]
+      ],
+      [
+        420,
+        960
+      ],
+      "use"
+    ],
+    [
+      "AdaptadorMercadoPago",
+      "PasarelaPago",
+      "implementa",
+      [
+        [
+          1410,
+          1040
+        ],
+        [
+          1410,
+          726
+        ]
+      ],
+      [
+        1422,
+        900
+      ],
+      "implements"
+    ],
+    [
+      "AdaptadorMercadoPago",
+      "MercadoPagoAPI",
+      "HTTPS",
+      [
+        [
+          1240,
+          1160
+        ],
+        [
+          1180,
+          1160
+        ]
+      ],
+      [
+        1185,
+        1146
+      ],
+      "use"
+    ]
+  ],
+  "notes": [
+    "Los rectángulos con «módulo» o «componente» representan funciones reales; el código no declara clases JavaScript.",
+    "PasarelaPago es un contrato estructural documentado: el registro permite agregar adaptadores sin reescribir pedidos.",
+    "Pedido y Pago son objetos del modelo relacional (atributos principales). Relación: un pedido tiene cero o un pago.",
+    "El QR y el enlace abren el checkout público del pedido en el celular del cliente; no comparten la sesión del administrador.",
+    "NÁCAR confirma el pago consultando la API; cancelación previa al despacho solicita devolución con clave idempotente."
+  ]
+}
