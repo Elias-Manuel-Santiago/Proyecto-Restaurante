@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { roleLabels, type AppRoute } from '../types'
-import { roleRoutes } from '../state/model'
+import { homeRoute, roleRoutes } from '../state/model'
 import { useRestaurant } from '../state/useRestaurant'
 import { Icon } from './Icon'
 
@@ -16,6 +16,7 @@ const navigation: {
   { route: '/pedidos', label: 'Pedidos', icon: 'pedidos' },
   { route: '/historial', label: 'Historial', icon: 'historial' },
   { route: '/usuarios', label: 'Equipo', icon: 'usuarios' },
+  { route: '/reparto', label: 'Mis entregas', icon: 'repartidor' },
 ]
 export function AppHeader({
   currentRoute,
@@ -38,15 +39,7 @@ export function AppHeader({
       <div className="header-inner">
         <button
           className="brand"
-          onClick={() =>
-            navigate(
-              session.role === 'chef'
-                ? '/cocina'
-                : session.role === 'admin'
-                  ? '/admin'
-                  : '/mesas',
-            )
-          }
+          onClick={() => navigate(homeRoute(session.role))}
           aria-label="Ir al inicio"
         >
           <span className="brand-mark">N</span>

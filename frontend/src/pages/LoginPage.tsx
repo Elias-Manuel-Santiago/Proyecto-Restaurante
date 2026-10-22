@@ -4,11 +4,12 @@ import { useRestaurant } from '../state/useRestaurant'
 import { Icon } from '../components/Icon'
 import { PasswordInput } from '../components/PasswordInput'
 
-const roles: Role[] = ['mozo', 'chef', 'admin']
+const roles: Role[] = ['mozo', 'chef', 'admin', 'repartidor']
 const roleDescriptions: Record<Role, string> = {
   mozo: 'Mesas, pedidos y entrega',
   chef: 'Comandas y disponibilidad',
   admin: 'Resumen, carta y equipo',
+  repartidor: 'Vista de entregas y demostración',
 }
 
 export function LoginPage({ onLogin }: { onLogin: (role: Role) => string }) {
@@ -181,7 +182,9 @@ export function LoginPage({ onLogin }: { onLogin: (role: Role) => string }) {
                         ? 'mesas'
                         : role === 'chef'
                           ? 'cocina'
-                          : 'admin'
+                          : role === 'repartidor'
+                            ? 'repartidor'
+                            : 'admin'
                     }
                   />
                   <span>

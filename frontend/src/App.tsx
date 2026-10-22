@@ -8,10 +8,11 @@ import { TablesPage } from './pages/TablesPage'
 import { KitchenPage } from './pages/KitchenPage'
 import { AdminPage } from './pages/AdminPage'
 import { UsersPage } from './pages/UsersPage'
+import { CourierPage } from './pages/CourierPage'
 import { useRestaurant } from './state/useRestaurant'
 import { restaurantStore } from './state/store'
 import { suscribirPrioridadPedidos } from './services/apiAccess'
-import { roleRoutes } from './state/model'
+import { homeRoute, roleRoutes } from './state/model'
 import type { AppRoute } from './types'
 import './App.css'
 
@@ -19,12 +20,7 @@ function App() {
   const { session, warning, loading, busy, error } = useRestaurant()
   const [path, setPath] = useState(() => window.location.pathname)
   const [routeNotice, setRouteNotice] = useState('')
-  const home: AppRoute =
-    session?.role === 'chef'
-      ? '/cocina'
-      : session?.role === 'admin'
-        ? '/admin'
-        : '/mesas'
+  const home = homeRoute(session?.role)
   const allowed = session ? roleRoutes[session.role].includes(path) : false
   const route = allowed ? (path as AppRoute) : home
   useEffect(() => {
@@ -41,7 +37,7 @@ function App() {
       window.history.replaceState({}, '', target)
   }, [session, route])
   useEffect(() => {
-    if (!session) return
+    if (!session || session.role === 'repartidor') return
     void restaurantStore.refresh()
     const unsubscribe = suscribirPrioridadPedidos(() => {
       void restaurantStore.refreshAfterEvent()
@@ -75,13 +71,7 @@ function App() {
           const message = restaurantStore.login(role)
           if (!message) {
             const user = restaurantStore.getSnapshot().session
-            setPath(
-              user?.role === 'chef'
-                ? '/cocina'
-                : user?.role === 'admin'
-                  ? '/admin'
-                  : '/mesas',
-            )
+            setPath(homeRoute(user?.role))
             setRouteNotice('')
           }
           return message
@@ -110,13 +100,19 @@ function App() {
         <div className="workspace-context">
           <span>
             NÁCAR /{' '}
-            {session.role === 'chef'
-              ? 'Cocina'
-              : session.role === 'admin'
-                ? 'Administración'
-                : 'Salón'}
+            {session.role === 'repartidor'
+              ? 'Reparto'
+              : session.role === 'chef'
+                ? 'Cocina'
+                : session.role === 'admin'
+                  ? 'Administración'
+                  : 'Salón'}
           </span>
-          <span>Datos del servidor · Usuarios locales</span>
+          <span>
+            {route === '/reparto'
+              ? 'Vista de reparto · Usuarios locales'
+              : 'Datos del servidor · Usuarios locales'}
+          </span>
         </div>
         {warning && (
           <p className="warning" role="alert">
@@ -124,21 +120,27 @@ function App() {
           </p>
         )}
         {routeNotice && <p role="alert">{routeNotice}</p>}
-        <div className="actions">
-          <button
-            className="secondary-button"
-            disabled={busy || loading}
-            onClick={() => void restaurantStore.refresh()}
-          >
-            Actualizar datos
-          </button>
-          {loading && <span role="status">Cargando datos…</span>}
-          {busy && <span role="status">Guardando…</span>}
-        </div>
-        <ErrorMessage error={error} />
+        {route !== '/reparto' && (
+          <>
+            <div className="actions">
+              <button
+                className="secondary-button"
+                disabled={busy || loading}
+                onClick={() => void restaurantStore.refresh()}
+              >
+                Actualizar datos
+              </button>
+              {loading && <span role="status">Cargando datos…</span>}
+              {busy && <span role="status">Guardando…</span>}
+            </div>
+            <ErrorMessage error={error} />
+          </>
+        )}
         <fieldset
           className="workspace-fieldset"
-          disabled={route !== '/usuarios' && (busy || loading)}
+          disabled={
+            route !== '/usuarios' && route !== '/reparto' && (busy || loading)
+          }
         >
           {route === '/mesas' && <TablesPage />}
           {route === '/menu' && <MenuPage />}
@@ -147,6 +149,7 @@ function App() {
           {route === '/cocina' && <KitchenPage />}
           {route === '/admin' && <AdminPage onNavigate={navigate} />}
           {route === '/usuarios' && <UsersPage />}
+          {route === '/reparto' && <CourierPage />}
         </fieldset>
       </main>
       <footer className="app-footer">

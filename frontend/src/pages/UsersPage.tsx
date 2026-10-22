@@ -282,7 +282,7 @@ export function UsersPage() {
       <section className="page-intro">
         <div>
           <span className="eyebrow">Equipo · Accesos de demostración</span>
-          <h1>Un equipo, tres miradas</h1>
+          <h1>Un equipo, distintas miradas</h1>
           <p>
             Gestioná perfiles y datos ficticios. El acceso demo reutiliza el
             primer perfil habilitado del rol y no comprueba contraseñas.
