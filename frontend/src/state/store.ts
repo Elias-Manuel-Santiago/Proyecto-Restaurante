@@ -61,12 +61,18 @@ function persist(data: RestaurantData): string {
 }
 
 type RemoteAction =
+  | {
+      type: 'createDelivery'
+      delivery: import('../types/delivery').DeliveryDraft
+      items: import('../types').DraftItem[]
+    }
   | Exclude<Action, { type: 'saveUser' | 'deleteUser' }>
   | { type: 'editOrder'; id: string; items: import('../types').DraftItem[] }
   | { type: 'createSummary'; summary: api.ResumenParametros }
   | { type: 'deleteSummary'; id: number }
   | { type: 'reorderOrder'; id: string; targetId: string; before: boolean }
 const allowed: Record<RemoteAction['type'], Role[]> = {
+  createDelivery: ['mozo', 'admin'],
   openTable: ['mozo', 'admin'],
   closeTable: ['mozo', 'admin'],
   createOrder: ['mozo'],
@@ -93,7 +99,7 @@ export const restaurantStore = {
   },
   /** Recarga datos reales; no hay fallback a mocks si la API falla. */
   async refresh(background = false): Promise<Error | null> {
-    // La vista de reparto aún no tiene API: no consulta recursos del salón.
+    // El repartidor consulta sus envíos a través del hook específico.
     if (snapshot.session?.role === 'repartidor') return null
     if (refreshing) return refreshing
     refreshing = (async () => {
@@ -160,6 +166,18 @@ export const restaurantStore = {
         throw new Error('Este cambio corresponde a otro rol.')
       let result
       switch (action.type) {
+        case 'createDelivery':
+          result = await api.cargarEnvio({
+            ...action.delivery,
+            mozo_id: actor.id,
+            mozo_nombre: actor.name,
+            comidas: action.items.map((item) => ({
+              id_comida: Number(item.dishId),
+              cantidad: item.quantity,
+              notas: item.notes,
+            })),
+          })
+          break
         case 'reorderOrder':
           result = await api.moverPrioridadPedido(
             action.id,

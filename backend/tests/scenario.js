@@ -3,6 +3,7 @@ import { spawn } from "node:child_process";
 import db from "../modules/db.js";
 import { migrar } from "../modules/migrate.js";
 import { app } from "../app.js";
+import { probarRepartos } from "./repartos-scenario.js";
 
 assert.match(process.env.DB_DATABASE, /^codex_restaurante_test_[a-f0-9]+$/);
 await migrar();
@@ -154,6 +155,7 @@ try {
     proceso.on("exit", resolve);
   });
   assert.equal(frontendCode, 0, "El frontend debe operar contra la API real");
+  await probarRepartos(request, db);
   const preflight = await fetch(base + "/pedidos/1/estado", {
     method: "OPTIONS",
   });

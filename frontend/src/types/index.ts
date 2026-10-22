@@ -62,6 +62,8 @@ export interface StatusEvent {
 }
 export interface Order {
   id: string
+  kind?: 'mesa' | 'delivery'
+  deliveryStatus?: string
   priority?: number | null
   tableId: string
   tableNumber: number

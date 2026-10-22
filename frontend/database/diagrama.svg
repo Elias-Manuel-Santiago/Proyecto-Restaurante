@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1630" height="1550" viewBox="0 0 1630 1550">
-<rect width="1630" height="1550" fill="#f1f5f9"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1630" height="1650" viewBox="0 0 1630 1650">
+<rect width="1630" height="1650" fill="#f1f5f9"/>
 <style>text{font-family:Consolas,monospace;fill:#172033}.row{font-size:13px}.title{font-family:Segoe UI,sans-serif;font-weight:700}</style>
 <text class="title" x="40" y="42" font-size="27">NÁCAR · Modelo de base de datos</text>
-<text x="40" y="72" font-size="14">MariaDB 10.4+ / MySQL 8.0.16+ · 11 tablas · PK: primaria · FK: foránea · ?: nullable</text>
+<text x="40" y="72" font-size="14">MariaDB 10.4+ / MySQL 8.0.16+ · 12 tablas · PK: primaria · FK: foránea · ?: nullable</text>
 <rect x="40" y="670" width="350" height="244" rx="6" fill="white" stroke="#94a3b8"/>
 <path d="M46,670 H384 Q390,670 390,676 V710 H40 V676 Q40,670 46,670" fill="#6d28d9"/>
 <text class="title" x="54" y="697" font-size="18" style="fill:white">usuarios</text>
@@ -47,7 +47,7 @@
 <path d="M446,110 H784 Q790,110 790,116 V150 H440 V116 Q440,110 446,110" fill="#0f766e"/>
 <text class="title" x="454" y="137" font-size="18" style="fill:white">pedidos</text>
 <text class="row" x="452" y="172">PK    id_pedidos: INT</text>
-<text class="row" x="452" y="200">FK    id_mesa: INT</text>
+<text class="row" x="452" y="200">FK    id_mesa: INT ?</text>
 <text class="row" x="452" y="228">FK    id_mesero: INT ?</text>
 <text class="row" x="452" y="256">·     estado: VARCHAR(30)</text>
 <text class="row" x="452" y="284">·     numero_mesa: INT ?</text>
@@ -97,6 +97,20 @@
 <text class="title" x="854" y="1177" font-size="18" style="fill:white">comida_stock</text>
 <text class="row" x="852" y="1212">PK/FK id_comida: INT</text>
 <text class="row" x="852" y="1240">PK/FK id_stock: INT</text>
+<rect x="1240" y="1150" width="350" height="300" rx="6" fill="white" stroke="#94a3b8"/>
+<path d="M1246,1150 H1584 Q1590,1150 1590,1156 V1190 H1240 V1156 Q1240,1150 1246,1150" fill="#0f766e"/>
+<text class="title" x="1254" y="1177" font-size="18" style="fill:white">envios</text>
+<text class="row" x="1252" y="1212">PK/FK id_pedido: INT</text>
+<text class="row" x="1252" y="1240">·     destinatario: VARCHAR(100)</text>
+<text class="row" x="1252" y="1268">·     direccion: VARCHAR(300)</text>
+<text class="row" x="1252" y="1296">·     indicaciones: VARCHAR(300)</text>
+<text class="row" x="1252" y="1324">·     repartidor_id: VARCHAR(200)</text>
+<text class="row" x="1252" y="1352">·     repartidor_nombre: VARCHAR(80)</text>
+<text class="row" x="1252" y="1380">·     estado: VARCHAR(20)</text>
+<text class="row" x="1252" y="1408">·     retirado_en: DATETIME(3) ?</text>
+<text class="row" x="1252" y="1436">·     entregado_en: DATETIME(3) ?</text>
+<polyline points="790,400 815,400 815,1115 1415,1115 1415,1150" fill="none" stroke="#475569" stroke-width="2"/>
+<text x="850" y="1102" font-size="11">pedido 1 : 0..1 envio</text>
 <polyline points="390,235 440,235" fill="none" stroke="#475569" stroke-width="2"/>
 <text x="398" y="222" font-size="9">1 : 0..N</text>
 <polyline points="790,235 840,235" fill="none" stroke="#475569" stroke-width="2"/>
@@ -117,8 +131,8 @@
 <text x="798" y="1212" font-size="9">1 : 0..N</text>
 <polyline points="1415,382 1610,382 1610,1080 1015,1080 1015,1150" fill="none" stroke="#475569" stroke-width="2"/>
 <text x="1220" y="1065" font-size="11">comidas 1 : 0..N comida_stock</text>
-<text x="40" y="1440" font-size="14">Violeta: acceso futuro. id_mesero admite NULL; mozo_id y mozo_nombre describen al perfil local.</text>
-<text x="40" y="1467" font-size="14">Nombre y precio del ítem se guardan al pedir. imagen se conserva vacía por compatibilidad con la API.</text>
-<text x="40" y="1494" font-size="14">Cada vínculo une un padre con cero o muchos hijos. El detalle y sus restricciones están en restaurante.sql.</text>
-<text x="40" y="1521" font-size="14">Inventario: composición del plato. La cantidad de insumo por plato queda pendiente de aprobación.</text>
+<text x="40" y="1540" font-size="14">Violeta: acceso futuro. id_mesero admite NULL; mozo_id y mozo_nombre describen al perfil local.</text>
+<text x="40" y="1567" font-size="14">Nombre y precio del ítem se guardan al pedir. imagen se conserva vacía por compatibilidad con la API.</text>
+<text x="40" y="1594" font-size="14">Cada vínculo une un padre con cero o muchos hijos. El detalle y sus restricciones están en restaurante.sql.</text>
+<text x="40" y="1621" font-size="14">Inventario: composición del plato. La cantidad de insumo por plato queda pendiente de aprobación.</text>
 </svg>

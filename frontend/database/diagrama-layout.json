@@ -67,7 +67,7 @@
       "h": 328,
       "rows": [
         "PK    id_pedidos: INT",
-        "FK    id_mesa: INT",
+        "FK    id_mesa: INT ?",
         "FK    id_mesero: INT ?",
         "·     estado: VARCHAR(30)",
         "·     numero_mesa: INT ?",
@@ -142,9 +142,39 @@
       "w": 350,
       "h": 104,
       "rows": ["PK/FK id_comida: INT", "PK/FK id_stock: INT"]
+    },
+    "envios": {
+      "x": 1240,
+      "y": 1150,
+      "w": 350,
+      "h": 300,
+      "rows": [
+        "PK/FK id_pedido: INT",
+        "·     destinatario: VARCHAR(100)",
+        "·     direccion: VARCHAR(300)",
+        "·     indicaciones: VARCHAR(300)",
+        "·     repartidor_id: VARCHAR(200)",
+        "·     repartidor_nombre: VARCHAR(80)",
+        "·     estado: VARCHAR(20)",
+        "·     retirado_en: DATETIME(3) ?",
+        "·     entregado_en: DATETIME(3) ?"
+      ]
     }
   },
   "edges": [
+    [
+      "pedidos",
+      "envios",
+      "pedido 1 : 0..1 envio",
+      [
+        [790, 400],
+        [815, 400],
+        [815, 1115],
+        [1415, 1115],
+        [1415, 1150]
+      ],
+      [850, 1102]
+    ],
     [
       "mesas",
       "pedidos",

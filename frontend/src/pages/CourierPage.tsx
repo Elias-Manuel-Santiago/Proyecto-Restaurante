@@ -2,15 +2,20 @@ import { useState } from 'react'
 import { ConfirmDialog } from '../components/Dialog'
 import { DeliveryCard } from '../components/DeliveryCard'
 import { DeliveryDetail } from '../components/DeliveryDetail'
-import { Icon } from '../components/Icon'
+import { ErrorMessage } from '../components/ErrorMessage'
 import { Stats } from '../components/Stats'
 import { useDeliveries } from '../state/useDeliveries'
 import { deliveryStatusLabels, type DeliveryStatus } from '../types/delivery'
 
-const statuses: DeliveryStatus[] = ['listo', 'en_camino', 'entregado']
+const statuses: DeliveryStatus[] = [
+  'en_cocina',
+  'listo',
+  'en_camino',
+  'entregado',
+]
 
 export function CourierPage() {
-  const { demo, deliveries, startDemo, stopDemo, advance } = useDeliveries()
+  const { deliveries, loading, busy, error, refresh, advance } = useDeliveries()
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState<DeliveryStatus | ''>('')
   const [detailId, setDetailId] = useState<string | null>(null)
@@ -27,186 +32,122 @@ export function CourierPage() {
   )
   const detail = deliveries.find((delivery) => delivery.id === detailId)
   const confirming = deliveries.find((delivery) => delivery.id === confirmId)
-  const resetView = () => {
-    setQuery('')
-    setStatus('')
-    setDetailId(null)
-    setConfirmId(null)
-    setNotice('')
-  }
   return (
-    <div className="courier-workspace">
+    <div className="courier-workspace" aria-busy={loading || busy}>
       <section className="page-intro">
         <div>
           <span className="eyebrow">Reparto · Tus entregas</span>
           <h1>Del restó a la puerta</h1>
           <p>La dirección, el pedido y el próximo paso, siempre a mano.</p>
         </div>
-        <span className="delivery-mode">
-          <Icon name="repartidor" />
-          {demo ? 'Demostración' : 'Conexión pendiente'}
-        </span>
+        <button
+          className="secondary-button"
+          disabled={loading || busy}
+          onClick={() => void refresh()}
+        >
+          Actualizar entregas
+        </button>
       </section>
-      {demo ? (
-        <section className="delivery-banner" aria-label="Modo demostración">
-          <div>
-            <strong>Estás viendo entregas de ejemplo</strong>
-            <p>
-              Los clientes y las direcciones son ficticios. Los cambios solo
-              duran mientras esta vista está abierta.
-            </p>
-          </div>
-          <div className="actions">
-            <button
-              className="secondary-button"
-              onClick={() => {
-                resetView()
-                startDemo()
-              }}
-            >
-              Reiniciar demo
-            </button>
-            <button
-              className="text-button"
-              onClick={() => {
-                resetView()
-                stopDemo()
-              }}
-            >
-              Salir de la demo
-            </button>
-          </div>
-        </section>
-      ) : (
-        <section className="panel delivery-welcome">
-          <span className="delivery-empty-icon">
-            <Icon name="repartidor" />
-          </span>
-          <h2>Tu espacio de reparto está preparado</h2>
-          <p>
-            La conexión de envíos todavía no está disponible. Cuando se
-            habilite, acá vas a poder consultar tus entregas.
-          </p>
-          <button
-            className="primary-button"
-            onClick={() => {
-              resetView()
-              startDemo()
-            }}
-          >
-            Ver demostración
-          </button>
-          <small>
-            Recorré la vista con pedidos ficticios, sin afectar el servicio.
-          </small>
-        </section>
-      )}
-      {demo && (
-        <>
-          <Stats
-            items={statuses.map((value) => ({
-              label: deliveryStatusLabels[value],
-              value: deliveries.filter((delivery) => delivery.status === value)
-                .length,
-            }))}
+      {error && <ErrorMessage error={error} />}
+      <Stats
+        items={statuses.map((value) => ({
+          label: deliveryStatusLabels[value],
+          value: deliveries.filter((delivery) => delivery.status === value)
+            .length,
+        }))}
+      />
+      <div className="toolbar">
+        <label>
+          Buscar entrega
+          <input
+            type="search"
+            placeholder="Pedido, cliente o dirección"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
           />
-          <div className="toolbar">
-            <label>
-              Buscar entrega
-              <input
-                type="search"
-                placeholder="Pedido, cliente o dirección"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-              />
-            </label>
-            <label>
-              Estado
-              <select
-                value={status}
-                onChange={(event) => {
-                  const next = event.target.value
-                  if (!next || statuses.some((value) => value === next))
-                    setStatus(next as DeliveryStatus | '')
-                }}
-              >
-                <option value="">Todos los estados</option>
-                {statuses.map((value) => (
-                  <option key={value} value={value}>
-                    {deliveryStatusLabels[value]}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <button
-              className="text-button"
-              onClick={() => {
-                setQuery('')
-                setStatus('')
-              }}
-            >
-              Limpiar filtros
-            </button>
-          </div>
-          <p
-            className="muted"
-            role="status"
-            id="delivery-results"
-            tabIndex={-1}
+        </label>
+        <label>
+          Estado
+          <select
+            value={status}
+            onChange={(event) =>
+              setStatus(event.target.value as DeliveryStatus | '')
+            }
           >
-            {visible.length}{' '}
-            {visible.length === 1
-              ? 'entrega de ejemplo'
-              : 'entregas de ejemplo'}
-          </p>
-          {notice && (
-            <p className="notice" role="status">
-              {notice}
-            </p>
-          )}
-          <section
-            className="delivery-grid"
-            aria-label="Entregas de demostración"
-          >
-            {visible.map((delivery) => (
-              <DeliveryCard
-                key={delivery.id}
-                delivery={delivery}
-                onDetail={() => setDetailId(delivery.id)}
-                onAdvance={() => setConfirmId(delivery.id)}
-              />
+            <option value="">Todos los estados</option>
+            {statuses.map((value) => (
+              <option key={value} value={value}>
+                {deliveryStatusLabels[value]}
+              </option>
             ))}
-          </section>
-          {!visible.length && (
-            <p className="empty-state large">
-              No hay entregas que coincidan con los filtros.
-            </p>
-          )}
-        </>
+          </select>
+        </label>
+        <button
+          className="text-button"
+          onClick={() => {
+            setQuery('')
+            setStatus('')
+          }}
+        >
+          Limpiar filtros
+        </button>
+      </div>
+      <p className="muted" role="status" id="delivery-results" tabIndex={-1}>
+        {loading
+          ? 'Cargando entregas…'
+          : `${visible.length} ${visible.length === 1 ? 'entrega' : 'entregas'}`}
+      </p>
+      {notice && (
+        <p className="notice" role="status">
+          {notice}
+        </p>
+      )}
+      <section className="delivery-grid" aria-label="Entregas asignadas">
+        {visible.map((delivery) => (
+          <DeliveryCard
+            key={delivery.id}
+            delivery={delivery}
+            onDetail={() => setDetailId(delivery.id)}
+            onAdvance={() => {
+              if (!busy) setConfirmId(delivery.id)
+            }}
+          />
+        ))}
+      </section>
+      {!loading && !error && !visible.length && (
+        <p className="empty-state large">
+          {deliveries.length
+            ? 'No hay entregas que coincidan con los filtros.'
+            : 'No tenés envíos asignados. Aparecerán cuando se registren desde Pedidos.'}
+        </p>
       )}
       {detail && (
         <DeliveryDetail delivery={detail} onClose={() => setDetailId(null)} />
       )}
-      {confirming && confirming.status !== 'entregado' && (
+      {confirming && ['listo', 'en_camino'].includes(confirming.status) && (
         <ConfirmDialog
           title={
             confirming.status === 'listo'
-              ? 'Retirar pedido de ejemplo'
-              : 'Confirmar entrega de ejemplo'
+              ? 'Retirar pedido'
+              : 'Confirmar entrega'
           }
-          description={`${confirming.id} pasará a ${confirming.status === 'listo' ? 'En camino' : 'Entregado'}. Este cambio es solo una demostración.`}
-          onClose={() => setConfirmId(null)}
-          onConfirm={() => {
-            advance(confirming.id)
-            setNotice(
-              `${confirming.id}: ${confirming.status === 'listo' ? 'en camino' : 'entregado'}. Cambio de demostración.`,
-            )
-            setConfirmId(null)
-            window.requestAnimationFrame(() =>
-              document
-                .getElementById('delivery-results')
-                ?.focus({ preventScroll: true }),
-            )
+          description={`Pedido ${confirming.id}: ${confirming.status === 'listo' ? 'confirmá que lo retiraste de cocina' : 'confirmá que llegó a destino'}.`}
+          error={error || undefined}
+          onClose={() => {
+            if (!busy) setConfirmId(null)
+          }}
+          onConfirm={async () => {
+            if (await advance(confirming)) {
+              setNotice(
+                `Pedido ${confirming.id}: ${confirming.status === 'listo' ? 'en camino' : 'entregado'}.`,
+              )
+              setConfirmId(null)
+              window.requestAnimationFrame(() =>
+                document
+                  .getElementById('delivery-results')
+                  ?.focus({ preventScroll: true }),
+              )
+            }
           }}
         />
       )}

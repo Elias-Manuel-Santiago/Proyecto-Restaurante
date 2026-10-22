@@ -1,6 +1,7 @@
 import axios from 'axios'
 import type { AxiosResponse, Method } from 'axios'
 import type { OrderStatus, TableStatus, StatusEvent } from '../types'
+import type { DeliveryDraft, DeliveryRow } from '../types/delivery'
 
 // Contratos del backend Express. MySQL puede devolver DECIMAL como string.
 export interface MesaApi {
@@ -46,9 +47,10 @@ export interface PedidoCreado extends CrearPedidoParametros {
 export interface PedidoFilaApi {
   id_pedidos: number
   prioridad?: number | null
-  id_mesa: number
+  id_mesa: number | null
   estado: OrderStatus
-  numero_mesa: number
+  numero_mesa: number | null
+  envio_estado?: string | null
   servicio_id: string
   mozo_id: string | null
   mozo_nombre: string | null
@@ -83,6 +85,27 @@ interface MensajeApi {
 }
 
 const api = axios.create({ baseURL: import.meta.env.VITE_API_ROUTE || '/api' })
+
+export const obtenerEnvios = (repartidor_id: string) =>
+  consultar<DeliveryRow[]>('POST', '/envios/obtener', { repartidor_id })
+export const cargarEnvio = (
+  envio: DeliveryDraft & {
+    comidas: ComidaPedido[]
+    mozo_id: string
+    mozo_nombre: string
+  },
+) => consultar<{ id_pedido: number }>('POST', '/envios', envio)
+export const actualizarEnvio = (
+  id: string,
+  repartidor_id: string,
+  actor: string,
+  estado: 'en_camino' | 'entregado',
+) =>
+  consultar<MensajeApi>('PATCH', `/envios/${id}/estado`, {
+    repartidor_id,
+    actor,
+    estado,
+  })
 
 /** EventSource reconecta solo; al abrir también recuperamos cambios perdidos. */
 export function suscribirPrioridadPedidos(onChange: () => void) {

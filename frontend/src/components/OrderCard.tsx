@@ -42,7 +42,7 @@ export function OrderCard({
   return (
     <article
       className={`order-card ${compact ? 'order-card--compact' : ''}${summary ? ' order-card--summary' : ''}${kitchen ? ' order-card--kitchen' : ''}`}
-      aria-label={`Pedido #${order.id}, mesa ${order.tableNumber}`}
+      aria-label={`Pedido #${order.id}, ${order.kind === 'delivery' ? 'envío a domicilio' : `mesa ${order.tableNumber}`}`}
     >
       <div className="order-card-top">
         <div>
@@ -53,7 +53,11 @@ export function OrderCard({
           ) : (
             <span className="eyebrow">Pedido #{order.id}</span>
           )}
-          <strong>Mesa {order.tableNumber}</strong>
+          <strong>
+            {order.kind === 'delivery'
+              ? 'Envío a domicilio'
+              : `Mesa ${order.tableNumber}`}
+          </strong>
         </div>
         <span className={`status status--${order.status}`}>
           {statusLabels[order.status]}

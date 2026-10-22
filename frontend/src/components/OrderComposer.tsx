@@ -13,10 +13,12 @@ import { Dialog } from './Dialog'
 export function OrderComposer({
   table,
   order,
+  delivery,
   onClose,
 }: {
-  table: RestaurantTable
+  table?: RestaurantTable
   order?: Order
+  delivery?: import('../types/delivery').DeliveryDraft
   onClose: () => void
 }) {
   const { data, act } = useRestaurant()
@@ -59,7 +61,9 @@ export function OrderComposer({
     const message = await act(
       order
         ? { type: 'editOrder', id: order.id, items }
-        : { type: 'createOrder', tableId: table.id, items },
+        : delivery
+          ? { type: 'createDelivery', delivery, items }
+          : { type: 'createOrder', tableId: table!.id, items },
     )
     setError(message)
     if (!message) onClose()
@@ -69,13 +73,20 @@ export function OrderComposer({
       title={
         order
           ? `Editar pedido #${order.id}`
-          : `Nuevo pedido · Mesa ${table.number}`
+          : delivery
+            ? 'Nuevo envío a domicilio'
+            : `Nuevo pedido · Mesa ${table?.number}`
       }
       onClose={onClose}
       wide
     >
       <p className="muted">
-        {table.diners} comensales · Los precios se fijan al enviar a cocina.
+        {table
+          ? `${table.diners} comensales · `
+          : delivery
+            ? `${delivery.destinatario} · ${delivery.direccion}. `
+            : 'Envío a domicilio · '}
+        Los precios se fijan al enviar a cocina.
       </p>
       <div className="composer-layout">
         <section>

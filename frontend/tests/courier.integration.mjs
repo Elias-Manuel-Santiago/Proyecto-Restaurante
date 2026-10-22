@@ -94,12 +94,52 @@ test('repartidor: conserva perfiles anteriores, admite el rol y no llama a la AP
       (await store.act({ type: 'openTable', id: '1', diners: 2 })) instanceof
         Error,
     )
-    assert.equal(requests, 0, 'El acceso y la vista no envían solicitudes HTTP')
+    assert.equal(
+      requests,
+      0,
+      'El acceso y el store no consultan la API del salón',
+    )
+    const { adaptarEnvios } = await import(
+      pathToFileURL(
+        await compile(path.join(root, 'src/state/useDeliveries.ts')),
+      )
+    )
+    const row = {
+      id_pedido: 15,
+      destinatario: 'Cliente',
+      direccion: 'Dirección',
+      indicaciones: '',
+      estado: 'pendiente',
+      estado_pedido: 'preparacion',
+      nombre_comida: 'Plato',
+      cantidad: 2,
+      notas: 'Sin sal',
+    }
+    assert.equal(
+      adaptarEnvios([row, { ...row, nombre_comida: 'Otro plato' }])[0].items
+        .length,
+      2,
+    )
+    assert.equal(adaptarEnvios([row])[0].status, 'en_cocina')
+    assert.equal(
+      adaptarEnvios([{ ...row, estado_pedido: 'listo' }])[0].status,
+      'listo',
+    )
+    assert.equal(
+      adaptarEnvios([{ ...row, estado: 'en_camino' }])[0].status,
+      'en_camino',
+    )
+    assert.equal(
+      adaptarEnvios([
+        { ...row, estado: 'entregado', estado_pedido: 'entregado' },
+      ])[0].status,
+      'entregado',
+    )
     assert.ok(
       createInitialData().users.some(
         (user) => user.role === 'repartidor' && user.active,
       ),
-      'Una instalación sin perfiles guardados incluye el nuevo perfil demo',
+      'Una instalación sin perfiles guardados incluye el perfil repartidor',
     )
     assert.equal(homeRoute('mozo'), '/mesas')
     assert.equal(homeRoute('chef'), '/cocina')

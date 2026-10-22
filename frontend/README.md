@@ -1,8 +1,7 @@
 # NÁCAR Restaurante
 
-La vista de repartidor y su demostración opcional se documentan en
-[REPARTIDOR.md](REPARTIDOR.md). Usa el acceso local por rol existente y no requiere
-API nueva de acceso ni modificaciones de base de datos.
+La vista de repartidor está conectada a la API y a SQL. La configuración y el
+circuito completo están en [REPARTIDOR.md](REPARTIDOR.md).
 
 El SQL de instalación y el diagrama actualizado están en [database/README.md](database/README.md).
 La importación se verificó en una base temporal MariaDB. La base local `restaurante`
@@ -113,7 +112,7 @@ Las funciones exportadas tienen nombres explícitos: `obtenerMesas`, `cargarMesa
 3. **Pedidos:** los pedidos pendientes pueden editarse; los precios de sus ítems se
    vuelven a fijar al guardar la edición. Los cambios posteriores de la carta no
    modifican los importes históricos ya guardados.
-4. **Chef:** cambia `pendiente → preparacion → listo`. **Mozo:** confirma `entregado`.
+4. **Chef:** cambia `pendiente → preparacion → listo`. **Mozo:** confirma `entregado` en mesa. En envíos lo confirma el repartidor.
    Mozo o administrador pueden cancelar pedidos activos. Cada cambio guarda actor y fecha.
 5. La mesa se cierra cuando no tiene pedidos activos. Reabrirla inicia otra visita.
    El borrado lógico de mesas y comidas conserva los pedidos y sus referencias.

@@ -1,3 +1,10 @@
+## Actualización de reparto
+
+La instalación nueva incluye 12 tablas. Para una base existente usar la migración
+del backend: agrega `envios` y permite `pedidos.id_mesa = NULL` sin borrar pedidos.
+Ver [configuración y circuito de reparto](../REPARTIDOR.md). El reporte de error 1932
+más abajo corresponde a la revisión anterior; no implica que todas las bases lo tengan.
+
 # Base de datos NÁCAR
 
 `restaurante.sql` instala las once tablas del diagrama, ajustadas al backend actual.

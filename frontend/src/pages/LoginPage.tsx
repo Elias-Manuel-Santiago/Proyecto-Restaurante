@@ -9,7 +9,7 @@ const roleDescriptions: Record<Role, string> = {
   mozo: 'Mesas, pedidos y entrega',
   chef: 'Comandas y disponibilidad',
   admin: 'Resumen, carta y equipo',
-  repartidor: 'Vista de entregas y demostración',
+  repartidor: 'Envíos asignados, retiro y entrega',
 }
 
 export function LoginPage({ onLogin }: { onLogin: (role: Role) => string }) {

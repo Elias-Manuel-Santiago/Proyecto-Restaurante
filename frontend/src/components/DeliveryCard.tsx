@@ -41,7 +41,7 @@ export function DeliveryCard({
         >
           Ver detalle
         </button>
-        {delivery.status !== 'entregado' && (
+        {(delivery.status === 'listo' || delivery.status === 'en_camino') && (
           <button
             className="primary-button"
             onClick={onAdvance}

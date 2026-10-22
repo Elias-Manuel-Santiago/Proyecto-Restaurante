@@ -10,7 +10,6 @@ export function DeliveryDetail({
 }) {
   return (
     <Dialog title={`Entrega ${delivery.id}`} onClose={onClose}>
-      <p className="delivery-demo-label">Pedido ficticio · Demostración</p>
       <dl className="delivery-detail">
         <div>
           <dt>Cliente</dt>
