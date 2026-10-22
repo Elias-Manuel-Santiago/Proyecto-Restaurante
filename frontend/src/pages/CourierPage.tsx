@@ -8,6 +8,7 @@ import { useDeliveries } from '../state/useDeliveries'
 import { deliveryStatusLabels, type DeliveryStatus } from '../types/delivery'
 
 const statuses: DeliveryStatus[] = [
+  'esperando_pago',
   'en_cocina',
   'listo',
   'en_camino',

@@ -17,7 +17,7 @@ export function DeliveryEditor({ onClose }: { onClose: () => void }) {
     destinatario: '',
     direccion: '',
     indicaciones: '',
-    repartidor_id: couriers[0]?.id ?? '',
+    repartidor_id: '',
     repartidor_nombre: '',
   })
   const [modes, setModes] = useState<ShippingMode[]>([])

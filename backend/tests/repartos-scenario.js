@@ -59,18 +59,31 @@ export async function probarRepartos(request, db, clientes) {
     antes,
     "Un envío inválido no deja pedidos huérfanos",
   );
-  const { id_pedido: id } = await request("POST", "/envios", datos, 201);
+  const { id_pedido: id } = await request(
+    "POST",
+    "/envios",
+    datos,
+    201,
+    "mozo",
+  );
   const [[pedido]] = await db.query(
     "SELECT * FROM pedidos WHERE id_pedidos=?",
     [id],
   );
   assert.equal(pedido.id_mesa, null, "Delivery no ocupa una mesa ficticia");
+  assert.equal(
+    pedido.mozo_id,
+    clientes.usuarios.mozo.id,
+    "El mozo registra el envío con su identidad de sesión",
+  );
   let filas = await request("POST", "/envios/obtener", {
     repartidor_id: datos.repartidor_id,
   });
   assert.equal(filas.length, 1);
   assert.equal(filas[0].cantidad, 2);
   assert.equal(filas[0].nombre_comida, "Prueba SQL reparto");
+  assert.equal(filas[0].pago_requerido, 1);
+  assert.equal(filas[0].pago_estado, null);
   assert.deepEqual(
     await request(
       "POST",
@@ -107,12 +120,28 @@ export async function probarRepartos(request, db, clientes) {
     (await request("POST", "/pedidos/obtener", {}, 200, "chef")).some(
       (p) => p.id_pedidos === id,
     ),
-    false,
+    true,
+    "Cocina puede ver el pedido esperando pago, pero no prepararlo",
   );
-  await request("POST", `/pagos/${id}`, { proveedor: "prueba" });
-  await request("GET", `/pagos/${id}`);
+  await request(
+    "PATCH",
+    `/pedidos/${id}/estado`,
+    { estado: "preparacion" },
+    403,
+    "mozo",
+  );
+  await request("POST", `/pagos/${id}`, { proveedor: "prueba" }, 200, "mozo");
+  await request("GET", `/pagos/${id}`, undefined, 200, "mozo");
+  filas = await request("POST", "/envios/obtener", {});
+  assert.equal(filas[0].pago_estado, "aprobado");
   for (const estado of ["preparacion", "listo"])
     await request("PATCH", `/pedidos/${id}/estado`, { estado, actor: "Chef" });
+  filas = await request("POST", "/envios/obtener", {});
+  assert.equal(
+    filas[0].estado_pedido,
+    "listo",
+    "Reparto recibe el estado guardado por el chef",
+  );
   await request(
     "PATCH",
     `/pedidos/${id}/estado`,

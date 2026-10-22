@@ -147,14 +147,9 @@ app.get("/api/pedidos/eventos", (req, res) => {
   vigilarSesion(req, res);
 });
 
-ruta("post", "/api/pedidos/obtener", async ({ usuario }) => {
-  const filas = await restaurante.listarTodosLosPedidos();
-  return prioridad.listar(
-    usuario.role === "chef"
-      ? filas.filter((p) => !p.pago_requerido || p.pago_estado === "aprobado")
-      : filas,
-  );
-});
+ruta("post", "/api/pedidos/obtener", async () =>
+  prioridad.listar(await restaurante.listarTodosLosPedidos()),
+);
 ruta("patch", "/api/pedidos/:id/prioridad", async ({ params, body }) => {
   prioridad.mover(
     await restaurante.listarTodosLosPedidos(),

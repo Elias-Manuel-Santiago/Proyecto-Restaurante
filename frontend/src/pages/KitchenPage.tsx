@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Dialog } from '../components/Dialog'
 import { OrderCard } from '../components/OrderCard'
 import { PriorityOrder } from '../components/PriorityOrder'
-import { compareOrderPriority } from '../state/model'
+import { compareOrderPriority, isAwaitingPayment } from '../state/model'
 import { useRestaurant } from '../state/useRestaurant'
 import { statusLabels, type Order } from '../types'
 
@@ -13,7 +13,7 @@ const pageSize = 6
 const stateDescriptions: Record<KitchenStatus, string> = {
   pendiente: 'Por comenzar',
   preparacion: 'En marcha en cocina',
-  listo: 'Esperando retiro del mozo',
+  listo: 'Esperando retiro del mozo o repartidor',
 }
 
 function KitchenLane({
@@ -164,7 +164,7 @@ export function KitchenPage() {
   const active = data.orders.filter((order) =>
     states.some((status) => status === order.status),
   )
-  const visible = active
+  const matching = active
     .filter(
       (order) =>
         (!table || order.tableNumber === Number(table)) &&
@@ -177,6 +177,9 @@ export function KitchenPage() {
           )),
     )
     .sort(compareOrderPriority)
+  const visible = matching.filter((order) => !isAwaitingPayment(order))
+  const awaitingPayment = matching.filter(isAwaitingPayment)
+  const ready = active.filter((order) => !isAwaitingPayment(order))
   const waiterOptions = Array.from(
     new Map(
       data.orders.map((order) => [order.waiterId, order.waiterName]),
@@ -235,7 +238,7 @@ export function KitchenPage() {
           onClick={() => setStatusFilter('')}
         >
           <span>Todos los estados</span>
-          <strong>{active.length}</strong>
+          <strong>{ready.length}</strong>
         </button>
         {states.map((status) => (
           <button
@@ -253,7 +256,7 @@ export function KitchenPage() {
               {statusLabels[status]}
             </span>
             <strong>
-              {active.filter((order) => order.status === status).length}
+              {ready.filter((order) => order.status === status).length}
             </strong>
           </button>
         ))}
@@ -330,6 +333,27 @@ export function KitchenPage() {
         <p className="notice" role="status">
           {notice}
         </p>
+      )}
+      {awaitingPayment.length > 0 && (
+        <section aria-label="Pedidos esperando pago">
+          <h2>Esperando pago · {awaitingPayment.length}</h2>
+          <p className="muted">
+            Estos pedidos ya están registrados. El mozo debe gestionar el cobro;
+            pasan a la cola de preparación cuando el servidor confirma el pago.
+          </p>
+          <div className="orders-grid orders-overview-grid">
+            {awaitingPayment.map((order) => (
+              <OrderCard key={order.id} order={order} kitchen>
+                <button
+                  className="secondary-button"
+                  onClick={() => setDetailId(order.id)}
+                >
+                  Ver detalle
+                </button>
+              </OrderCard>
+            ))}
+          </div>
+        </section>
       )}
       <div className="kitchen-board kitchen-board--horizontal">
         {states

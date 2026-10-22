@@ -63,6 +63,7 @@ export interface Order {
   requiresAddress?: boolean
   requiresCourier?: boolean
   deliveryStatus?: string
+  courierName?: string
   priority?: number | null
   tableId: string
   tableNumber: number

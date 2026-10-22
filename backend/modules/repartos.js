@@ -73,9 +73,10 @@ export async function crearEnvio(datos) {
 export async function listarEnvios(repartidor) {
   comprobar(texto(repartidor, 200), "Indicá el repartidor.");
   const [filas] = await db.query(
-    `SELECT e.*, p.estado AS estado_pedido,
+    `SELECT e.*, p.estado AS estado_pedido, p.pago_requerido, pg.estado AS pago_estado,
     pc.id_comida, pc.cantidad, pc.notas, pc.nombre_comida
     FROM envios e JOIN pedidos p ON p.id_pedidos=e.id_pedido
+    LEFT JOIN pagos pg ON pg.id_pedido=p.id_pedidos
     JOIN pedidos_comida pc ON pc.id_pedido=p.id_pedidos
     WHERE e.repartidor_id=? AND p.estado<>'cancelado' ORDER BY e.id_pedido DESC,pc.id_comida`,
     [repartidor],

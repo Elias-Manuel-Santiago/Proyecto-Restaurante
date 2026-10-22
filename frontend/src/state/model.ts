@@ -18,6 +18,8 @@ export const orderTotal = (order: Order) =>
   order.items.reduce((total, item) => total + item.quantity * item.unitPrice, 0)
 export const isActive = (order: Order) =>
   !['entregado', 'cancelado'].includes(order.status)
+export const isAwaitingPayment = (order: Order) =>
+  Boolean(order.paymentRequired && order.paymentStatus !== 'aprobado')
 // Los activos comparten la cola del servidor; los finalizados quedan al final.
 export const compareOrderPriority = (first: Order, second: Order) =>
   Number(!isActive(first)) - Number(!isActive(second)) ||
