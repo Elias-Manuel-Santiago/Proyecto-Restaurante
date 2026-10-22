@@ -7,6 +7,10 @@ const paths = {
   pedidos: 'M8 3h8v4H8z M8 5H5v16h14V5h-3 M8 11h8 M8 15h5',
   cocina: 'M7 14a5 5 0 1 1 1-9 5 5 0 0 1 8 0 5 5 0 1 1 1 9v7H7z M7 17h10',
   admin: 'M4 20V10h4v10 M10 20V4h4v16 M16 20v-7h4v7',
+  repartidor:
+    'M3 5h11v12H3z M14 9h4l3 4v4h-7 M6 17a2 2 0 1 0 4 0 M16 17a2 2 0 1 0 4 0',
+  ubicacion:
+    'M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0 M15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0',
   historial: 'M3 11a9 9 0 1 1 2 7 M3 4v7h7 M12 7v6l4 2',
   usuarios:
     'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8 M20 21v-2a4 4 0 0 0-3-4 M17 3a4 4 0 0 1 0 8',
