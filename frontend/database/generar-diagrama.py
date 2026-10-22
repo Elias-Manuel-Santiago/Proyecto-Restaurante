@@ -61,7 +61,7 @@ for source, target, label, pts, labelpos in edges:
     points = ' '.join(f'{x},{y}' for x,y in pts)
     svg += [f'<polyline points="{points}" fill="none" stroke="#475569" stroke-width="2"/>',
             f'<text x="{labelpos[0]}" y="{labelpos[1]}" font-size="{9 if label == "1 : 0..N" else 11}">{escape(label)}</text>']
-svg += ['<text x="40" y="1540" font-size="14">Violeta: acceso futuro. id_mesero admite NULL; mozo_id y mozo_nombre describen al perfil local.</text>',
+svg += ['<text x="40" y="1540" font-size="14">Violeta: usuarios y sesiones reales. Los pedidos conservan nombres e identificadores históricos.</text>',
         '<text x="40" y="1567" font-size="14">Nombre y precio del ítem se guardan al pedir. imagen se conserva vacía por compatibilidad con la API.</text>',
         '<text x="40" y="1594" font-size="14">Cada vínculo une un padre con cero o muchos hijos. El detalle y sus restricciones están en restaurante.sql.</text>',
         '<text x="40" y="1621" font-size="14">Inventario: composición del plato. La cantidad de insumo por plato queda pendiente de aprobación.</text>', '</svg>']
