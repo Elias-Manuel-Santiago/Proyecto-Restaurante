@@ -388,7 +388,7 @@ export async function cambiarEstadoPedido(id, estado, actor) {
 
 export async function listarTodosLosPedidos() {
   const [filas] = await db.query(`SELECT p.*, pc.id_comida,pc.cantidad,pc.notas,
-    COALESCE(pc.nombre_comida,c.nombre) AS comida_nombre,
+    COALESCE(pc.nombre_comida,c.nombre) AS comida_nombre, e.repartidor_nombre,
     COALESCE(pc.precio_unitario,c.precio) AS precio, e.estado AS envio_estado, em.modalidad_codigo,em.costo AS costo_envio,m.nombre AS modalidad_nombre,m.requiere_direccion,m.requiere_repartidor,pg.estado AS pago_estado,pg.importe AS pago_importe
     FROM pedidos p LEFT JOIN pedidos_comida pc ON p.id_pedidos=pc.id_pedido
     LEFT JOIN comidas c ON pc.id_comida=c.id_comida
