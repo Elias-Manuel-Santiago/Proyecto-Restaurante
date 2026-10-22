@@ -98,6 +98,13 @@ test('sesión: ignora accesos locales, exige credenciales, restaura cuenta y man
     assert.equal(store.getSnapshot().session, null)
     assert.equal(await store.login('repartidor', password), '')
     assert.equal(store.getSnapshot().session.id, '42')
+    assert.ok(await store.login('admin', 'cualquier-cosa'))
+    assert.equal(
+      store.getSnapshot().session,
+      null,
+      'Un ingreso rechazado no conserva la identidad anterior',
+    )
+    assert.equal(await store.login('repartidor', password), '')
     await store.restoreSession()
     assert.equal(
       store.getSnapshot().session.id,

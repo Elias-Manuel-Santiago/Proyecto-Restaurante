@@ -44,7 +44,6 @@ export function AdminPage({
       <section className="page-intro">
         <div>
           <span className="eyebrow">Administración · Vista general</span>
-          <h1>El servicio, en perspectiva</h1>
           <p>
             Actividad del salón y consumo de hoy.{' '}
             {new Date().toLocaleDateString('es-AR', {

@@ -34,6 +34,12 @@ const opcionesCookie = () => ({
   secure: process.env.NODE_ENV === "production",
   path: "/api",
 });
+const rechazarIngreso = (res, message = "Usuario o contraseña incorrectos.") => {
+  // No conservar en el navegador una sesión anterior si el nuevo ingreso falla.
+  // De lo contrario el cliente puede seguir operando con el rol viejo y recibir 403.
+  res.clearCookie(cookie, opcionesCookie());
+  throw fallo(401, message);
+};
 const horas = () => {
   const valor = Number(process.env.SESSION_HOURS || 8);
   if (!Number.isFinite(valor) || valor <= 0 || valor > 168)
@@ -112,7 +118,7 @@ export async function ingresar(req, res) {
     password.length > 128 ||
     !password.length
   )
-    throw fallo(401, "Usuario o contraseña incorrectos.");
+    rechazarIngreso(res);
   const [[u]] = await db.query("SELECT * FROM usuarios WHERE usuario=?", [
     usuario,
   ]);
@@ -121,7 +127,7 @@ export async function ingresar(req, res) {
     : await hashFicticio;
   const correcta = await argon2.verify(hash, password).catch(() => false);
   if (!correcta || !u?.activo || !roles.includes(u.tipo))
-    throw fallo(401, "Usuario o contraseña incorrectos.");
+    rechazarIngreso(res);
   const token = randomBytes(32).toString("hex");
   const expira = new Date(Date.now() + horas() * 3600000);
   const conexion = await db.getConnection();

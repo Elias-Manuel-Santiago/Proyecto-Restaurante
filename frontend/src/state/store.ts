@@ -292,9 +292,25 @@ export const restaurantStore = {
     emit()
   },
   async login(username: string, password: string): Promise<string> {
+    // Un intento nuevo reemplaza cualquier identidad anterior, incluso si falla.
+    // También invalida restauraciones de sesión que todavía estén en vuelo.
+    const version = ++sessionVersion
+    snapshot = {
+      ...snapshot,
+      session: null,
+      data: createInitialData(),
+      resumenes: [],
+      warning: '',
+      error: null,
+    }
+    emit()
     const response = await api.ingresar(username, password)
-    if (response instanceof Error) return response.message
-    sessionVersion++
+    if (version !== sessionVersion) return ''
+    if (response instanceof Error) {
+      snapshot = { ...snapshot, authChecking: false }
+      emit()
+      return response.message
+    }
     snapshot = {
       ...snapshot,
       data: createInitialData(),

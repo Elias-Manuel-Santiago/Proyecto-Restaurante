@@ -37,8 +37,6 @@ export function CourierPage() {
       <section className="page-intro">
         <div>
           <span className="eyebrow">Reparto · Tus entregas</span>
-          <h1>Del restó a la puerta</h1>
-          <p>La dirección, el pedido y el próximo paso, siempre a mano.</p>
         </div>
         <button
           className="secondary-button"

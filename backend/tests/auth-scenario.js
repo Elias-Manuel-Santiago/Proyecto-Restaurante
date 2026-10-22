@@ -29,11 +29,15 @@ export async function probarAuth(base, db, clientes) {
     { username: "nadie", password: "no-existe" },
     { username: "test_admin", password: "incorrecta" },
     { username: "' OR 1=1 --", password: "incorrecta" },
-  ])
-    assert.equal(
-      (await raw("/auth/login", { method: "POST", body })).status,
-      401,
+  ]) {
+    const rechazo = await raw("/auth/login", { method: "POST", body });
+    assert.equal(rechazo.status, 401);
+    assert.match(
+      rechazo.headers.get("set-cookie") || "",
+      /nacar_session=;/,
+      "Un ingreso rechazado elimina la cookie de una sesión anterior",
     );
+  }
   assert.equal(
     (
       await raw("/auth/login", {
