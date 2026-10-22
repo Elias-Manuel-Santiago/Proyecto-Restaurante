@@ -55,7 +55,7 @@ export function OrderCard({
           )}
           <strong>
             {order.kind === 'delivery'
-              ? 'Envío a domicilio'
+              ? order.shippingName || 'Envío a domicilio'
               : `Mesa ${order.tableNumber}`}
           </strong>
         </div>
@@ -63,6 +63,12 @@ export function OrderCard({
           {statusLabels[order.status]}
         </span>
       </div>
+      {order.paymentRequired && (
+        <p className="muted">
+          Pago: {order.paymentStatus || 'sin iniciar'}
+          {order.shippingCost ? ` · Envío: ${money(order.shippingCost)}` : ''}
+        </p>
+      )}
       {(summary || kitchen) && (
         <div className="order-meta">
           <span>

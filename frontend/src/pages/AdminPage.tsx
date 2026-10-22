@@ -1,3 +1,4 @@
+import { ShippingSettings } from '../components/ShippingSettings'
 import { SummaryPanel } from '../components/SummaryPanel'
 import { useState } from 'react'
 import { Stats } from '../components/Stats'
@@ -18,6 +19,7 @@ export function AdminPage({
   onNavigate: (route: AppRoute) => void
 }) {
   const { data, act } = useRestaurant()
+  const [shippingSettings, setShippingSettings] = useState(false)
   const [editing, setEditing] = useState<RestaurantTable | 'new' | null>(null)
   const [deleting, setDeleting] = useState<RestaurantTable | null>(null)
   const [error, setError] = useState<string | Error>('')
@@ -41,6 +43,15 @@ export function AdminPage({
     .slice(0, 5)
   return (
     <>
+      {shippingSettings && (
+        <ShippingSettings onClose={() => setShippingSettings(false)} />
+      )}
+      <button
+        className="secondary-button"
+        onClick={() => setShippingSettings(true)}
+      >
+        Modalidades y tarifas de entrega
+      </button>
       <section className="page-intro">
         <div>
           <span className="eyebrow">Administración · Vista general</span>

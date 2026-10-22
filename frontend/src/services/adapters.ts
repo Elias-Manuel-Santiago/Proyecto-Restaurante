@@ -16,6 +16,21 @@ export function adaptarPedidos(filas: PedidoFilaApi[]): Order[] {
         id,
         kind: fila.id_mesa === null ? 'delivery' : 'mesa',
         deliveryStatus: fila.envio_estado ?? undefined,
+        paymentRequired: Boolean(fila.pago_requerido),
+        paymentStatus: fila.pago_estado ?? undefined,
+        shippingCost: Number(fila.costo_envio ?? 0),
+        shippingMode: fila.modalidad_codigo ?? undefined,
+        shippingName: fila.modalidad_nombre ?? undefined,
+        requiresAddress:
+          fila.requiere_direccion === null ||
+          fila.requiere_direccion === undefined
+            ? true
+            : Boolean(fila.requiere_direccion),
+        requiresCourier:
+          fila.requiere_repartidor === null ||
+          fila.requiere_repartidor === undefined
+            ? true
+            : Boolean(fila.requiere_repartidor),
         priority: fila.prioridad ?? null,
         tableId: fila.id_mesa === null ? '' : String(fila.id_mesa),
         tableNumber: Number(fila.numero_mesa),

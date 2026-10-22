@@ -6,7 +6,12 @@ import type {
   StatusEvent,
   UserProfile,
 } from '../types'
-import type { DeliveryDraft, DeliveryRow } from '../types/delivery'
+import type {
+  DeliveryDraft,
+  DeliveryRow,
+  ShippingMode,
+  Payment,
+} from '../types/delivery'
 
 // Contratos del backend Express. MySQL puede devolver DECIMAL como string.
 export interface MesaApi {
@@ -56,6 +61,13 @@ export interface PedidoFilaApi {
   estado: OrderStatus
   numero_mesa: number | null
   envio_estado?: string | null
+  pago_requerido?: number
+  pago_estado?: string | null
+  costo_envio?: string | number | null
+  modalidad_codigo?: string | null
+  modalidad_nombre?: string | null
+  requiere_direccion?: number | null
+  requiere_repartidor?: number | null
   servicio_id: string
   mozo_id: string | null
   mozo_nombre: string | null
@@ -117,6 +129,24 @@ export const guardarUsuario = (
     nuevo ? '/usuarios' : `/usuarios/${profile.id}`,
     { ...profile, ...(password === undefined ? {} : { password }) },
   )
+
+export const obtenerModalidades = () =>
+  consultar<ShippingMode[]>('GET', '/modalidades-envio')
+export const guardarModalidad = (mode: ShippingMode) =>
+  consultar<MensajeApi>('PUT', `/modalidades-envio/${mode.codigo}`, {
+    ...mode,
+    requiere_direccion: Boolean(mode.requiere_direccion),
+    requiere_repartidor: Boolean(mode.requiere_repartidor),
+    activo: Boolean(mode.activo),
+  })
+export const obtenerPago = (id: string) =>
+  consultar<Payment | null>('GET', `/pagos/${id}`)
+export const iniciarPago = (id: string) =>
+  consultar<Payment>('POST', `/pagos/${id}`, {})
+export const cancelarPago = (id: string) =>
+  consultar<Payment>('POST', `/pagos/${id}/cancelar`, {})
+export const reembolsarPago = (id: string) =>
+  consultar<Payment>('POST', `/pagos/${id}/reembolsar`, {})
 
 export const obtenerEnvios = (repartidor_id: string) =>
   consultar<DeliveryRow[]>('POST', '/envios/obtener', { repartidor_id })

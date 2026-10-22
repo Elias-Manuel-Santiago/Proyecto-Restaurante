@@ -1,3 +1,4 @@
+import { PaymentDialog } from '../components/PaymentDialog'
 import { OrderComposer } from '../components/OrderComposer'
 import { DeliveryEditor } from '../components/DeliveryEditor'
 import { ErrorMessage } from '../components/ErrorMessage'
@@ -30,6 +31,8 @@ export function OrdersPage({ history = false }: { history?: boolean }) {
   const [error, setError] = useState<string | Error>('')
   const [notice, setNotice] = useState('')
   const [page, setPage] = useState(1)
+  const [payingId, setPayingId] = useState<string | null>(null)
+  const paying = data.orders.find((order) => order.id === payingId)
   const [creatingDelivery, setCreatingDelivery] = useState(false)
   const resultsRef = useRef<HTMLParagraphElement>(null)
   useEffect(() => {
@@ -165,6 +168,41 @@ export function OrdersPage({ history = false }: { history?: boolean }) {
             >
               Ver detalle
             </button>
+            {order.paymentRequired &&
+              (session?.role === 'mozo' || session?.role === 'admin') && (
+                <button
+                  className="primary-button"
+                  onClick={() => setPayingId(order.id)}
+                >
+                  {order.paymentStatus ? 'Ver pago' : 'Cobrar pedido'}
+                </button>
+              )}
+            {order.kind === 'delivery' &&
+              order.requiresCourier === false &&
+              order.status === 'listo' &&
+              order.paymentStatus === 'aprobado' && (
+                <button
+                  className="secondary-button"
+                  onClick={async () => {
+                    const response = await act({
+                      type: 'advanceDelivery',
+                      id: order.id,
+                      status:
+                        !order.requiresAddress ||
+                        order.deliveryStatus === 'en_camino'
+                          ? 'entregado'
+                          : 'en_camino',
+                    })
+                    setError(response)
+                  }}
+                >
+                  {!order.requiresAddress
+                    ? 'Confirmar retiro en local'
+                    : order.deliveryStatus === 'en_camino'
+                      ? 'Confirmar entrega externa'
+                      : 'Registrar salida a cadetería'}
+                </button>
+              )}
             {session?.role === 'mozo' &&
               order.kind !== 'delivery' &&
               order.status === 'listo' && (
@@ -185,6 +223,7 @@ export function OrdersPage({ history = false }: { history?: boolean }) {
                 </button>
               )}
             {order.status === 'pendiente' &&
+              !order.paymentStatus &&
               (session?.role === 'mozo' || session?.role === 'admin') && (
                 <button
                   className="secondary-button"
@@ -194,6 +233,7 @@ export function OrdersPage({ history = false }: { history?: boolean }) {
                 </button>
               )}
             {isActive(order) &&
+              !order.paymentStatus &&
               order.deliveryStatus !== 'en_camino' &&
               (session?.role === 'mozo' || session?.role === 'admin') && (
                 <button
@@ -270,6 +310,9 @@ export function OrdersPage({ history = false }: { history?: boolean }) {
             ))}
           </ol>
         </Dialog>
+      )}
+      {paying && (
+        <PaymentDialog order={paying} onClose={() => setPayingId(null)} />
       )}
       {creatingDelivery && (
         <DeliveryEditor onClose={() => setCreatingDelivery(false)} />

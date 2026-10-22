@@ -45,6 +45,9 @@ export function OrderComposer({
         (data.dishes.find((dish) => dish.id === item.dishId)?.price ?? 0),
     0,
   )
+  const shippingCost = Number(
+    delivery?.costo_confirmado ?? order?.shippingCost ?? 0,
+  )
   const update = (dishId: string, quantity: number) => {
     if (quantity < 0 || quantity > 99 || !Number.isInteger(quantity)) return
     setItems((current) =>
@@ -74,7 +77,7 @@ export function OrderComposer({
         order
           ? `Editar pedido #${order.id}`
           : delivery
-            ? 'Nuevo envío a domicilio'
+            ? 'Nuevo pedido para entrega o retiro'
             : `Nuevo pedido · Mesa ${table?.number}`
       }
       onClose={onClose}
@@ -86,7 +89,7 @@ export function OrderComposer({
           : delivery
             ? `${delivery.destinatario} · ${delivery.direccion}. `
             : 'Envío a domicilio · '}
-        Los precios se fijan al enviar a cocina.
+        Los precios se fijan al registrar el pedido.
       </p>
       <div className="composer-layout">
         <section>
@@ -213,15 +216,26 @@ export function OrderComposer({
           )}
           <div className="total">
             <span>Total de consumo</span>
-            <strong>{money(total)}</strong>
+            <strong>{money(total + shippingCost)}</strong>
           </div>
+          {(delivery || order?.kind === 'delivery') && (
+            <p className="muted">
+              {delivery?.modalidad_nombre ?? order?.shippingName} · Costo de
+              entrega: {money(shippingCost)}. El pedido se registra pendiente de
+              pago. Después abrí «Cobrar pedido» en su tarjeta.
+            </p>
+          )}
           {error && <ErrorMessage error={error} />}
           <button
             className="primary-button"
             disabled={!items.length}
             onClick={submit}
           >
-            {order ? 'Guardar cambios' : 'Enviar a cocina'}
+            {order
+              ? 'Guardar cambios'
+              : delivery
+                ? 'Registrar pedido'
+                : 'Enviar a cocina'}
           </button>
           <button className="text-button" onClick={onClose}>
             Descartar borrador

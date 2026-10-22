@@ -55,6 +55,13 @@ export interface StatusEvent {
 export interface Order {
   id: string
   kind?: 'mesa' | 'delivery'
+  paymentRequired?: boolean
+  paymentStatus?: string
+  shippingCost?: number
+  shippingMode?: string
+  shippingName?: string
+  requiresAddress?: boolean
+  requiresCourier?: boolean
   deliveryStatus?: string
   priority?: number | null
   tableId: string
