@@ -1,6 +1,11 @@
 import axios from 'axios'
 import type { AxiosResponse, Method } from 'axios'
-import type { OrderStatus, TableStatus, StatusEvent } from '../types'
+import type {
+  OrderStatus,
+  TableStatus,
+  StatusEvent,
+  UserProfile,
+} from '../types'
 import type { DeliveryDraft, DeliveryRow } from '../types/delivery'
 
 // Contratos del backend Express. MySQL puede devolver DECIMAL como string.
@@ -84,7 +89,34 @@ interface MensajeApi {
   message: string
 }
 
-const api = axios.create({ baseURL: import.meta.env.VITE_API_ROUTE || '/api' })
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_ROUTE || '/api',
+  withCredentials: true,
+  headers: { 'X-Nacar-Request': '1' },
+})
+let onUnauthorized: (() => void) | undefined
+let sessionEpoch = 0
+export const alVencerSesion = (callback: () => void) => {
+  onUnauthorized = callback
+}
+export const ingresar = (username: string, password: string) =>
+  consultar<UserProfile>('POST', '/auth/login', { username, password })
+export const consultarSesion = () =>
+  consultar<UserProfile>('GET', '/auth/session')
+export const cerrarSesion = () =>
+  consultar<MensajeApi>('POST', '/auth/logout', {})
+export const obtenerUsuarios = (catalogo = false) =>
+  consultar<UserProfile[]>('GET', catalogo ? '/usuarios/catalogo' : '/usuarios')
+export const guardarUsuario = (
+  profile: UserProfile,
+  password?: string,
+  nuevo = false,
+) =>
+  consultar<UserProfile>(
+    nuevo ? 'POST' : 'PUT',
+    nuevo ? '/usuarios' : `/usuarios/${profile.id}`,
+    { ...profile, ...(password === undefined ? {} : { password }) },
+  )
 
 export const obtenerEnvios = (repartidor_id: string) =>
   consultar<DeliveryRow[]>('POST', '/envios/obtener', { repartidor_id })
@@ -109,25 +141,52 @@ export const actualizarEnvio = (
 
 /** EventSource reconecta solo; al abrir también recuperamos cambios perdidos. */
 export function suscribirPrioridadPedidos(onChange: () => void) {
-  const events = new EventSource(api.getUri({ url: '/pedidos/eventos' }))
+  const events = new EventSource(api.getUri({ url: '/pedidos/eventos' }), {
+    withCredentials: true,
+  })
   events.addEventListener('open', onChange)
   events.addEventListener('prioridad', onChange)
+  const expired = () => {
+    events.close()
+    onUnauthorized?.()
+  }
+  events.addEventListener('sesion-expirada', expired)
   return () => {
     events.removeEventListener('open', onChange)
     events.removeEventListener('prioridad', onChange)
+    events.removeEventListener('sesion-expirada', expired)
     events.close()
   }
 }
 
-/** Devuelve la respuesta Axios o el mismo error completo, sin transformarlo. */
+/** Conserva el mensaje de negocio sin exponer SQL, credenciales ni stack al usuario. */
 async function consultar<T>(
   method: Method,
   url: string,
   data?: unknown,
 ): Promise<AxiosResponse<T> | Error> {
+  const epoch = sessionEpoch
   try {
-    return await api.request<T>({ method, url, data })
+    const response = await api.request<T>({ method, url, data })
+    if (url === '/auth/login' || url === '/auth/logout') sessionEpoch++
+    return response
   } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (
+        error.response?.status === 401 &&
+        url !== '/auth/login' &&
+        url !== '/auth/session' &&
+        epoch === sessionEpoch
+      )
+        onUnauthorized?.()
+      return Object.assign(
+        new Error(
+          error.response?.data?.message ||
+            'No se pudo conectar con el servidor.',
+        ),
+        { status: error.response?.status },
+      )
+    }
     return error as Error
   }
 }

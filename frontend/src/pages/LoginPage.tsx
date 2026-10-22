@@ -1,72 +1,39 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { roleLabels, type Role } from '../types'
-import { useRestaurant } from '../state/useRestaurant'
-import { Icon } from '../components/Icon'
+import { useRef, useState, type FormEvent } from 'react'
 import { PasswordInput } from '../components/PasswordInput'
+import { useRestaurant } from '../state/useRestaurant'
 
-const roles: Role[] = ['mozo', 'chef', 'admin', 'repartidor']
-const roleDescriptions: Record<Role, string> = {
-  mozo: 'Mesas, pedidos y entrega',
-  chef: 'Comandas y disponibilidad',
-  admin: 'Resumen, carta y equipo',
-  repartidor: 'Envíos asignados, retiro y entrega',
-}
-
-export function LoginPage({ onLogin }: { onLogin: (role: Role) => string }) {
-  const { data, warning } = useRestaurant()
-  const [selectedRole, setSelectedRole] = useState<Role | null>(null)
+export function LoginPage({
+  onLogin,
+}: {
+  onLogin: (username: string, password: string) => Promise<string>
+}) {
+  const { warning } = useRestaurant()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
-  const usernameInput = useRef<HTMLInputElement>(null)
-  const passwordInput = useRef<HTMLInputElement>(null)
-  const roleButtons = useRef<Partial<Record<Role, HTMLButtonElement | null>>>(
-    {},
-  )
-  const lastRole = useRef<Role>('mozo')
-  const usernameError = submitted && !username.trim()
-  const passwordError = submitted && !password.trim()
-
-  useEffect(() => {
-    if (selectedRole) usernameInput.current?.focus()
-    else roleButtons.current[lastRole.current]?.focus()
-  }, [selectedRole])
-
-  const chooseRole = (role: Role | null) => {
-    if (role) lastRole.current = role
-    setUsername('')
-    setPassword('')
-    setSubmitted(false)
-    setError('')
-    setSelectedRole(role)
-  }
-
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const [busy, setBusy] = useState(false)
+  const submitting = useRef(false)
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setSubmitted(true)
+    if (submitting.current) return
+    if (!username.trim() || !password) {
+      setError('Completá usuario y contraseña.')
+      return
+    }
+    submitting.current = true
+    setBusy(true)
     setError('')
-    if (!username.trim()) {
-      usernameInput.current?.focus()
-      return
-    }
-    if (!password.trim()) {
-      passwordInput.current?.focus()
-      return
-    }
-    if (!selectedRole) return
     try {
-      const message = onLogin(selectedRole)
-      if (message) setError(message)
-      else {
-        setUsername('')
-        setPassword('')
-      }
+      const message = await onLogin(username.trim(), password)
+      setError(message)
+      if (!message) setPassword('')
     } catch {
       setError('No se pudo iniciar sesión. Volvé a intentarlo.')
+    } finally {
+      submitting.current = false
+      setBusy(false)
     }
   }
-
   return (
     <main className="login-page">
       <section className="login-card" aria-labelledby="login-title">
@@ -77,137 +44,54 @@ export function LoginPage({ onLogin }: { onLogin: (role: Role) => string }) {
           </p>
         </div>
         <div>
-          <span className="eyebrow">
-            Paso {selectedRole ? '2' : '1'} de 2 ·{' '}
-            {selectedRole ? roleLabels[selectedRole] : 'Elegí tu rol'}
-          </span>
-          <h1 id="login-title">
-            {selectedRole
-              ? `Ingresar como ${roleLabels[selectedRole]}`
-              : 'Bienvenido a NÁCAR'}
-          </h1>
+          <span className="eyebrow">Tu espacio en el restaurante</span>
+          <h1 id="login-title">Bienvenido a NÁCAR</h1>
           <p className="muted">
-            {selectedRole
-              ? 'Completá ambos campos para comenzar el servicio.'
-              : 'Elegí tu espacio y comenzá el servicio.'}
+            Ingresá con la cuenta que te asignó el administrador.
           </p>
         </div>
-        {selectedRole ? (
-          <form
-            onSubmit={submit}
-            noValidate
-            autoComplete="off"
-            aria-labelledby="login-title"
-            aria-describedby="demo-access-note"
-          >
-            <fieldset className="form-fieldset">
-              <div className="login-field">
-                <label htmlFor="login-username">Usuario</label>
-                <input
-                  ref={usernameInput}
-                  id="login-username"
-                  name="username"
-                  type="text"
-                  required
-                  autoComplete="off"
-                  autoCapitalize="none"
-                  spellCheck={false}
-                  value={username}
-                  aria-invalid={usernameError || undefined}
-                  aria-describedby={
-                    usernameError ? 'username-error' : undefined
-                  }
-                  onChange={(event) => {
-                    setUsername(event.target.value)
-                    setError('')
-                  }}
-                />
-                {usernameError && (
-                  <p id="username-error" className="form-error" role="alert">
-                    Ingresá un usuario.
-                  </p>
-                )}
-              </div>
-              <PasswordInput
-                label="Contraseña"
-                value={password}
-                inputRef={passwordInput}
-                error={passwordError ? 'Ingresá una contraseña.' : undefined}
-                onChange={(value) => {
-                  setPassword(value)
+        <form onSubmit={submit} aria-busy={busy}>
+          <fieldset className="form-fieldset" disabled={busy}>
+            <div className="login-field">
+              <label htmlFor="login-username">Usuario</label>
+              <input
+                autoFocus
+                id="login-username"
+                name="username"
+                required
+                maxLength={40}
+                autoComplete="username"
+                autoCapitalize="none"
+                spellCheck={false}
+                value={username}
+                onChange={(e) => {
+                  setUsername(e.target.value)
                   setError('')
                 }}
               />
-              {error && (
-                <p className="form-error" role="alert">
-                  {error}
-                </p>
-              )}
-              <button className="primary-button" type="submit">
-                Ingresar
-              </button>
-              <button
-                className="text-button login-back"
-                type="button"
-                onClick={() => chooseRole(null)}
-              >
-                Volver a elegir rol
-              </button>
-            </fieldset>
-          </form>
-        ) : (
-          <div
-            className="demo-roles"
-            role="group"
-            aria-label="Selección de rol"
-          >
-            {roles.map((role) => {
-              const available = data.users.some(
-                (user) => user.role === role && user.active,
-              )
-              return (
-                <button
-                  ref={(button) => {
-                    roleButtons.current[role] = button
-                  }}
-                  className="role-access"
-                  type="button"
-                  key={role}
-                  disabled={!available}
-                  onClick={() => chooseRole(role)}
-                >
-                  <Icon
-                    name={
-                      role === 'mozo'
-                        ? 'mesas'
-                        : role === 'chef'
-                          ? 'cocina'
-                          : role === 'repartidor'
-                            ? 'repartidor'
-                            : 'admin'
-                    }
-                  />
-                  <span>
-                    <strong>{roleLabels[role]}</strong>
-                    <small>
-                      {available
-                        ? roleDescriptions[role]
-                        : 'Sin perfiles demo habilitados'}
-                    </small>
-                  </span>
-                  <span aria-hidden="true">→</span>
-                </button>
-              )
-            })}
-          </div>
-        )}
-        {warning && (
-          <p className="warning" role="alert">
-            {warning}
-          </p>
-        )}
-        <p id="demo-access-note" className="login-note">
-          Acceso de demostración, sin verificación de credenciales
+            </div>
+            <PasswordInput
+              label="Contraseña"
+              value={password}
+              autoComplete="current-password"
+              onChange={(value) => {
+                setPassword(value)
+                setError('')
+              }}
+            />
+            {(error || warning) && (
+              <p className="form-error" role="alert">
+                {error || warning}
+              </p>
+            )}
+            <button className="primary-button" type="submit">
+              {busy ? 'Ingresando…' : 'Ingresar'}
+            </button>
+          </fieldset>
+        </form>
+        <p className="login-note">
+          ¿Necesitás una cuenta o recuperar el acceso? Consultá al
+          administrador.
         </p>
       </section>
       <aside className="login-aside">
@@ -218,7 +102,7 @@ export function LoginPage({ onLogin }: { onLogin: (role: Role) => string }) {
             <br />
             El detalle distingue.
           </h2>
-          <p>Salón, cocina y administración, al mismo ritmo.</p>
+          <p>Salón, cocina y reparto, al mismo ritmo.</p>
         </div>
       </aside>
     </main>

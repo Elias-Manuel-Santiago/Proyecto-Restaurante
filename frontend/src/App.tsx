@@ -17,9 +17,13 @@ import type { AppRoute } from './types'
 import './App.css'
 
 function App() {
-  const { session, warning, loading, busy, error } = useRestaurant()
+  const { session, warning, authChecking, loading, busy, error } =
+    useRestaurant()
   const [path, setPath] = useState(() => window.location.pathname)
   const [routeNotice, setRouteNotice] = useState('')
+  useEffect(() => {
+    void restaurantStore.restoreSession()
+  }, [])
   const home = homeRoute(session?.role)
   const allowed = session ? roleRoutes[session.role].includes(path) : false
   const route = allowed ? (path as AppRoute) : home
@@ -32,10 +36,11 @@ function App() {
     return () => window.removeEventListener('popstate', onPopState)
   }, [])
   useEffect(() => {
+    if (authChecking) return
     const target = session ? route : '/login'
     if (window.location.pathname !== target)
       window.history.replaceState({}, '', target)
-  }, [session, route])
+  }, [session, route, authChecking])
   useEffect(() => {
     if (!session || session.role === 'repartidor') return
     void restaurantStore.refresh()
@@ -64,11 +69,17 @@ function App() {
       document.getElementById('main-content')?.focus({ preventScroll: true }),
     )
   }
+  if (authChecking)
+    return (
+      <main className="login-page">
+        <p role="status">Recuperando sesión…</p>
+      </main>
+    )
   if (!session)
     return (
       <LoginPage
-        onLogin={(role) => {
-          const message = restaurantStore.login(role)
+        onLogin={async (username, password) => {
+          const message = await restaurantStore.login(username, password)
           if (!message) {
             const user = restaurantStore.getSnapshot().session
             setPath(homeRoute(user?.role))
@@ -110,8 +121,8 @@ function App() {
           </span>
           <span>
             {route === '/reparto'
-              ? 'Vista de reparto · Usuarios locales'
-              : 'Datos del servidor · Usuarios locales'}
+              ? 'Vista de reparto · Cuentas del restaurante'
+              : 'Datos del servidor · Cuentas del restaurante'}
           </span>
         </div>
         {warning && (

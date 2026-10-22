@@ -35,19 +35,11 @@ export interface Waiter {
   id: string
   name: string
 }
-export interface PasswordCredential {
-  algorithm: 'PBKDF2-SHA-256'
-  iterations: number
-  salt: string
-  hash: string
-}
-export interface DemoUser extends Waiter {
+export interface UserProfile extends Waiter {
   role: Role
   active: boolean
   username?: string
-  credential?: PasswordCredential
 }
-export type UserProfile = Omit<DemoUser, 'credential'>
 export interface OrderItem {
   dishId: string
   dishName: string
@@ -98,7 +90,7 @@ export interface RestaurantData {
   tables: RestaurantTable[]
   dishes: MenuDish[]
   orders: Order[]
-  users: DemoUser[]
+  users: UserProfile[]
 }
 export interface DraftItem {
   dishId: string
