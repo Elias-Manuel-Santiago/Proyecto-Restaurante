@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <mxfile host="app.diagrams.net">
   <diagram name="Restaurante" id="restaurante">
-    <mxGraphModel pageWidth="1700" pageHeight="1700" page="1">
+    <mxGraphModel pageWidth="1700" pageHeight="2200" page="1">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -17,8 +17,8 @@
         <mxCell id="comidas" value="&lt;b&gt;comidas&lt;/b&gt;&lt;hr/&gt;PK&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;id_comida:&amp;nbsp;INT&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;tipo:&amp;nbsp;VARCHAR(30)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;nombre:&amp;nbsp;VARCHAR(100)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;descripcion:&amp;nbsp;TEXT&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;precio:&amp;nbsp;DECIMAL(12,2)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;disponible:&amp;nbsp;TINYINT(1)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;eliminado:&amp;nbsp;TINYINT(1)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;imagen:&amp;nbsp;VARCHAR(2000)" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#0f766e;">
           <mxGeometry as="geometry" x="1240" y="110" width="350" height="272" />
         </mxCell>
-        <mxCell id="pedidos" value="&lt;b&gt;pedidos&lt;/b&gt;&lt;hr/&gt;PK&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;id_pedidos:&amp;nbsp;INT&lt;br/&gt;FK&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;id_mesa:&amp;nbsp;INT&amp;nbsp;?&lt;br/&gt;FK&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;id_mesero:&amp;nbsp;INT&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;estado:&amp;nbsp;VARCHAR(30)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;numero_mesa:&amp;nbsp;INT&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;servicio_id:&amp;nbsp;VARCHAR(64)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;mozo_id:&amp;nbsp;VARCHAR(200)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;mozo_nombre:&amp;nbsp;VARCHAR(80)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;creado_en:&amp;nbsp;DATETIME(3)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;historial:&amp;nbsp;LONGTEXT&amp;nbsp;?" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#0f766e;">
-          <mxGeometry as="geometry" x="440" y="110" width="350" height="328" />
+        <mxCell id="pedidos" value="&lt;b&gt;pedidos&lt;/b&gt;&lt;hr/&gt;PK&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;id_pedidos:&amp;nbsp;INT&lt;br/&gt;FK&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;id_mesa:&amp;nbsp;INT&amp;nbsp;?&lt;br/&gt;FK&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;id_mesero:&amp;nbsp;INT&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;estado:&amp;nbsp;VARCHAR(30)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;pago_requerido:&amp;nbsp;TINYINT(1)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;numero_mesa:&amp;nbsp;INT&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;servicio_id:&amp;nbsp;VARCHAR(64)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;mozo_id:&amp;nbsp;VARCHAR(200)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;mozo_nombre:&amp;nbsp;VARCHAR(80)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;creado_en:&amp;nbsp;DATETIME(3)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;historial:&amp;nbsp;LONGTEXT&amp;nbsp;?" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#0f766e;">
+          <mxGeometry as="geometry" x="440" y="110" width="350" height="356" />
         </mxCell>
         <mxCell id="pedidos_comida" value="&lt;b&gt;pedidos_comida&lt;/b&gt;&lt;hr/&gt;PK/FK&amp;nbsp;id_pedido:&amp;nbsp;INT&lt;br/&gt;PK/FK&amp;nbsp;id_comida:&amp;nbsp;INT&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;cantidad:&amp;nbsp;INT&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;notas:&amp;nbsp;VARCHAR(300)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;nombre_comida:&amp;nbsp;VARCHAR(100)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;precio_unitario:&amp;nbsp;DECIMAL(12,2)&amp;nbsp;?" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#0f766e;">
           <mxGeometry as="geometry" x="840" y="110" width="350" height="216" />
@@ -38,10 +38,42 @@
         <mxCell id="comida_stock" value="&lt;b&gt;comida_stock&lt;/b&gt;&lt;hr/&gt;PK/FK&amp;nbsp;id_comida:&amp;nbsp;INT&lt;br/&gt;PK/FK&amp;nbsp;id_stock:&amp;nbsp;INT" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#0f766e;">
           <mxGeometry as="geometry" x="840" y="1150" width="350" height="104" />
         </mxCell>
-        <mxCell id="envios" value="&lt;b&gt;envios&lt;/b&gt;&lt;hr/&gt;PK/FK&amp;nbsp;id_pedido:&amp;nbsp;INT&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;destinatario:&amp;nbsp;VARCHAR(100)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;direccion:&amp;nbsp;VARCHAR(300)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;indicaciones:&amp;nbsp;VARCHAR(300)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;repartidor_id:&amp;nbsp;VARCHAR(200)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;repartidor_nombre:&amp;nbsp;VARCHAR(80)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;estado:&amp;nbsp;VARCHAR(20)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;retirado_en:&amp;nbsp;DATETIME(3)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;entregado_en:&amp;nbsp;DATETIME(3)&amp;nbsp;?" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#0f766e;">
+        <mxCell id="envios" value="&lt;b&gt;envios&lt;/b&gt;&lt;hr/&gt;PK/FK&amp;nbsp;id_pedido:&amp;nbsp;INT&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;destinatario:&amp;nbsp;VARCHAR(100)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;direccion:&amp;nbsp;VARCHAR(300)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;indicaciones:&amp;nbsp;VARCHAR(300)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;repartidor_id:&amp;nbsp;VARCHAR(200)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;repartidor_nombre:&amp;nbsp;VARCHAR(80)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;estado:&amp;nbsp;VARCHAR(20)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;retirado_en:&amp;nbsp;DATETIME(3)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;entregado_en:&amp;nbsp;DATETIME(3)&amp;nbsp;?" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#0f766e;">
           <mxGeometry as="geometry" x="1240" y="1150" width="350" height="300" />
         </mxCell>
-        <mxCell id="rel0" value="pedido 1 : 0..1 envio" edge="1" parent="1" source="pedidos" target="envios" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToOne;fontSize=11;">
+        <mxCell id="modalidades_envio" value="&lt;b&gt;modalidades_envio&lt;/b&gt;&lt;hr/&gt;PK&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;codigo:&amp;nbsp;VARCHAR(40)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;nombre:&amp;nbsp;VARCHAR(80)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;costo:&amp;nbsp;DECIMAL(12,2)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;requiere_direccion:&amp;nbsp;TINYINT(1)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;requiere_repartidor:&amp;nbsp;TINYINT(1)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;activo:&amp;nbsp;TINYINT(1)" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#0f766e;">
+          <mxGeometry as="geometry" x="40" y="1600" width="350" height="216" />
+        </mxCell>
+        <mxCell id="envio_modalidad" value="&lt;b&gt;envio_modalidad&lt;/b&gt;&lt;hr/&gt;PK/FK&amp;nbsp;id_pedido:&amp;nbsp;INT&lt;br/&gt;FK&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;modalidad_codigo:&amp;nbsp;VARCHAR(40)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;costo:&amp;nbsp;DECIMAL(12,2)" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#0f766e;">
+          <mxGeometry as="geometry" x="440" y="1600" width="350" height="132" />
+        </mxCell>
+        <mxCell id="pagos" value="&lt;b&gt;pagos&lt;/b&gt;&lt;hr/&gt;PK&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;id_pago:&amp;nbsp;CHAR(36)&lt;br/&gt;FK&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;id_pedido:&amp;nbsp;INT&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;proveedor:&amp;nbsp;VARCHAR(40)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;estado:&amp;nbsp;VARCHAR(20)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;importe:&amp;nbsp;DECIMAL(12,2)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;moneda:&amp;nbsp;CHAR(3)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;preferencia_id:&amp;nbsp;VARCHAR(200)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;checkout_url:&amp;nbsp;VARCHAR(2048)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;referencia_pasarela:&amp;nbsp;VARCHAR(100)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;metodo:&amp;nbsp;VARCHAR(80)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;reembolso_id:&amp;nbsp;VARCHAR(100)&amp;nbsp;?&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;creado_en:&amp;nbsp;DATETIME(3)&lt;br/&gt;·&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;actualizado_en:&amp;nbsp;DATETIME(3)" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=12;fontFamily=Consolas;fontSize=13;fillColor=#ffffff;strokeColor=#0f766e;">
+          <mxGeometry as="geometry" x="840" y="1600" width="350" height="412" />
+        </mxCell>
+        <mxCell id="rel0" value="1 : 0..N" edge="1" parent="1" source="modalidades_envio" target="envio_modalidad" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToOne;fontSize=11;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel1" value="envio 1 : 0..1 modalidad" edge="1" parent="1" source="envios" target="envio_modalidad" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToOne;fontSize=11;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="1220" y="1320" />
+              <mxPoint x="1220" y="1540" />
+              <mxPoint x="615" y="1540" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel2" value="pedido 1 : 0..1 pago" edge="1" parent="1" source="pedidos" target="pagos" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToOne;fontSize=11;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="825" y="415" />
+              <mxPoint x="825" y="1510" />
+              <mxPoint x="1015" y="1510" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel3" value="pedido 1 : 0..1 envio" edge="1" parent="1" source="pedidos" target="envios" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToOne;fontSize=11;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="815" y="400" />
@@ -50,27 +82,27 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="rel1" value="1 : 0..N" edge="1" parent="1" source="mesas" target="pedidos" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
+        <mxCell id="rel4" value="1 : 0..N" edge="1" parent="1" source="mesas" target="pedidos" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="rel2" value="1 : 0..N" edge="1" parent="1" source="pedidos" target="pedidos_comida" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
+        <mxCell id="rel5" value="1 : 0..N" edge="1" parent="1" source="pedidos" target="pedidos_comida" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="rel3" value="1 : 0..N" edge="1" parent="1" source="comidas" target="pedidos_comida" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
+        <mxCell id="rel6" value="1 : 0..N" edge="1" parent="1" source="comidas" target="pedidos_comida" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="rel4" value="1 : 0..N" edge="1" parent="1" source="usuarios" target="sesiones_usuarios" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
+        <mxCell id="rel7" value="1 : 0..N" edge="1" parent="1" source="usuarios" target="sesiones_usuarios" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="rel5" value="Usuario opcional por pedido (id_mesero)" edge="1" parent="1" source="usuarios" target="pedidos" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;fontSize=11;">
+        <mxCell id="rel8" value="Usuario opcional por pedido (id_mesero)" edge="1" parent="1" source="usuarios" target="pedidos" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;fontSize=11;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="215" y="580" />
@@ -78,27 +110,27 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="rel6" value="1 : 0..N" edge="1" parent="1" source="resumenes" target="resumen_comida" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
+        <mxCell id="rel9" value="1 : 0..N" edge="1" parent="1" source="resumenes" target="resumen_comida" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="rel7" value="1 : 0..N" edge="1" parent="1" source="comidas" target="resumen_comida" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
+        <mxCell id="rel10" value="1 : 0..N" edge="1" parent="1" source="comidas" target="resumen_comida" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="rel8" value="1 : 0..N" edge="1" parent="1" source="Unidades" target="Stock" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
+        <mxCell id="rel11" value="1 : 0..N" edge="1" parent="1" source="Unidades" target="Stock" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="rel9" value="1 : 0..N" edge="1" parent="1" source="Stock" target="comida_stock" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
+        <mxCell id="rel12" value="1 : 0..N" edge="1" parent="1" source="Stock" target="comida_stock" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="rel10" value="comidas 1 : 0..N comida_stock" edge="1" parent="1" source="comidas" target="comida_stock" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
+        <mxCell id="rel13" value="comidas 1 : 0..N comida_stock" edge="1" parent="1" source="comidas" target="comida_stock" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERone;endArrow=ERzeroToMany;fontSize=11;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1610" y="382" />

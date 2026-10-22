@@ -4,6 +4,8 @@ Para la presentación: [accesos compartidos del equipo](ACCESOS-EQUIPO.md).
 API Express con MySQL y consultas parametrizadas. Incluye autenticación real, sesiones SQL y permisos por rol.
 Ver [LOGIN.md](LOGIN.md) antes de iniciar o actualizar.
 
+Envíos, modalidades y Mercado Pago de prueba: [ENVIOS-PAGOS.md](ENVIOS-PAGOS.md).
+
 ## Ejecutar
 
 ```sh

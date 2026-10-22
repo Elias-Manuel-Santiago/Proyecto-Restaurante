@@ -13,7 +13,9 @@
     "migrate:auth": "node modules/migrate-auth.js",
     "seed:admin": "node modules/seed-usuarios.js",
     "seed:equipo": "node modules/seed-usuarios.js --equipo",
-    "seed:equipo:pruebas": "node modules/seed-usuarios.js --equipo-pruebas"
+    "seed:equipo:pruebas": "node modules/seed-usuarios.js --equipo-pruebas",
+    "migrate:envios-pagos": "node modules/migrate-envios-pagos.js",
+    "configurar:mp:pruebas": "node modules/configurar-mp-pruebas.js"
   },
   "keywords": [],
   "author": "",

@@ -12,6 +12,7 @@ positions = {
     'pedidos_comida': (840, 110), 'comidas': (1240, 110),
     'usuarios': (40, 670), 'sesiones_usuarios': (440, 670),
     'resumenes': (840, 670), 'resumen_comida': (1240, 670),
+    'modalidades_envio': (40, 1600), 'envio_modalidad': (440, 1600), 'pagos': (840, 1600),
     'Unidades': (40, 1150), 'Stock': (440, 1150), 'comida_stock': (840, 1150), 'envios': (1240, 1150),
 }
 tables = {}
@@ -31,6 +32,9 @@ for name, body in re.findall(r'CREATE TABLE (\w+) \((.*?)\n\) ENGINE', sql, re.S
 
 # Puntos explícitos: relaciones legibles, sin atravesar las entidades.
 edges = [
+    ('modalidades_envio', 'envio_modalidad', '1 : 0..N', [(390,1730),(440,1730)], (398,1717)),
+    ('envios', 'envio_modalidad', 'envio 1 : 0..1 modalidad', [(1240,1320),(1220,1320),(1220,1540),(615,1540),(615,1600)], (645,1527)),
+    ('pedidos', 'pagos', 'pedido 1 : 0..1 pago', [(790,415),(825,415),(825,1510),(1015,1510),(1015,1600)], (855,1497)),
     ('pedidos', 'envios', 'pedido 1 : 0..1 envio', [(790,400),(815,400),(815,1115),(1415,1115),(1415,1150)], (850,1102)),
     ('mesas', 'pedidos', '1 : 0..N', [(390,235),(440,235)], (398,222)),
     ('pedidos', 'pedidos_comida', '1 : 0..N', [(790,235),(840,235)], (798,222)),
@@ -44,11 +48,11 @@ edges = [
     ('comidas', 'comida_stock', 'comidas 1 : 0..N comida_stock', [(1415,382),(1610,382),(1610,1080),(1015,1080),(1015,1150)], (1220,1065)),
 ]
 
-svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="1630" height="1650" viewBox="0 0 1630 1650">',
-       '<rect width="1630" height="1650" fill="#f1f5f9"/>',
+svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="1630" height="2200" viewBox="0 0 1630 2200">',
+       '<rect width="1630" height="2200" fill="#f1f5f9"/>',
        '<style>text{font-family:Consolas,monospace;fill:#172033}.row{font-size:13px}.title{font-family:Segoe UI,sans-serif;font-weight:700}</style>',
        '<text class="title" x="40" y="42" font-size="27">NÁCAR · Modelo de base de datos</text>',
-       '<text x="40" y="72" font-size="14">MariaDB 10.4+ / MySQL 8.0.16+ · 12 tablas · PK: primaria · FK: foránea · ?: nullable</text>']
+       '<text x="40" y="72" font-size="14">MariaDB 10.4+ / MySQL 8.0.16+ · 15 tablas · PK: primaria · FK: foránea · ?: nullable</text>']
 for name, t in tables.items():
     x, y, w, h = (t[k] for k in ('x','y','w','h'))
     color = '#6d28d9' if name in ('usuarios','sesiones_usuarios') else '#0f766e'
@@ -61,15 +65,15 @@ for source, target, label, pts, labelpos in edges:
     points = ' '.join(f'{x},{y}' for x,y in pts)
     svg += [f'<polyline points="{points}" fill="none" stroke="#475569" stroke-width="2"/>',
             f'<text x="{labelpos[0]}" y="{labelpos[1]}" font-size="{9 if label == "1 : 0..N" else 11}">{escape(label)}</text>']
-svg += ['<text x="40" y="1540" font-size="14">Violeta: usuarios y sesiones reales. Los pedidos conservan nombres e identificadores históricos.</text>',
-        '<text x="40" y="1567" font-size="14">Nombre y precio del ítem se guardan al pedir. imagen se conserva vacía por compatibilidad con la API.</text>',
-        '<text x="40" y="1594" font-size="14">Cada vínculo une un padre con cero o muchos hijos. El detalle y sus restricciones están en restaurante.sql.</text>',
-        '<text x="40" y="1621" font-size="14">Inventario: composición del plato. La cantidad de insumo por plato queda pendiente de aprobación.</text>', '</svg>']
+svg += ['<text x="40" y="2070" font-size="14">Violeta: usuarios y sesiones reales. Los pedidos conservan nombres e identificadores históricos.</text>',
+        '<text x="40" y="2097" font-size="14">Nombre y precio del ítem se guardan al pedir. imagen se conserva vacía por compatibilidad con la API.</text>',
+        '<text x="40" y="2124" font-size="14">Cada vínculo une un padre con cero o muchos hijos. El detalle y sus restricciones están en restaurante.sql.</text>',
+        '<text x="40" y="2151" font-size="14">Inventario: composición del plato. La cantidad de insumo por plato queda pendiente de aprobación.</text>', '</svg>']
 (BASE/'diagrama.svg').write_text('\n'.join(svg), encoding='utf-8')
 
 mxfile = ET.Element('mxfile', host='app.diagrams.net')
 diagram = ET.SubElement(mxfile, 'diagram', name='Restaurante', id='restaurante')
-model = ET.SubElement(diagram, 'mxGraphModel', pageWidth='1700', pageHeight='1700', page='1')
+model = ET.SubElement(diagram, 'mxGraphModel', pageWidth='1700', pageHeight='2200', page='1')
 root = ET.SubElement(model, 'root')
 ET.SubElement(root, 'mxCell', id='0')
 ET.SubElement(root, 'mxCell', id='1', parent='0')
@@ -79,7 +83,7 @@ for name,t in tables.items():
     ET.SubElement(cell, 'mxGeometry', x=str(t['x']), y=str(t['y']), width=str(t['w']), height=str(t['h']), attrib={'as':'geometry'})
 for i,(source,target,label,pts,_) in enumerate(edges):
     start_arrow = 'ERzeroToOne' if source == 'usuarios' and target == 'pedidos' else 'ERone'
-    cell = ET.SubElement(root,'mxCell',id=f'rel{i}',value=label,edge='1',parent='1',source=source,target=target,style=f'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow={start_arrow};endArrow={'ERzeroToOne' if target == 'envios' else 'ERzeroToMany'};fontSize=11;')
+    cell = ET.SubElement(root,'mxCell',id=f'rel{i}',value=label,edge='1',parent='1',source=source,target=target,style=f'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow={start_arrow};endArrow={'ERzeroToOne' if target in ('envios', 'envio_modalidad', 'pagos') else 'ERzeroToMany'};fontSize=11;')
     geo = ET.SubElement(cell,'mxGeometry',relative='1',attrib={'as':'geometry'})
     array = ET.SubElement(geo,'Array',attrib={'as':'points'})
     for x,y in pts[1:-1]:

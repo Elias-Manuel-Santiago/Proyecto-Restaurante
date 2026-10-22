@@ -1,3 +1,15 @@
+## Envíos y pagos (actualización vigente)
+
+El esquema completo tiene **15 tablas**. Se agregan `modalidades_envio`,
+`envio_modalidad` y `pagos`, sin cambiar las tres tablas de inventario.
+Para una base existente ejecutar `npm run migrate` desde `backend/`; para una
+base vacía importar `restaurante.sql` y luego ejecutar la misma migración.
+La migración carga las modalidades iniciales y conserva pedidos históricos.
+
+La configuración y las pruebas están en [ENVIOS-PAGOS.md](../../backend/ENVIOS-PAGOS.md).
+Los apartados que siguen documentan las etapas anteriores; sus recuentos de tablas
+y referencias a funciones pendientes corresponden a esas entregas.
+
 ## Acceso real
 
 Usuarios y sesiones_usuarios ya se utilizan para autenticación. La migración agrega
