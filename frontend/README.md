@@ -1,5 +1,6 @@
 # NÁCAR Restaurante
 
+Para la presentación: [accesos compartidos del equipo](../backend/ACCESOS-EQUIPO.md).
 La vista de repartidor está conectada a la API y a SQL. La configuración y el
 circuito completo están en [REPARTIDOR.md](REPARTIDOR.md).
 
@@ -9,7 +10,8 @@ presenta un error del motor (1932); consultar esa guía antes de importar o inic
 
 Frontend React + TypeScript conectado a la API Express/MySQL de `../backend`.
 Mesas, comidas, pedidos y resúmenes se leen y guardan en el servidor. Los usuarios,
-el acceso por roles y sus contraseñas siguen siendo locales, sin conexiones de usuarios.
+el acceso por roles y las sesiones también se guardan y verifican en SQL.
+Ver [configuración del login real](../backend/LOGIN.md).
 
 ## Ejecutar
 
@@ -18,12 +20,13 @@ En `backend/`, con MySQL disponible y la conexión de `modules/db.js` configurad
 ```sh
 npm ci
 npm run migrate
+npm run seed:admin
 npm start
 ```
 
 La migración agrega los campos necesarios para la interfaz y puede ejecutarse de nuevo.
-Conserva los registros existentes y no modifica las tablas de usuarios. El campo
-`pedidos.id_mesero` pasa a admitir `NULL` para no exigir un usuario real todavía.
+Conserva los registros existentes y habilita el rol repartidor en usuarios.
+`pedidos.id_mesero` admite NULL para conservar pedidos históricos sin cuenta SQL.
 `DB_DATABASE` permite elegir otra base; por defecto se usa la conexión existente.
 
 En `frontend/`:
@@ -55,7 +58,7 @@ Las rutas de la SPA necesitan fallback a `index.html`.
   agrupa las filas de pedidos y convierte importes de MySQL a números.
 - `src/state/store.ts`: carga inicial, acciones remotas y recarga después de guardar.
   No crea datos operativos de demostración ni usa un fallback a mocks.
-- `src/state/model.ts`: utilidades de presentación y operaciones de usuarios locales.
+- `src/state/model.ts`: utilidades de presentación y rutas por rol.
 - `src/mocks/restaurant.ts`: conserva únicamente los perfiles iniciales de usuarios.
 
 El estado conserva el objeto de error completo. `ErrorMessage` muestra un mensaje en
@@ -125,15 +128,12 @@ los nombres plurales del frontend. Los registros antiguos sin fecha, mozo o hist
 no reciben valores inventados. Los importes anteriores que no tenían precio histórico
 usan el precio disponible en la base; los nuevos pedidos sí guardan su propio precio.
 
-## Usuarios locales
+## Cuentas y sesiones SQL
 
-Seleccionar un rol y completar Usuario y Contraseña con valores ficticios. El acceso
-conserva su comportamiento anterior: no comprueba credenciales contra el backend.
-Los perfiles existentes se recuperan de la copia anterior y sus cambios se guardan
-bajo `nacar.users.v1`, sin copiar mesas, platos ni pedidos a localStorage.
-Crear, editar, restablecer y borrar usuarios continúa siendo local. No se consultan
-ni modifican `usuarios` ni `sesiones_usuarios` desde esta integración. El nombre e ID
-del mozo local se guardan únicamente como datos del pedido; no autentican al actor.
+Ingresar con usuario y contraseña creados por el administrador o el seed.
+No hay registro público ni acceso por elegir un rol. Actualizar la página recupera
+la sesión SQL y conserva la ruta permitida. Equipo administra cuentas reales;
+ver [LOGIN.md](../backend/LOGIN.md) para el seed opcional del equipo y los permisos.
 
 ## Formato y verificaciones
 

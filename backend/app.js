@@ -1,3 +1,5 @@
+import { registrarAcceso } from "./modules/rutas-acceso.js";
+import { vigilarSesion } from "./modules/autenticacion.js";
 import { crearEventosPrioridad } from "./modules/eventos-prioridad.js";
 import { crearColaPrioridad } from "./modules/prioridad.js";
 import express from "express";
@@ -19,9 +21,10 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Origin",
     process.env.FRONTEND_ORIGIN || "http://localhost:5173",
   );
+  res.header("Access-Control-Allow-Credentials", "true");
   res.header(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept",
+    "Origin, X-Requested-With, Content-Type, Accept, X-Nacar-Request",
   );
   res.header(
     "Access-Control-Allow-Methods",
@@ -30,7 +33,8 @@ app.use((req, res, next) => {
   if (req.method === "OPTIONS") return res.sendStatus(204);
   next();
 });
-app.use(express.json());
+app.use(express.json({ limit: "256kb" }));
+registrarAcceso(app);
 app.param("id", (req, res, next, id) => {
   if (!/^[1-9]\d*$/.test(id) || !Number.isSafeInteger(Number(id)))
     return res
@@ -39,7 +43,7 @@ app.param("id", (req, res, next, id) => {
   next();
 });
 
-// Un único try/catch por solicitud; el error conserva mensaje, stack y datos de MySQL.
+// Un único try/catch por solicitud; el manejador final devuelve mensajes seguros.
 function ruta(metodo, url, operacion, status = 200) {
   app[metodo](url, async (req, res, next) => {
     try {
@@ -120,7 +124,10 @@ ruta("delete", "/api/comidas/:id", async ({ params }) => {
   return mensaje("Comida eliminada.");
 });
 
-app.get("/api/pedidos/eventos", (req, res) => eventosPrioridad.conectar(res));
+app.get("/api/pedidos/eventos", (req, res) => {
+  eventosPrioridad.conectar(res);
+  vigilarSesion(req, res);
+});
 
 ruta("post", "/api/pedidos/obtener", async () =>
   prioridad.listar(await restaurante.listarTodosLosPedidos()),
@@ -144,6 +151,7 @@ ruta(
       body.comidas,
       body.mozo_id,
       body.mozo_nombre,
+      body.id_mesero,
     ),
     ...body,
   }),
@@ -224,8 +232,10 @@ ruta("delete", "/api/resumenes/:id", async ({ params }) => {
 });
 
 app.use((error, req, res, next) => {
-  console.error(error);
-  res
-    .status(400)
-    .json({ ...error, message: error.message, stack: error.stack });
+  if (res.headersSent) return next(error);
+  if (!error.status) console.error(error);
+  const message = error.code?.startsWith("ER_")
+    ? "No se pudo guardar el cambio. Revisá los datos o la configuración de la base."
+    : error.message;
+  res.status(error.status || 400).json({ message });
 });

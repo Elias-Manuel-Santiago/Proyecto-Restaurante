@@ -30,7 +30,7 @@ merge en GitHub no ejecuta SQL ni conecta automáticamente las bases de dos equi
 ## Probar el circuito
 
 1. Como administrador, tener al menos un plato disponible y un perfil activo con rol
-   Repartidor en Equipo. Se conservan todos los perfiles locales anteriores.
+   Repartidor en Equipo. Los perfiles de la demo no conceden acceso real.
 2. Como mozo o administrador, abrir Pedidos, pulsar Crear envío y completar los datos.
    Elegir platos y enviar a cocina. El envío queda guardado con `id_mesa = NULL`.
 3. Como chef, pasar ese pedido por En preparación y Listo.
@@ -54,11 +54,10 @@ reintentos de retiro/entrega sin duplicar el historial ni cambiar la hora de ret
 - POST /api/envios/obtener: consulta por repartidor_id y omite cancelados.
 - PATCH /api/envios/:id/estado: confirma en_camino o entregado.
 
-Los perfiles y el acceso siguen siendo los locales del proyecto: el identificador
-asignado se comprueba en SQL, pero todavía no existe autenticación de servidor.
-Para trabajar desde dispositivos distintos, el perfil debe conservar el mismo ID;
-crear dos perfiles con el mismo nombre no los convierte en el mismo usuario.
-El registro y los permisos con sesión de servidor son el próximo incremento.
+Los perfiles y el acceso se verifican ahora en SQL. Ver [LOGIN.md](../backend/LOGIN.md).
+El servidor obtiene el repartidor de la sesión y valida la cuenta asignada al crear
+un envío. Cada base local tiene sus propias cuentas. Los envíos históricos con IDs
+de perfiles de la demo requieren una reasignación acordada; no se convierten por nombre.
 Inventario mantiene exactamente sus tres tablas: no se agregó consumo automático,
 ni cantidades por plato. No se implementaron pagos ni geolocalización.
 

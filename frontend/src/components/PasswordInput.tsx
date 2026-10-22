@@ -7,7 +7,7 @@ interface Props {
   onChange: (value: string) => void
   error?: string
   inputRef?: Ref<HTMLInputElement>
-  autoComplete?: 'off' | 'new-password'
+  autoComplete?: 'off' | 'new-password' | 'current-password'
 }
 
 export function PasswordInput({

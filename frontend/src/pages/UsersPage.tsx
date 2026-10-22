@@ -8,12 +8,7 @@ import {
   validPassword,
   validUsername,
 } from '../state/credentials'
-import {
-  roleLabels,
-  type DemoUser,
-  type Role,
-  type UserProfile,
-} from '../types'
+import { roleLabels, type UserProfile, type Role } from '../types'
 import { isActive } from '../state/model'
 
 function UserEditor({
@@ -21,10 +16,12 @@ function UserEditor({
   resetPassword = false,
   onClose,
 }: {
-  user?: DemoUser
+  user?: UserProfile
   resetPassword?: boolean
   onClose: () => void
 }) {
+  const { session } = useRestaurant()
+  const self = user?.id === session?.id
   const [draft, setDraft] = useState<UserProfile>(() => ({
     id: user?.id ?? crypto.randomUUID(),
     name: user?.name ?? '',
@@ -50,7 +47,7 @@ function UserEditor({
       : ''
   const passwordError =
     submitted && passwordRequired && !validPassword(password)
-      ? 'Ingresá una contraseña de 1 a 128 caracteres que no sea solo espacios.'
+      ? 'Ingresá una contraseña de 10 a 128 caracteres que no sea solo espacios.'
       : ''
   const confirmationError =
     submitted &&
@@ -110,15 +107,15 @@ function UserEditor({
         resetPassword
           ? 'Restablecer contraseña'
           : user
-            ? 'Editar usuario demo'
-            : 'Crear usuario demo'
+            ? 'Editar usuario'
+            : 'Crear usuario'
       }
       onClose={close}
     >
       {resetPassword && (
         <p>
-          Nuevo verificador para <strong>{user?.name}</strong> ·{' '}
-          {user?.username}. El acceso demo actual no comprueba contraseñas.
+          Nueva contraseña para <strong>{user?.name}</strong> · {user?.username}
+          . Sus sesiones abiertas se cerrarán.
         </p>
       )}
       <form
@@ -132,7 +129,7 @@ function UserEditor({
           {!resetPassword && (
             <>
               <div className="login-field">
-                <label htmlFor={`${formId}-name`}>Nombre de demostración</label>
+                <label htmlFor={`${formId}-name`}>Nombre</label>
                 <input
                   ref={nameInput}
                   id={`${formId}-name`}
@@ -194,6 +191,7 @@ function UserEditor({
               <label>
                 Rol
                 <select
+                  disabled={self}
                   value={draft.role}
                   onChange={(event) =>
                     setDraft({ ...draft, role: event.target.value as Role })
@@ -209,12 +207,13 @@ function UserEditor({
               <label className="check-label">
                 <input
                   type="checkbox"
+                  disabled={self}
                   checked={draft.active}
                   onChange={(event) =>
                     setDraft({ ...draft, active: event.target.checked })
                   }
                 />
-                Acceso demo habilitado
+                Cuenta habilitada
               </label>
             </>
           )}
@@ -250,8 +249,7 @@ function UserEditor({
             </p>
           )}
           <p className="login-note">
-            Datos locales de demostración. Usá valores ficticios; las
-            contraseñas no se comprueban al ingresar.
+            La contraseña se guarda de forma segura en el servidor.
           </p>
           <div className="actions">
             <button className="primary-button" type="submit">
@@ -273,19 +271,18 @@ function UserEditor({
 
 export function UsersPage() {
   const { data, session, actUser: act } = useRestaurant()
-  const [editing, setEditing] = useState<DemoUser | 'new' | null>(null)
-  const [resetting, setResetting] = useState<DemoUser | null>(null)
-  const [deleting, setDeleting] = useState<DemoUser | null>(null)
+  const [editing, setEditing] = useState<UserProfile | 'new' | null>(null)
+  const [resetting, setResetting] = useState<UserProfile | null>(null)
+  const [deleting, setDeleting] = useState<UserProfile | null>(null)
   const [error, setError] = useState('')
   return (
     <>
       <section className="page-intro">
         <div>
-          <span className="eyebrow">Equipo · Accesos de demostración</span>
+          <span className="eyebrow">Equipo · Cuentas del restaurante</span>
           <h1>Un equipo, distintas miradas</h1>
           <p>
-            Gestioná perfiles y datos ficticios. El acceso demo reutiliza el
-            primer perfil habilitado del rol y no comprueba contraseñas.
+            Creá cuentas, asigná roles y administrá el acceso al restaurante.
           </p>
         </div>
         <button className="primary-button" onClick={() => setEditing('new')}>
@@ -331,20 +328,20 @@ export function UsersPage() {
                 </button>
                 <button
                   className="text-button danger-text"
-                  disabled={blocked}
+                  disabled={blocked || !user.active}
                   onClick={() => {
                     setError('')
                     setDeleting(user)
                   }}
                 >
-                  Eliminar
+                  Desactivar
                 </button>
               </div>
               {blocked && (
                 <small className="muted">
                   {user.id === session?.id
                     ? 'Tu acceso de administrador se conserva.'
-                    : 'Borrado bloqueado: pedidos activos.'}
+                    : 'Cambio bloqueado: pedidos activos.'}
                 </small>
               )}
             </article>
@@ -366,12 +363,12 @@ export function UsersPage() {
       )}
       {deleting && (
         <ConfirmDialog
-          title="Eliminar usuario demo"
-          description={`Se quitará el acceso de ${deleting.name}. Sus pedidos históricos conservarán el alias.`}
+          title="Desactivar usuario"
+          description={`Se quitará el acceso de ${deleting.name}. Sus pedidos históricos se conservarán.`}
           error={error}
           onClose={() => setDeleting(null)}
-          onConfirm={() => {
-            const message = act({ type: 'deleteUser', id: deleting.id })
+          onConfirm={async () => {
+            const message = await act({ type: 'deleteUser', id: deleting.id })
             setError(message)
             if (!message) setDeleting(null)
           }}

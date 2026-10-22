@@ -1,3 +1,10 @@
+## Acceso real
+
+Usuarios y sesiones_usuarios ya se utilizan para autenticación. La migración agrega
+repartidor a los roles permitidos, sin duplicar tablas; el modelo sigue teniendo 12.
+Ver [instalación, seed y sesiones](../../backend/LOGIN.md). Las referencias históricas
+al acceso local más abajo describen la etapa anterior y quedan reemplazadas por esa guía.
+
 ## Actualización de reparto
 
 La instalación nueva incluye 12 tablas. Para una base existente usar la migración

@@ -4,44 +4,13 @@ import {
   adaptarMesas,
   adaptarPedidos,
 } from '../services/adapters'
-import type { DemoUser, RestaurantData, Role, UserProfile } from '../types'
-import {
-  applyAction,
-  createInitialData,
-  STORAGE_KEY,
-  validUsers,
-  type Action,
-} from './model'
-import {
-  createCredential,
-  DEMO_PASSWORD,
-  normalizeUsername,
-  validUsername,
-} from './credentials'
-
-const USERS_KEY = 'nacar.users.v1'
-let warning = ''
-// Solo los perfiles continúan en localStorage. Nunca se restauran pedidos de la demo.
-function loadData(): RestaurantData {
-  const data = createInitialData()
-  try {
-    const saved =
-      localStorage.getItem(USERS_KEY) ?? localStorage.getItem(STORAGE_KEY)
-    if (saved) {
-      const parsed = JSON.parse(saved)
-      const candidate = { ...data, users: parsed.users }
-      if (validUsers(candidate.users)) return candidate
-    }
-  } catch {
-    warning = 'No se pudieron leer los perfiles locales.'
-  }
-  return data
-}
-
+import type { Role, UserProfile } from '../types'
+import { createInitialData, type Action } from './model'
 let snapshot = {
-  data: loadData(),
-  session: null as DemoUser | null,
-  warning,
+  data: createInitialData(),
+  session: null as UserProfile | null,
+  warning: '',
+  authChecking: true,
   loading: false,
   busy: false,
   error: null as Error | null,
@@ -50,15 +19,22 @@ let snapshot = {
 const listeners = new Set<() => void>()
 const emit = () => listeners.forEach((listener) => listener())
 let sessionVersion = 0
-
-function persist(data: RestaurantData): string {
-  try {
-    localStorage.setItem(USERS_KEY, JSON.stringify({ users: data.users }))
-    return ''
-  } catch {
-    return 'El cambio se aplicó en memoria, pero no pudo guardarse. No cierres esta pestaña si necesitás conservarlo.'
+const clearSession = (message = '') => {
+  sessionVersion++
+  snapshot = {
+    ...snapshot,
+    session: null,
+    data: createInitialData(),
+    resumenes: [],
+    authChecking: false,
+    warning: message,
+    error: null,
   }
+  emit()
 }
+api.alVencerSesion(() =>
+  clearSession('Tu sesión venció o fue cerrada. Ingresá nuevamente.'),
+)
 
 type RemoteAction =
   | {
@@ -100,22 +76,30 @@ export const restaurantStore = {
   /** Recarga datos reales; no hay fallback a mocks si la API falla. */
   async refresh(background = false): Promise<Error | null> {
     // El repartidor consulta sus envíos a través del hook específico.
-    if (snapshot.session?.role === 'repartidor') return null
+    if (!snapshot.session || snapshot.session.role === 'repartidor') return null
+    const version = sessionVersion
+    const role = snapshot.session.role
     if (refreshing) return refreshing
     refreshing = (async () => {
       snapshot = { ...snapshot, loading: !background }
       emit()
       try {
-        const [mesas, comidas, pedidos, resumenes] = await Promise.all([
-          api.obtenerMesas(),
-          api.obtenerComidas(),
-          api.obtenerPedidos(),
-          api.obtenerResumenes(),
-        ])
+        const [mesas, comidas, pedidos, resumenes, usuarios] =
+          await Promise.all([
+            api.obtenerMesas(),
+            api.obtenerComidas(),
+            api.obtenerPedidos(),
+            role === 'admin'
+              ? api.obtenerResumenes()
+              : Promise.resolve({ data: [] as api.ResumenApi[] }),
+            api.obtenerUsuarios(role !== 'admin'),
+          ])
         if (mesas instanceof Error) throw mesas
         if (comidas instanceof Error) throw comidas
         if (pedidos instanceof Error) throw pedidos
         if (resumenes instanceof Error) throw resumenes
+        if (usuarios instanceof Error) throw usuarios
+        if (version !== sessionVersion) return null
         const orders = adaptarPedidos(pedidos.data)
         snapshot = {
           ...snapshot,
@@ -124,13 +108,15 @@ export const restaurantStore = {
             tables: adaptarMesas(mesas.data, orders),
             dishes: adaptarComidas(comidas.data),
             orders,
+            users: usuarios.data,
           },
           resumenes: resumenes.data,
           error: null,
         }
         return null
       } catch (error) {
-        snapshot = { ...snapshot, error: error as Error }
+        if (version === sessionVersion)
+          snapshot = { ...snapshot, error: error as Error }
         return error as Error
       } finally {
         snapshot = { ...snapshot, loading: false }
@@ -283,117 +269,67 @@ export const restaurantStore = {
     }
   },
   getSnapshot: () => snapshot,
-  login(role: Role): string {
-    const user = snapshot.data.users.find(
-      (candidate) => candidate.role === role && candidate.active,
-    )
-    if (!user) return 'No hay perfiles demo habilitados para este rol.'
-    sessionVersion++
-    snapshot = { ...snapshot, session: user }
-    emit()
-    return ''
-  },
-  logout() {
-    sessionVersion++
-    snapshot = { ...snapshot, session: null }
-    emit()
-  },
-  async saveUser(profile: UserProfile, password?: string): Promise<string> {
-    const actor = snapshot.session
+  async restoreSession() {
     const version = sessionVersion
-    if (!actor || actor.role !== 'admin')
-      return 'Solo el administrador puede gestionar usuarios.'
-    const previous = snapshot.data.users.find((user) => user.id === profile.id)
-    const username = normalizeUsername(profile.username ?? '')
-    if (
-      !profile.name.trim() ||
-      profile.name.trim().length > 80 ||
-      !validUsername(username)
-    )
-      return 'Completá el nombre y un usuario de 3 a 40 caracteres: a–z, 0–9, punto, guion o guion bajo.'
-    if (
-      snapshot.data.users.some(
-        (user) => user.id !== profile.id && user.username === username,
+    const response = await api.consultarSesion()
+    if (version !== sessionVersion) return
+    if (response instanceof Error) {
+      clearSession(
+        (response as Error & { status?: number }).status === 401
+          ? snapshot.session
+            ? 'Tu sesión venció o fue cerrada. Ingresá nuevamente.'
+            : ''
+          : response.message,
       )
-    )
-      return 'Ya existe un usuario con ese nombre de acceso.'
-    if (!previous && !password) return 'Asigná una contraseña al usuario nuevo.'
-    try {
-      const credential =
-        password === undefined
-          ? (previous?.credential ?? (await createCredential(DEMO_PASSWORD)))
-          : await createCredential(password)
-      if (version !== sessionVersion || snapshot.session?.id !== actor.id)
-        return 'La sesión cambió. Ingresá nuevamente para continuar.'
-      if (
-        snapshot.data.users.find((user) => user.id === profile.id) !== previous
-      )
-        return 'El perfil cambió mientras se guardaba. Abrilo nuevamente.'
-      return restaurantStore.actUser({
-        type: 'saveUser',
-        user: {
-          id: profile.id,
-          name: profile.name.trim(),
-          username,
-          role: profile.role,
-          active: profile.active,
-          credential,
-        },
-      })
-    } catch (error) {
-      return error instanceof Error
-        ? error.message
-        : 'No se pudo guardar el usuario.'
+      return
     }
-  },
-  actUser(
-    action: Extract<Action, { type: 'saveUser' | 'deleteUser' }>,
-  ): string {
-    try {
-      const data = applyAction(snapshot.data, snapshot.session, action)
-      snapshot = {
-        ...snapshot,
-        data,
-        session:
-          data.users.find(
-            (user) => user.id === snapshot.session?.id && user.active,
-          ) ?? null,
-        warning: persist(data),
-      }
-      emit()
-      return ''
-    } catch (error) {
-      return error instanceof Error
-        ? error.message
-        : 'No se pudo completar la acción.'
-    }
-  },
-}
-
-window.addEventListener('storage', (event) => {
-  if (event.key !== USERS_KEY || !event.newValue) return
-  try {
-    const parsed = {
-      ...snapshot.data,
-      users: JSON.parse(event.newValue).users,
-    }
-    if (!validUsers(parsed.users)) return
-    const session =
-      parsed.users.find(
-        (user) =>
-          user.id === snapshot.session?.id &&
-          user.active &&
-          user.role === snapshot.session.role,
-      ) ?? null
-    if (!session && snapshot.session) sessionVersion++
     snapshot = {
       ...snapshot,
-      data: { ...snapshot.data, users: parsed.users },
-      session,
+      session: response.data,
+      authChecking: false,
       warning: '',
     }
     emit()
-  } catch {
-    return
-  }
-})
+  },
+  async login(username: string, password: string): Promise<string> {
+    const response = await api.ingresar(username, password)
+    if (response instanceof Error) return response.message
+    sessionVersion++
+    snapshot = {
+      ...snapshot,
+      data: createInitialData(),
+      session: response.data,
+      authChecking: false,
+      warning: '',
+      error: null,
+    }
+    emit()
+    return ''
+  },
+  async logout() {
+    const response = await api.cerrarSesion()
+    if (response instanceof Error) {
+      snapshot = { ...snapshot, error: response }
+      emit()
+      return
+    }
+    clearSession()
+  },
+  async saveUser(profile: UserProfile, password?: string): Promise<string> {
+    if (snapshot.session?.role !== 'admin')
+      return 'Solo el administrador puede gestionar usuarios.'
+    const nuevo = !snapshot.data.users.some((user) => user.id === profile.id)
+    const response = await api.guardarUsuario(profile, password, nuevo)
+    if (response instanceof Error) return response.message
+    await restaurantStore.refresh()
+    // Cambiar la propia contraseña cierra también esta sesión.
+    if (password && profile.id === snapshot.session?.id)
+      await restaurantStore.restoreSession()
+    return ''
+  },
+  async actUser(action: { type: 'deleteUser'; id: string }): Promise<string> {
+    const user = snapshot.data.users.find((user) => user.id === action.id)
+    if (!user) return 'Usuario no encontrado.'
+    return restaurantStore.saveUser({ ...user, active: false })
+  },
+}

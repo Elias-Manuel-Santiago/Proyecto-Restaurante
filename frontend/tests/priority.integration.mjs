@@ -1,3 +1,8 @@
+import axios from 'axios'
+import {
+  cookieChef,
+  simularSesion,
+} from '../../backend/tests/sesion-simulada.js'
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs/promises'
@@ -55,10 +60,12 @@ test('prioridad compartida entre chef y mozo, sin persistencia local ni escritur
   }))
   let holdSummary = null
   let orderReads = 0
-  t.mock.method(db, 'query', async (sql) => {
+  t.mock.method(db, 'query', async (sql, params) => {
+    const session = simularSesion(sql, params)
+    if (session) return session
     assert.match(sql, /^SELECT\b/i)
     if (sql.includes('FROM pedidos p')) orderReads++
-    if (sql.includes('FROM resumenes') && holdSummary) {
+    if (sql.includes('FROM mesas') && holdSummary) {
       const gate = holdSummary
       holdSummary = null
       gate.started()
@@ -88,6 +95,33 @@ test('prioridad compartida entre chef y mozo, sin persistencia local ni escritur
     server.once('listening', resolve)
     server.once('error', reject)
   })
+  const originalAdapter = axios.defaults.adapter
+  const realAdapter = axios.getAdapter(originalAdapter)
+  let role = 'chef'
+  axios.defaults.adapter = async (config) => {
+    if (config.url === '/auth/login') {
+      role = JSON.parse(config.data).username
+      return {
+        data: {
+          id: role === 'chef' ? '1' : '2',
+          name: 'Prueba',
+          role,
+          active: true,
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config,
+      }
+    }
+    if (config.url === '/auth/logout')
+      return { data: {}, status: 200, statusText: 'OK', headers: {}, config }
+    config.headers.set(
+      'Cookie',
+      role === 'chef' ? cookieChef : `nacar_session=${'b'.repeat(64)}`,
+    )
+    return realAdapter(config)
+  }
   const previousBase = process.env.TEST_API_BASE
   process.env.TEST_API_BASE = `http://127.0.0.1:${server.address().port}/api`
   let unsubscribe
@@ -106,7 +140,7 @@ test('prioridad compartida entre chef y mozo, sin persistencia local ni escritur
       [...store.getSnapshot().data.orders]
         .sort(compareOrderPriority)
         .map((order) => order.id)
-    store.login('chef')
+    await store.login('chef', 'prueba')
     assert.equal(await store.refresh(), null)
     assert.deepEqual(orderIds(), ['1', '2'])
     assert.equal(
@@ -119,8 +153,8 @@ test('prioridad compartida entre chef y mozo, sin persistencia local ni escritur
       '',
     )
     assert.deepEqual(orderIds(), ['2', '1'])
-    store.logout()
-    store.login('mozo')
+    await store.logout()
+    await store.login('mozo', 'prueba')
     let synchronized = Promise.resolve()
     unsubscribe = suscribirPrioridadPedidos(() => {
       synchronized = store.refreshAfterEvent()
@@ -132,7 +166,11 @@ test('prioridad compartida entre chef y mozo, sin persistencia local ni escritur
         `${process.env.TEST_API_BASE}/pedidos/${id}/prioridad`,
         {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Nacar-Request': '1',
+            Cookie: cookieChef,
+          },
           body: JSON.stringify({ destino: targetId, antes: true }),
         },
       )
@@ -184,8 +222,8 @@ test('prioridad compartida entre chef y mozo, sin persistencia local ni escritur
       previousSync,
       'Cerrar la conexión elimina los listeners',
     )
-    store.logout()
-    store.login('mozo')
+    await store.logout()
+    await store.login('mozo', 'prueba')
     assert.equal(await store.refresh(), null)
     assert.deepEqual(orderIds(), ['1', '2'])
     assert.ok(
@@ -208,6 +246,7 @@ test('prioridad compartida entre chef y mozo, sin persistencia local ni escritur
     )
   } finally {
     release?.()
+    axios.defaults.adapter = originalAdapter
     unsubscribe?.()
     if (previousBase === undefined) delete process.env.TEST_API_BASE
     else process.env.TEST_API_BASE = previousBase

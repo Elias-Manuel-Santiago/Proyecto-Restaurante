@@ -1,3 +1,4 @@
+import axios from 'axios'
 import assert from 'node:assert/strict'
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -39,6 +40,15 @@ async function compile(source) {
   await fs.writeFile(target, text)
   return target
 }
+const realAdapter = axios.getAdapter(axios.defaults.adapter)
+let sessionCookie = ''
+axios.defaults.adapter = async (config) => {
+  if (sessionCookie) config.headers.set('Cookie', sessionCookie)
+  const response = await realAdapter(config)
+  const setCookie = response.headers['set-cookie']?.[0]
+  if (setCookie) sessionCookie = setCookie.split(';')[0]
+  return response
+}
 const saved = new Map()
 let writes = 0
 const handlers = new Map()
@@ -57,9 +67,11 @@ try {
   const { restaurantStore: store } = await import(pathToFileURL(modulePath))
   assert.equal(store.getSnapshot().data.tables.length, 0)
   assert.equal(store.getSnapshot().data.orders.length, 0)
-  assert.equal(store.login('admin'), '')
+  assert.equal(
+    await store.login('test_admin', process.env.TEST_AUTH_PASSWORD),
+    '',
+  )
   assert.equal(await store.refresh(), null)
-  const users = JSON.stringify(store.getSnapshot().data.users)
   const uuid = crypto.randomUUID()
   assert.equal(
     await store.act({ type: 'saveTable', id: uuid, number: 12, capacity: 4 }),
@@ -88,8 +100,9 @@ try {
     await store.act({ type: 'openTable', id: mesa.id, diners: 2 }),
     '',
   )
-  store.logout()
-  store.login('mozo')
+  await store.logout()
+  await store.login('test_mozo', process.env.TEST_AUTH_PASSWORD)
+  await store.refresh()
   assert.equal(
     await store.act({
       type: 'createOrder',
@@ -130,8 +143,9 @@ try {
     })) instanceof Error,
     'Solo el chef puede priorizar desde la interfaz',
   )
-  store.logout()
-  store.login('chef')
+  await store.logout()
+  await store.login('test_chef', process.env.TEST_AUTH_PASSWORD)
+  await store.refresh()
   assert.equal(
     await store.act({
       type: 'reorderOrder',
@@ -141,8 +155,9 @@ try {
     }),
     '',
   )
-  store.logout()
-  store.login('mozo')
+  await store.logout()
+  await store.login('test_mozo', process.env.TEST_AUTH_PASSWORD)
+  await store.refresh()
   assert.equal(await store.refresh(), null)
   const prioritized = store
     .getSnapshot()
@@ -175,35 +190,38 @@ try {
     }),
     '',
   )
-  store.logout()
-  store.login('chef')
+  await store.logout()
+  await store.login('test_chef', process.env.TEST_AUTH_PASSWORD)
+  await store.refresh()
   const error = await store.act({
     type: 'transition',
     id: order.id,
     status: 'listo',
   })
   assert.ok(error instanceof Error)
-  assert.equal(error.response.status, 400)
-  assert.ok(error.response.data.stack)
+  assert.equal(error.status, 400)
+  assert.ok(!error.response, 'No se expone stack ni SQL al navegador')
   assert.equal(
     store.getSnapshot().error,
     error,
-    'Se conserva el error completo',
+    'Se conserva el errores de negocio seguros',
   )
   for (const status of ['preparacion', 'listo'])
     assert.equal(
       await store.act({ type: 'transition', id: order.id, status }),
       '',
     )
-  store.logout()
-  store.login('mozo')
+  await store.logout()
+  await store.login('test_mozo', process.env.TEST_AUTH_PASSWORD)
+  await store.refresh()
   assert.equal(
     await store.act({ type: 'transition', id: order.id, status: 'entregado' }),
     '',
   )
   assert.equal(await store.act({ type: 'closeTable', id: mesa.id }), '')
-  store.logout()
-  store.login('admin')
+  await store.logout()
+  await store.login('test_admin', process.env.TEST_AUTH_PASSWORD)
+  await store.refresh()
   order = store.getSnapshot().data.orders.find((item) => item.id === order.id)
   assert.equal(order.history.length, 4)
   assert.equal(order.items[0].quantity, 3)
@@ -241,13 +259,13 @@ try {
   )
   assert.equal(await store.act({ type: 'deleteDish', id: dish.id }), '')
   assert.equal(await store.act({ type: 'deleteTable', id: mesa.id }), '')
-  assert.equal(JSON.stringify(store.getSnapshot().data.users), users)
+  assert.ok(store.getSnapshot().data.users.length >= 4)
   assert.equal(
     writes,
     0,
     'Las operaciones remotas no guardan mocks ni usuarios',
   )
-  // La creación de usuarios conserva el almacenamiento local y no requiere una API.
+  // La creación de usuarios usa SQL y no escribe perfiles ni credenciales locales.
   assert.equal(
     await store.saveUser(
       {
@@ -257,17 +275,23 @@ try {
         role: 'mozo',
         active: true,
       },
-      'Clave de prueba',
+      'Clave de prueba segura',
     ),
     '',
   )
-  assert.equal(writes, 1)
-  assert.ok(saved.has('nacar.users.v1'))
-  assert.deepEqual(Object.keys(JSON.parse(saved.get('nacar.users.v1'))), [
-    'users',
-  ])
+  assert.equal(writes, 0)
+  // Simula una recarga: store nuevo, misma cookie HTTP y ninguna identidad en memoria.
+  const fresh = await import(pathToFileURL(modulePath).href + '?recarga=1')
+  assert.equal(fresh.restaurantStore.getSnapshot().session, null)
+  await fresh.restaurantStore.restoreSession()
+  assert.equal(
+    fresh.restaurantStore.getSnapshot().session.id,
+    store.getSnapshot().session.id,
+  )
+  await fresh.restaurantStore.logout()
+  assert.equal(fresh.restaurantStore.getSnapshot().session, null)
   console.log(
-    'OK: store real + Axios + MySQL: roles locales, CRUD, pedidos, edición, estados, historial, precios, resúmenes y error completo. Sin mocks operativos.',
+    'OK: store real + Axios + MySQL: sesiones SQL, CRUD, pedidos, edición, estados, historial, precios, resúmenes y errores de negocio seguros. Sin mocks operativos.',
   )
 } finally {
   delete globalThis.localStorage

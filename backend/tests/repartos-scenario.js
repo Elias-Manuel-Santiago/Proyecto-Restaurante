@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 
-export async function probarRepartos(request, db) {
+export async function probarRepartos(request, db, clientes) {
   const comida = await request(
     "POST",
     "/comidas",
@@ -17,7 +17,7 @@ export async function probarRepartos(request, db) {
     destinatario: "Destinatario de prueba",
     direccion: "Dirección de prueba 123",
     indicaciones: "Timbre",
-    repartidor_id: "courier-test",
+    repartidor_id: clientes.usuarios.repartidor.id,
     repartidor_nombre: "Repartidor de prueba",
     mozo_id: "mozo-test",
     mozo_nombre: "Mozo de prueba",
@@ -51,12 +51,20 @@ export async function probarRepartos(request, db) {
   assert.equal(filas[0].cantidad, 2);
   assert.equal(filas[0].nombre_comida, "Prueba SQL reparto");
   assert.deepEqual(
-    await request("POST", "/envios/obtener", { repartidor_id: "otro" }),
+    await request(
+      "POST",
+      "/envios/obtener",
+      { repartidor_id: datos.repartidor_id },
+      200,
+      "otro_repartidor",
+    ),
     [],
   );
-  assert.deepEqual(
-    await request("POST", "/envios/obtener", { repartidor_id: "' OR 1=1 --" }),
-    [],
+  assert.equal(
+    (await request("POST", "/envios/obtener", { repartidor_id: "' OR 1=1 --" }))
+      .length,
+    1,
+    "El servidor usa la identidad de la sesión, no el filtro falsificado",
   );
   const cambiar = (estado, status = 200, repartidor_id = datos.repartidor_id) =>
     request(
@@ -64,6 +72,7 @@ export async function probarRepartos(request, db) {
       `/envios/${id}/estado`,
       { estado, repartidor_id, actor: "Repartidor de prueba" },
       status,
+      repartidor_id === datos.repartidor_id ? "repartidor" : "otro_repartidor",
     );
   await cambiar("en_camino", 400);
   await request("PUT", `/pedidos/${id}`, { comidas: datos.comidas });

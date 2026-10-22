@@ -9,14 +9,21 @@
     "migrate": "node modules/migrate.js",
     "migrate:stock": "node modules/migrate-stock.js",
     "migrate:reparto": "node modules/migrate-reparto.js",
-    "test": "node --test tests/*.test.js"
+    "test": "node --test tests/*.test.js",
+    "migrate:auth": "node modules/migrate-auth.js",
+    "seed:admin": "node modules/seed-usuarios.js",
+    "seed:equipo": "node modules/seed-usuarios.js --equipo",
+    "seed:equipo:pruebas": "node modules/seed-usuarios.js --equipo-pruebas"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "argon2": "^0.45.1",
+    "cookie-parser": "^1.4.7",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.7.1",
     "mysql2": "^3.24.4"
   }
 }

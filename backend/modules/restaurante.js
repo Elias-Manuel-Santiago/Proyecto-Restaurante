@@ -279,7 +279,13 @@ export async function guardarItems(conexion, id, comidas) {
   }
 }
 
-export async function crearPedido(id_mesa, comidas, mozo_id, mozo_nombre) {
+export async function crearPedido(
+  id_mesa,
+  comidas,
+  mozo_id,
+  mozo_nombre,
+  id_mesero = null,
+) {
   comprobar(
     texto(mozo_id, 200) && texto(mozo_nombre, 80),
     "Indicá el mozo local del pedido.",
@@ -298,9 +304,10 @@ export async function crearPedido(id_mesa, comidas, mozo_id, mozo_nombre) {
       { status: "pendiente", at: ahora.toISOString(), actor: mozo_nombre },
     ];
     const [resultado] = await conexion.query(
-      "INSERT INTO pedidos (id_mesa,id_mesero,estado,numero_mesa,servicio_id,mozo_id,mozo_nombre,creado_en,historial) VALUES (?,NULL,'pendiente',?,?,?,?,?,?)",
+      "INSERT INTO pedidos (id_mesa,id_mesero,estado,numero_mesa,servicio_id,mozo_id,mozo_nombre,creado_en,historial) VALUES (?,?,'pendiente',?,?,?,?,?,?)",
       [
         id_mesa,
+        id_mesero,
         mesa.numero,
         mesa.servicio_id,
         mozo_id,

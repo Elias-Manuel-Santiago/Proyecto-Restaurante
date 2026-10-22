@@ -1,12 +1,15 @@
 # Backend del restaurante
 
-API Express con MySQL y consultas parametrizadas. No agrega conexiones de usuarios.
+Para la presentación: [accesos compartidos del equipo](ACCESOS-EQUIPO.md).
+API Express con MySQL y consultas parametrizadas. Incluye autenticación real, sesiones SQL y permisos por rol.
+Ver [LOGIN.md](LOGIN.md) antes de iniciar o actualizar.
 
 ## Ejecutar
 
 ```sh
 npm ci
 npm run migrate
+npm run seed:admin
 npm start
 ```
 
@@ -19,7 +22,7 @@ Se admite `PATCH`, necesario para estados, disponibilidad y apertura/cierre de m
 ## Código
 
 - `app.js`: rutas HTTP y un único try/catch por solicitud. Los errores se devuelven
-  con sus propiedades, mensaje y stack. Es un manejo simple para esta etapa local.
+  con un mensaje de negocio, sin exponer SQL, hashes ni stack.
 - `modules/restaurante.js`: operaciones de mesas, comidas y pedidos. Las escrituras
   en varias tablas usan transacciones y revierten ante errores.
 - `modules/consultas.js`: consultas de resúmenes y sus posiciones.
@@ -64,8 +67,8 @@ vuelve a fijar los precios de sus ítems con la carta vigente.
 
 La migración agrega campos sin borrar registros. También amplía `comidas.descripcion`
 a TEXT para admitir los 500 caracteres del frontend. Hace nullable `pedidos.id_mesero`
-para permitir pedidos de mozos locales sin consultar ni modificar las tablas de usuarios.
-`mozo_id` y `mozo_nombre` son datos descriptivos del pedido, no una integración de usuarios.
+para conservar pedidos anteriores sin cuenta SQL asociada. Las altas actuales registran el usuario autenticado.
+`mozo_id` y `mozo_nombre` conservan la identidad y el nombre histórico al registrar el pedido.
 
 Los pedidos anteriores despachados se muestran como entregados. Los pedidos activos
 anteriores se asocian a una visita anterior de su mesa. No se inventan fechas ni actores
@@ -96,11 +99,10 @@ El listado POST /api/pedidos/obtener agrega prioridad (posición desde 1) a cada
 fila activa; en pedidos finalizados devuelve null. PATCH /api/pedidos/:id/prioridad
 recibe { destino: ID, antes: boolean } y mueve un pedido respecto de otro del
 mismo estado, conservando los pedidos ocultos por filtros o paginación.
-La interfaz habilita esta acción para el chef, según el esquema actual de roles
-locales: la API existente no autentica usuarios ni verifica roles en el servidor.
+Esta acción corresponde al chef. La API exige una sesión SQL y valida ese permiso.
+Ver LOGIN.md.
 
 Pruebas de la cola sin MySQL: node --test tests/prioridad.test.js.
-
 
 ## Avisos de prioridad en vivo (SSE)
 
