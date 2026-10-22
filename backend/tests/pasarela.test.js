@@ -5,10 +5,15 @@ import { obtenerPasarela } from "../modules/pasarelas.js";
 
 test("MercadoPago: contrato HTTP, entorno de prueba, vendedor, importe, moneda y reembolso", async (t) => {
   const anterior = process.env.MP_ACCESS_TOKEN;
+  const compradoresAnteriores = process.env.MP_TEST_BUYER_IDS;
+  delete process.env.MP_TEST_BUYER_IDS;
   process.env.MP_ACCESS_TOKEN = randomUUID();
   t.after(() => {
     if (anterior === undefined) delete process.env.MP_ACCESS_TOKEN;
     else process.env.MP_ACCESS_TOKEN = anterior;
+    if (compradoresAnteriores === undefined)
+      delete process.env.MP_TEST_BUYER_IDS;
+    else process.env.MP_TEST_BUYER_IDS = compradoresAnteriores;
   });
   const pago = {
     id_pago: randomUUID(),
@@ -26,25 +31,29 @@ test("MercadoPago: contrato HTTP, entorno de prueba, vendedor, importe, moneda y
     currency_id: "ARS",
     transaction_amount: 1200.5,
     payment_method_id: "visa",
+    payer: { id: "20" },
   };
+  let nicknameComprador = "TESTUSER20";
   let tags = ["test_user"];
   const consultas = [];
   t.mock.method(globalThis, "fetch", async (url, options) => {
     consultas.push({ url, options });
     assert.ok(options.headers.Authorization.startsWith("Bearer "));
     const data = url.endsWith("/users/me")
-      ? { id: 10, tags }
-      : url.endsWith("/checkout/preferences")
-        ? {
-            id: "pref-1",
-            init_point:
-              "https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=1",
-          }
-        : url.endsWith("/refunds")
-          ? { id: 33, status: "approved", amount: 1200.5 }
-          : options.method === "PUT"
-            ? { status: "cancelled" }
-            : { results: [resultado] };
+      ? { id: 10, tags, site_id: "MLA" }
+      : url.endsWith("/users/20")
+        ? { id: 20, nickname: nicknameComprador, site_id: "MLA" }
+        : url.endsWith("/checkout/preferences")
+          ? {
+              id: "pref-1",
+              init_point:
+                "https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=1",
+            }
+          : url.endsWith("/refunds")
+            ? { id: 33, status: "approved", amount: 1200.5 }
+            : options.method === "PUT"
+              ? { status: "cancelled" }
+              : { results: [resultado] };
     if (options.method === "PUT" && url.endsWith("/v1/payments/55"))
       resultado = { ...resultado, status: "cancelled" };
     return { ok: true, json: async () => data };
@@ -75,6 +84,15 @@ test("MercadoPago: contrato HTTP, entorno de prueba, vendedor, importe, moneda y
     await assert.rejects(proveedor.consultar(pago), /no coincide/);
     resultado = original;
   }
+  resultado = { ...resultado, live_mode: true };
+  process.env.MP_TEST_BUYER_IDS = "20";
+  assert.equal((await proveedor.consultar(pago)).estado, "aprobado");
+  nicknameComprador = "CuentaHabitual";
+  await assert.rejects(proveedor.consultar(pago), /no coincide/);
+  nicknameComprador = "TESTUSER20";
+  process.env.MP_TEST_BUYER_IDS = "21";
+  await assert.rejects(proveedor.consultar(pago), /no coincide/);
+  resultado = { ...resultado, live_mode: false };
   resultado = { ...resultado, status: "pending" };
   assert.equal((await proveedor.consultar(pago)).estado, "pendiente");
   assert.equal((await proveedor.reembolsar(pago)).reembolso_id, "33");

@@ -44,6 +44,29 @@ async function vendedorPrueba() {
     );
   return vendedor;
 }
+
+async function entornoPrueba(pago, vendedor) {
+  if (pago.live_mode === false) return true;
+  if (pago.live_mode !== true) return false;
+  // Checkout Pro entre test users puede devolver live_mode=true (verificación real).
+  // Se admite solo el comprador que el equipo copió desde Cuentas de prueba.
+  const id = String(pago.payer?.id || "");
+  const permitidos = (process.env.MP_TEST_BUYER_IDS || "")
+    .split(",")
+    .map((v) => v.trim());
+  if (
+    !/^\d+$/.test(id) ||
+    id === String(vendedor.id) ||
+    !permitidos.includes(id)
+  )
+    return false;
+  const comprador = await api(`/users/${encodeURIComponent(id)}`);
+  return (
+    String(comprador.id) === id &&
+    /^TESTUSER\d+$/.test(comprador.nickname || "") &&
+    comprador.site_id === vendedor.site_id
+  );
+}
 const urlValida = (valor) => {
   const url = new URL(valor);
   if (
@@ -55,6 +78,22 @@ const urlValida = (valor) => {
     throw fallo(502, "La pasarela devolvió una dirección de pago inválida.");
   return url.href;
 };
+
+async function expirarPreferencia(pago) {
+  if (!pago.preferencia_id) return;
+  await api(
+    `/checkout/preferences/${encodeURIComponent(pago.preferencia_id)}`,
+    {
+      method: "PUT",
+      body: {
+        expires: true,
+        expiration_date_from: new Date(Date.now() - 86400000).toISOString(),
+        expiration_date_to: new Date().toISOString(),
+      },
+    },
+  );
+}
+
 registrarPasarela("mercadopago", {
   nombre: "MercadoPago · entorno de prueba",
   preparar: vendedorPrueba,
@@ -108,10 +147,10 @@ registrarPasarela("mercadopago", {
       ) || relevantes[0];
     if (!result) return { estado: "pendiente" };
     if (
-      result.live_mode !== false ||
       String(result.collector_id) !== String(vendedor.id) ||
       result.currency_id !== "ARS" ||
-      centavos(result.transaction_amount) !== centavos(pago.importe)
+      centavos(result.transaction_amount) !== centavos(pago.importe) ||
+      !(await entornoPrueba(result, vendedor))
     )
       throw fallo(
         502,
@@ -132,6 +171,7 @@ registrarPasarela("mercadopago", {
   },
   async reembolsar(pago) {
     await vendedorPrueba();
+    await expirarPreferencia(pago);
     const result = await api(
       `/v1/payments/${encodeURIComponent(pago.referencia_pasarela)}/refunds`,
       {
@@ -155,17 +195,7 @@ registrarPasarela("mercadopago", {
     const consultar = () => obtenerPasarela("mercadopago").consultar(pago);
     const remoto = await consultar();
     // Expira el enlace para impedir nuevos intentos de pago tras cancelar el pedido.
-    await api(
-      `/checkout/preferences/${encodeURIComponent(pago.preferencia_id)}`,
-      {
-        method: "PUT",
-        body: {
-          expires: true,
-          expiration_date_from: new Date(Date.now() - 86400000).toISOString(),
-          expiration_date_to: new Date().toISOString(),
-        },
-      },
-    );
+    await expirarPreferencia(pago);
     if (remoto.estado === "aprobado") return remoto;
     if (remoto.estado === "pendiente" && remoto.referencia_pasarela) {
       await api(

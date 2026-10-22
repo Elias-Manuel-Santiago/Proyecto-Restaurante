@@ -26,7 +26,7 @@ no sincroniza los datos ni necesita un servidor compartido.
 6. Ejecutar `npm run configurar:mp:pruebas` y reiniciar el backend (`npm start`).
 7. En `frontend/`, ejecutar `npm ci` y `npm run dev`.
 
-El comando de Mercado Pago carga únicamente `MP_ACCESS_TOKEN`, conservando la
+El comando de Mercado Pago carga `MP_ACCESS_TOKEN` y `MP_TEST_BUYER_IDS`, conservando la
 conexión SQL. Verifica contra `/users/me` que sea el vendedor de prueba esperado.
 La credencial está en `mercadopago-equipo-pruebas.json`, compartida en el repo
 **por pedido explícito del equipo para esta entrega académica**. Cualquiera con
@@ -75,7 +75,8 @@ el formulario estaba abierto. Los importes se suman en centavos en el servidor.
 7. Moto: el repartidor asignado retira y entrega desde Reparto. Cadetería: mozo/admin
    registra salida y entrega desde Pedidos. Retiro: mozo/admin confirma el retiro.
 8. Antes de despachar/entregar, **Cancelar y reembolsar** cancela la orden y pide
-   devolución total a Mercado Pago. Si demora, queda Reembolso pendiente y se
+   devolución total a Mercado Pago. También expira el enlace para impedir otro cobro.
+   Si demora, queda Reembolso pendiente y se
    reintenta con la misma clave para evitar duplicados. Tras despachar se bloquea.
 9. Para cobros aún pendientes/rechazados usar **Cancelar cobro pendiente**: se
    cancela el pedido, expira el enlace y se cancela el pago pendiente si existe.
@@ -130,7 +131,16 @@ atómico: ante un corte revisar el error y reejecutar, no borrar tablas.
 Se reutilizan las rutas de pedidos y envíos y sus permisos de sesión. El servidor
 comprueba autorización, pago, estado y asignación aunque se llame la API sin UI.
 No acepta importes finales ni una marca «aprobado» enviados por el navegador.
-Al consultar valida referencia, vendedor, importe, moneda y `live_mode=false`.
+Al consultar valida referencia, vendedor, importe y moneda. El vendedor debe
+estar identificado como `test_user` por Mercado Pago. Las operaciones con
+`live_mode=false` usan ese entorno; se verificó que Checkout Pro con saldo de test
+users también devuelve `live_mode=true`. En ese caso se exige que el comprador
+esté en `MP_TEST_BUYER_IDS`, que su perfil API tenga el nickname `TESTUSER` generado
+por Mercado Pago y que pertenezca al país del vendedor. Los IDs se copian de
+Cuentas de prueba del panel; no se habilita un vendedor de producción.
+`configurar:mp:pruebas` carga los dos compradores conocidos del equipo; para otro
+comprador de prueba actualizar `compradores_ids` en la configuración compartida o
+la variable local. El ID público por sí solo no sirve para iniciar sesión.
 El token queda en el backend; no se envía al bundle React. No se necesita webhook
 público para esta entrega local. El backend debe tener acceso a Internet.
 
@@ -143,11 +153,15 @@ público para esta entrega local. El backend debe tener acceso a Internet.
   escenario completo de API/store en una base temporal que se elimina al terminar.
 - `node --test tests/courier.integration.mjs tests/priority.integration.mjs`,
   `npm run lint` y `npm run build` en frontend.
-- Verificación externa realizada: vendedor identificado como cuenta de prueba,
-  preferencia real de Checkout Pro creada desde un pedido SQL y consulta pendiente
-  con Cocina bloqueada. **Compra aprobada y reembolso reales requieren completar
-  el checkout con el comprador de prueba; no dar por verificados esos pasos hasta
-  comprobarlos contra Mercado Pago.**
+- Verificación externa del 22/10/2026: preferencia real de Checkout Pro creada
+  desde un pedido SQL, consulta pendiente con Cocina bloqueada, compra con saldo
+  ficticio del comprador NÁCAR, aprobación guardada en SQL y transición a Cocina
+  permitida. Operación `185565562706`, ARS 1.200,50; Mercado Pago confirmó el
+  reembolso `3404376121` y estado `refunded`. El pedido quedó cancelado y repetir
+  el reembolso devolvió la misma referencia. No se probaron todavía tarjetas ni
+  transferencias bancarias reales; esta comprobación fue con `account_money` de
+  cuentas de prueba. El ajuste de `live_mode` tiene pruebas automáticas que
+  rechazan compradores sin configurar, perfiles habituales y vendedores reales.
 - La revisión visual en navegador queda pendiente si la herramienta de control
   del navegador de la sesión está deshabilitada. Se reutilizan estilos responsive.
 

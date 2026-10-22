@@ -35,10 +35,16 @@ try {
     "utf8",
   );
 }
-const linea = `MP_ACCESS_TOKEN=${datos.access_token}`;
-contenido = /^MP_ACCESS_TOKEN=.*$/m.test(contenido)
-  ? contenido.replace(/^MP_ACCESS_TOKEN=.*$/m, linea)
-  : `${contenido.trimEnd()}\n${linea}\n`;
+for (const [nombre, valor] of Object.entries({
+  MP_ACCESS_TOKEN: datos.access_token,
+  MP_TEST_BUYER_IDS: (datos.compradores_ids || []).join(","),
+})) {
+  const patron = new RegExp(`^${nombre}=.*$`, "m");
+  const linea = `${nombre}=${valor}`;
+  contenido = patron.test(contenido)
+    ? contenido.replace(patron, linea)
+    : `${contenido.trimEnd()}\n${linea}\n`;
+}
 await writeFile(destino, contenido, "utf8");
 console.log(
   "Mercado Pago de prueba configurado en .env. Se conservó la conexión SQL; reiniciá el backend.",
