@@ -32,6 +32,10 @@ test("API y migración con MySQL en una base aislada", async () => {
       // SHOW CREATE de la próxima tabla debe consultar la base original.
       await conexion.query("USE ??", [original]);
     }
+    await conexion.query("USE ??", [nombre]);
+    // Reproduce el esquema anterior: el migrador debe habilitar envíos sin perder mesas.
+    await conexion.query("ALTER TABLE pedidos MODIFY id_mesa INT NOT NULL");
+    await conexion.query("USE ??", [original]);
     const code = await new Promise((resolve, reject) => {
       const proceso = spawn(process.execPath, ["tests/scenario.js"], {
         cwd: process.cwd(),

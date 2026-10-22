@@ -76,7 +76,7 @@ CREATE TABLE comidas (
 
 CREATE TABLE pedidos (
   id_pedidos INT NOT NULL AUTO_INCREMENT,
-  id_mesa INT NOT NULL,
+  id_mesa INT NULL,
   -- Referencia futura: los pedidos actuales escriben NULL.
   id_mesero INT NULL,
   estado VARCHAR(30) NOT NULL DEFAULT 'pendiente',
@@ -175,4 +175,26 @@ CREATE TABLE comida_stock (
     REFERENCES comidas (id_comida) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT comida_stock_stock_fk FOREIGN KEY (id_stock)
     REFERENCES Stock (id_stock) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Complemento de pedidos: cada envío conserva el contenido en pedidos_comida.
+CREATE TABLE envios (
+  id_pedido INT NOT NULL,
+  destinatario VARCHAR(100) NOT NULL,
+  direccion VARCHAR(300) NOT NULL,
+  indicaciones VARCHAR(300) NOT NULL DEFAULT '',
+  repartidor_id VARCHAR(200) NOT NULL,
+  repartidor_nombre VARCHAR(80) NOT NULL,
+  estado VARCHAR(20) NOT NULL DEFAULT 'pendiente',
+  retirado_en DATETIME(3) NULL,
+  entregado_en DATETIME(3) NULL,
+  PRIMARY KEY (id_pedido),
+  KEY envios_repartidor_estado_idx (repartidor_id,estado),
+  CONSTRAINT envios_pedido_fk FOREIGN KEY (id_pedido)
+    REFERENCES pedidos (id_pedidos) ON DELETE RESTRICT,
+  CONSTRAINT envios_destinatario_check CHECK (CHAR_LENGTH(TRIM(destinatario)) > 0),
+  CONSTRAINT envios_direccion_check CHECK (CHAR_LENGTH(TRIM(direccion)) > 0),
+  CONSTRAINT envios_repartidor_check CHECK (CHAR_LENGTH(TRIM(repartidor_id)) > 0),
+  CONSTRAINT envios_nombre_check CHECK (CHAR_LENGTH(TRIM(repartidor_nombre)) > 0),
+  CONSTRAINT envios_estado_check CHECK (estado IN ('pendiente','en_camino','entregado'))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

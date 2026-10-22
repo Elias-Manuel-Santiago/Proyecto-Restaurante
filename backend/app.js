@@ -2,6 +2,7 @@ import { crearEventosPrioridad } from "./modules/eventos-prioridad.js";
 import { crearColaPrioridad } from "./modules/prioridad.js";
 import express from "express";
 import * as restaurante from "./modules/restaurante.js";
+import * as repartos from "./modules/repartos.js";
 import {
   crearResumen,
   listarResumenes,
@@ -50,6 +51,20 @@ function ruta(metodo, url, operacion, status = 200) {
   });
 }
 const mensaje = (message) => ({ message });
+
+ruta("post", "/api/envios/obtener", ({ body }) =>
+  repartos.listarEnvios(body.repartidor_id),
+);
+ruta(
+  "post",
+  "/api/envios",
+  async ({ body }) => ({ id_pedido: await repartos.crearEnvio(body) }),
+  201,
+);
+ruta("patch", "/api/envios/:id/estado", async ({ params, body }) => {
+  await repartos.cambiarEstadoEnvio(params.id, body);
+  return mensaje("Envío actualizado.");
+});
 
 ruta("post", "/api/mesas/obtener", () => restaurante.listarTodasLasMesas());
 ruta(

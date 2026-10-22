@@ -19,7 +19,7 @@ const texto = (valor, max) =>
 const leerHistorial = (valor) => (valor ? JSON.parse(valor) : []);
 
 // Cada escritura que afecta varias tablas se confirma o revierte completa.
-async function transaccion(operacion) {
+export async function transaccion(operacion) {
   const conexion = await db.getConnection();
   try {
     await conexion.beginTransaction();
@@ -243,7 +243,7 @@ export async function listarTodasLasComidas() {
 }
 
 // Los precios y nombres se fijan en el servidor al enviar/editar la comanda.
-async function guardarItems(conexion, id, comidas) {
+export async function guardarItems(conexion, id, comidas) {
   comprobar(
     Array.isArray(comidas) && comidas.length > 0 && comidas.length <= 500,
     "Agregá comidas al pedido.",
@@ -350,6 +350,20 @@ export async function cambiarEstadoPedido(id, estado, actor) {
       estados[pedido.estado]?.includes(estado),
       "Transición de estado inválida.",
     );
+    if (pedido.id_mesa === null) {
+      const [[envio]] = await conexion.query(
+        "SELECT estado FROM envios WHERE id_pedido=? FOR UPDATE",
+        [id],
+      );
+      comprobar(
+        estado !== "entregado",
+        "El repartidor debe confirmar la entrega desde Mis entregas.",
+      );
+      comprobar(
+        estado !== "cancelado" || envio?.estado === "pendiente",
+        "No se puede cancelar un envío que ya fue retirado.",
+      );
+    }
     const historial = [
       ...leerHistorial(pedido.historial),
       { status: estado, at: new Date().toISOString(), actor },
@@ -364,8 +378,9 @@ export async function cambiarEstadoPedido(id, estado, actor) {
 export async function listarTodosLosPedidos() {
   const [filas] = await db.query(`SELECT p.*, pc.id_comida,pc.cantidad,pc.notas,
     COALESCE(pc.nombre_comida,c.nombre) AS comida_nombre,
-    COALESCE(pc.precio_unitario,c.precio) AS precio
+    COALESCE(pc.precio_unitario,c.precio) AS precio, e.estado AS envio_estado
     FROM pedidos p LEFT JOIN pedidos_comida pc ON p.id_pedidos=pc.id_pedido
-    LEFT JOIN comidas c ON pc.id_comida=c.id_comida ORDER BY p.id_pedidos DESC`);
+    LEFT JOIN comidas c ON pc.id_comida=c.id_comida
+    LEFT JOIN envios e ON e.id_pedido=p.id_pedidos ORDER BY p.id_pedidos DESC`);
   return filas;
 }

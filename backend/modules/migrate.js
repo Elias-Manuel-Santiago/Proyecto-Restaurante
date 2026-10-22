@@ -1,5 +1,6 @@
 import db from "./db.js";
 import { migrarStock } from "./migrate-stock.js";
+import { migrarReparto } from "./migrate-reparto.js";
 
 // Migración aditiva: no elimina pedidos, comidas, mesas ni tablas de usuarios.
 export async function migrar() {
@@ -52,6 +53,7 @@ export async function migrar() {
   await db.query(
     "UPDATE mesas m SET estado='ocupada', comensales=GREATEST(comensales,1), servicio_id=CONCAT('anterior-',m.id_mesa) WHERE servicio_id IS NULL AND EXISTS (SELECT 1 FROM pedidos p WHERE p.id_mesa=m.id_mesa AND p.estado IN ('pendiente','preparacion','listo'))",
   );
+  await migrarReparto();
 }
 
 if (process.argv[1]?.endsWith("migrate.js")) {
