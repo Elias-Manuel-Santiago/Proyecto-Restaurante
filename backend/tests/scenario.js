@@ -1,3 +1,5 @@
+import { crearClientes, rolSolicitud } from "./clientes-auth.js";
+import { probarAuth } from "./auth-scenario.js";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import db from "../modules/db.js";
@@ -11,11 +13,16 @@ await migrar(); // Repetir no debe borrar ni duplicar datos.
 const server = app.listen(0, "127.0.0.1");
 await new Promise((resolve) => server.once("listening", resolve));
 const base = `http://127.0.0.1:${server.address().port}/api`;
+const clientes = await crearClientes(base, db);
 let checks = 0;
-async function request(method, path, body, status = 200) {
+async function request(method, path, body, status = 200, asRole) {
   const response = await fetch(base + path, {
     method,
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "X-Nacar-Request": "1",
+      Cookie: clientes.cookies[asRole || rolSolicitud(method, path, body)],
+    },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   const data = response.status === 204 ? null : await response.json();
@@ -149,13 +156,21 @@ try {
     const proceso = spawn(
       process.execPath,
       ["../frontend/tests/store.integration.mjs"],
-      { env: { ...process.env, TEST_API_BASE: base }, stdio: "inherit" },
+      {
+        env: {
+          ...process.env,
+          TEST_API_BASE: base,
+          TEST_AUTH_PASSWORD: clientes.password,
+        },
+        stdio: "inherit",
+      },
     );
     proceso.on("error", reject);
     proceso.on("exit", resolve);
   });
   assert.equal(frontendCode, 0, "El frontend debe operar contra la API real");
-  await probarRepartos(request, db);
+  await probarRepartos(request, db, clientes);
+  await probarAuth(base, db, clientes);
   const preflight = await fetch(base + "/pedidos/1/estado", {
     method: "OPTIONS",
   });

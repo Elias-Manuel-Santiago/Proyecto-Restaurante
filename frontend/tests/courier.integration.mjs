@@ -6,9 +6,9 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import ts from 'typescript'
 import axios from 'axios'
 
-test('repartidor: conserva perfiles anteriores, admite el rol y no llama a la API del salón', async () => {
+test('sesión: ignora accesos locales, exige credenciales, restaura cuenta y maneja expiración', async () => {
   const root = fileURLToPath(new URL('../', import.meta.url))
-  const output = path.join(root, '.verification', `courier-${process.pid}`)
+  const output = path.join(root, '.verification', `auth-${process.pid}`)
   const compiled = new Map()
   async function compile(source) {
     if (compiled.has(source)) return compiled.get(source)
@@ -36,69 +36,88 @@ test('repartidor: conserva perfiles anteriores, admite el rol y no llama a la AP
     await fs.writeFile(target, code)
     return target
   }
-  const oldUsers = [
-    { id: 'admin-old', name: 'Admin anterior', role: 'admin', active: true },
-    { id: 'mozo-old', name: 'Mozo anterior', role: 'mozo', active: true },
-  ]
-  const saved = new Map([
-    ['nacar.users.v1', JSON.stringify({ users: oldUsers })],
-  ])
-  const originalAdapter = axios.defaults.adapter
-  let requests = 0
-  axios.defaults.adapter = async () => {
-    requests++
-    throw new Error('El repartidor no debe consultar la API del salón')
+  const original = axios.defaults.adapter
+  const account = {
+    id: '42',
+    name: 'Repartidor SQL',
+    username: 'repartidor',
+    role: 'repartidor',
+    active: true,
+  }
+  const password = crypto.randomUUID()
+  let session = null
+  const requests = []
+  axios.defaults.adapter = async (config) => {
+    requests.push(config.url)
+    assert.equal(config.withCredentials, true)
+    assert.equal(config.headers.get('X-Nacar-Request'), '1')
+    let data
+    if (config.url === '/auth/login') {
+      const body = JSON.parse(config.data)
+      if (body.username === account.username && body.password === password)
+        session = account
+      else
+        throw new axios.AxiosError(
+          'Unauthorized',
+          'ERR_BAD_REQUEST',
+          config,
+          null,
+          {
+            status: 401,
+            data: { message: 'Usuario o contraseña incorrectos.' },
+          },
+        )
+      data = session
+    } else if (config.url === '/auth/logout') {
+      session = null
+      data = {}
+    } else if (config.url === '/auth/session' && session) data = session
+    else
+      throw new axios.AxiosError(
+        'Unauthorized',
+        'ERR_BAD_REQUEST',
+        config,
+        null,
+        { status: 401, data: { message: 'Sesión vencida.' } },
+      )
+    return { data, status: 200, statusText: 'OK', headers: {}, config }
   }
   globalThis.localStorage = {
-    getItem: (key) => saved.get(key) ?? null,
-    setItem: (key, value) => saved.set(key, value),
+    getItem: () =>
+      assert.fail('No restaura perfiles locales como autenticación'),
+    setItem: () =>
+      assert.fail('No guarda credenciales ni tokens en localStorage'),
   }
-  globalThis.window = { addEventListener: () => {} }
   try {
     const { restaurantStore: store } = await import(
       pathToFileURL(await compile(path.join(root, 'src/state/store.ts')))
     )
-    const { homeRoute, roleRoutes, createInitialData } = await import(
-      pathToFileURL(await compile(path.join(root, 'src/state/model.ts')))
-    )
-    assert.deepEqual(
-      store.getSnapshot().data.users,
-      oldUsers,
-      'No agrega ni reemplaza perfiles guardados',
-    )
-    assert.ok(
-      store.login('repartidor'),
-      'Sin perfil se conserva el bloqueo de acceso por rol',
-    )
-    assert.equal(store.login('admin'), '')
+    assert.equal(store.getSnapshot().session, null)
+    assert.equal(store.getSnapshot().data.users.length, 0)
+    assert.ok(await store.login('admin', 'cualquier-cosa'))
+    assert.equal(store.getSnapshot().session, null)
+    assert.equal(await store.login('repartidor', password), '')
+    assert.equal(store.getSnapshot().session.id, '42')
+    await store.restoreSession()
     assert.equal(
-      await store.saveUser(
-        {
-          id: 'courier-test',
-          name: 'Repartidor de prueba',
-          username: 'repartidor.prueba',
-          role: 'repartidor',
-          active: true,
-        },
-        'Clave de ejemplo',
-      ),
-      '',
+      store.getSnapshot().session.id,
+      '42',
+      'Conserva la cuenta recuperada desde el servidor',
     )
-    assert.deepEqual(store.getSnapshot().data.users.slice(0, 2), oldUsers)
-    store.logout()
-    assert.equal(store.login('repartidor'), '')
-    assert.equal(homeRoute(store.getSnapshot().session.role), '/reparto')
-    assert.deepEqual(roleRoutes.repartidor, ['/reparto'])
+    assert.equal(store.getSnapshot().authChecking, false)
     assert.equal(await store.refresh(), null)
     assert.ok(
       (await store.act({ type: 'openTable', id: '1', diners: 2 })) instanceof
         Error,
     )
-    assert.equal(
-      requests,
-      0,
-      'El acceso y el store no consultan la API del salón',
-    )
+    assert.ok(!requests.some((url) => url.startsWith('/mesas')))
+    await store.logout()
+    assert.equal(store.getSnapshot().session, null)
+    assert.equal(await store.login('repartidor', password), '')
+    session = null
+    await store.restoreSession()
+    assert.equal(store.getSnapshot().session, null)
+    assert.ok(store.getSnapshot().warning.includes('venció'))
     const { adaptarEnvios } = await import(
       pathToFileURL(
         await compile(path.join(root, 'src/state/useDeliveries.ts')),
@@ -116,8 +135,7 @@ test('repartidor: conserva perfiles anteriores, admite el rol y no llama a la AP
       notas: 'Sin sal',
     }
     assert.equal(
-      adaptarEnvios([row, { ...row, nombre_comida: 'Otro plato' }])[0].items
-        .length,
+      adaptarEnvios([row, { ...row, nombre_comida: 'Otro' }])[0].items.length,
       2,
     )
     assert.equal(adaptarEnvios([row])[0].status, 'en_cocina')
@@ -130,25 +148,12 @@ test('repartidor: conserva perfiles anteriores, admite el rol y no llama a la AP
       'en_camino',
     )
     assert.equal(
-      adaptarEnvios([
-        { ...row, estado: 'entregado', estado_pedido: 'entregado' },
-      ])[0].status,
+      adaptarEnvios([{ ...row, estado: 'entregado' }])[0].status,
       'entregado',
     )
-    assert.ok(
-      createInitialData().users.some(
-        (user) => user.role === 'repartidor' && user.active,
-      ),
-      'Una instalación sin perfiles guardados incluye el perfil repartidor',
-    )
-    assert.equal(homeRoute('mozo'), '/mesas')
-    assert.equal(homeRoute('chef'), '/cocina')
-    assert.equal(homeRoute('admin'), '/admin')
-    assert.equal(store.getSnapshot().data.orders.length, 0)
   } finally {
-    axios.defaults.adapter = originalAdapter
+    axios.defaults.adapter = original
     delete globalThis.localStorage
-    delete globalThis.window
     assert.ok(output.startsWith(path.join(root, '.verification') + path.sep))
     await fs.rm(output, { recursive: true, force: true })
   }
