@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Dialog } from './Dialog'
 import { ErrorMessage } from './ErrorMessage'
+import { PaymentShare } from './PaymentShare'
 import {
   obtenerPago,
   iniciarPago,
@@ -121,11 +122,15 @@ export function PaymentDialog({
       </p>
       {payment?.metodo && <p className="muted">Medio: {payment.metodo}</p>}
       <p className="muted">
-        El pago se realiza en MercadoPago con los medios que tenga habilitados
-        la cuenta de prueba. Cocina y despacho esperan la aprobación del
-        servidor.
+        Mostrale el QR al cliente o compartile el enlace para que pague desde su
+        teléfono. El pedido pasa a Cocina cuando Mercado Pago confirma el pago.
+        En esta entrega se usan cuentas y dinero de prueba.
       </p>
       {error && <ErrorMessage error={error} />}
+      {payment?.checkout_url &&
+        ['pendiente', 'rechazado'].includes(payment.estado) && (
+          <PaymentShare url={payment.checkout_url} orderId={order.id} />
+        )}
       <div className="actions">
         {!payment?.checkout_url &&
           ![
@@ -142,17 +147,6 @@ export function PaymentDialog({
             >
               Iniciar cobro
             </button>
-          )}
-        {payment?.checkout_url &&
-          ['pendiente', 'rechazado'].includes(payment.estado) && (
-            <a
-              className="primary-button"
-              href={payment.checkout_url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Abrir pago en MercadoPago
-            </a>
           )}
         <button
           className="secondary-button"
