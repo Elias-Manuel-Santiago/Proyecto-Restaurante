@@ -15,7 +15,8 @@
     "seed:equipo": "node modules/seed-usuarios.js --equipo",
     "seed:equipo:pruebas": "node modules/seed-usuarios.js --equipo-pruebas",
     "migrate:envios-pagos": "node modules/migrate-envios-pagos.js",
-    "configurar:mp:pruebas": "node modules/configurar-mp-pruebas.js"
+    "configurar:mp:pruebas": "node modules/configurar-mp-pruebas.js",
+    "preparar:equipo": "node modules/preparar-equipo.js"
   },
   "keywords": [],
   "author": "",

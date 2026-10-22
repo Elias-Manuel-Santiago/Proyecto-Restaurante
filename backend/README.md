@@ -10,10 +10,16 @@ Envíos, modalidades y Mercado Pago de prueba: [ENVIOS-PAGOS.md](ENVIOS-PAGOS.md
 
 ```sh
 npm ci
-npm run migrate
-npm run seed:admin
+npm run preparar:equipo
 npm start
 ```
+
+`preparar:equipo` usa la conexión de `.env` (si falta, crea la configuración local
+predeterminada de XAMPP), instala las tablas si la base está vacía o migra la
+existente, crea las cuentas de prueba que falten y configura Mercado Pago de
+prueba. No cambia las contraseñas de cuentas existentes. XAMPP/MySQL debe estar
+iniciado; si tu conexión es diferente, ajustar `DB_*` antes de ejecutarlo.
+Se puede repetir. Para cuentas privadas siguen disponibles `migrate` y `seed:admin`.
 
 `npm run dev` reinicia el servidor al editar archivos. El puerto predeterminado es
 3005; puede cambiarse con `PORT`. La conexión existente está en `modules/db.js` y usa

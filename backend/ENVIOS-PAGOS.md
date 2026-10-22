@@ -15,16 +15,21 @@ las órdenes; confirmar ese alcance con Pereyra antes de la presentación.
 Cada computadora usa su propia base SQL. Git comparte código y migraciones;
 no sincroniza los datos ni necesita un servidor compartido.
 
-1. Integrar esta rama conservando las correcciones posteriores de `main`.
-2. En `backend/`, ejecutar `npm ci`.
-3. Configurar `backend/.env` a partir de `.env.example`, con **su propia base**,
-   origen del frontend y credenciales del admin. No reemplazar un `.env` existente.
-4. Hacer respaldo de la base existente y ejecutar `npm run migrate`.
-5. Si falta el admin, ejecutar `npm run seed:admin`. Para las cuentas de prueba
-   del equipo, ver [ACCESOS-EQUIPO.md](ACCESOS-EQUIPO.md). El seed no cambia claves
-   ni nombres de cuentas que ya existan; verificar el resultado, no asumirlo.
-6. Ejecutar `npm run configurar:mp:pruebas` y reiniciar el backend (`npm start`).
-7. En `frontend/`, ejecutar `npm ci` y `npm run dev`.
+1. Integrar esta rama conservando las correcciones posteriores de `main` e iniciar
+   MySQL/MariaDB. Si ya hay `.env`, conservar su conexión SQL. Si falta, el
+   preparador usa la conexión habitual de XAMPP (`127.0.0.1:3306`, `root`, clave
+   vacía, base `restaurante`); ajustar `DB_*` si esa PC usa otra conexión.
+2. En `backend/`: `npm ci`, `npm run preparar:equipo`, `npm start`.
+3. En `frontend/`: `npm ci`, `npm run dev`.
+
+`preparar:equipo` instala las 15 tablas si la base está vacía, o aplica migraciones
+si tiene el esquema existente. Crea las cinco cuentas de prueba que falten y
+configura Mercado Pago compartido. Se puede repetir; conserva pedidos, cuentas
+y contraseñas anteriores. Muestra qué cuentas creó y cuáles conservó: si una
+cuenta existente tiene otra clave, esa clave sigue vigente. No cargar nuevamente
+el SQL ni cambiar claves manualmente para probar esta actualización. La prueba
+del preparador cubre base vacía y una copia del esquema anterior con datos y
+admin con contraseña propia. El seed privado sigue disponible por separado.
 
 El comando de Mercado Pago carga `MP_ACCESS_TOKEN` y `MP_TEST_BUYER_IDS`, conservando la
 conexión SQL. Verifica contra `/users/me` que sea el vendedor de prueba esperado.

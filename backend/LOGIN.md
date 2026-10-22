@@ -29,7 +29,7 @@ npm start
 ```
 
 La migración no elimina datos, reutiliza usuarios y sesiones_usuarios y agrega el
-rol repartidor a la restricción existente. Continúan siendo doce tablas. El seed
+rol repartidor a la restricción existente. Con envíos y pagos el esquema completo tiene quince tablas. El seed
 crea el administrador solo si no existe: nunca reinicia ni cambia claves existentes.
 Si encuentra ese usuario desactivado o con otro rol, se detiene sin modificarlo.
 En una instalación vacía, importar primero frontend/database/restaurante.sql.

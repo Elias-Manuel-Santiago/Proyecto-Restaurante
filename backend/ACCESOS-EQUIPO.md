@@ -18,14 +18,13 @@ indicado en su nombre. No son contraseñas de conexión a MySQL ni tokens de ses
 
 1. Descargar los cambios y configurar backend/.env con la conexión a su base SQL.
    Si no existe, copiar backend/.env.example. No reemplazar un .env ya configurado.
-2. Si la base está vacía, importar frontend/database/restaurante.sql. Si ya tiene
-   tablas y datos, conservarlos y ejecutar únicamente las migraciones.
+2. Iniciar MySQL/MariaDB. El comando siguiente detecta base vacía o existente;
+   no hay que importar SQL manualmente ni reemplazar una base con datos.
 3. Desde backend ejecutar:
 
 ```powershell
 npm ci
-npm run migrate
-npm run seed:equipo:pruebas
+npm run preparar:equipo
 npm start
 ```
 
