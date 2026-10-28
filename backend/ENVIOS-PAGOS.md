@@ -67,9 +67,9 @@ el formulario estaba abierto. Los importes se suman en centavos en el servidor.
 
 ## Circuito para presentar
 
-1. Ingresar como mozo/admin, ir a Pedidos y **Crear envío**.
+1. Ingresar como mozo/admin y usar **Crear envío** desde Mesas o Pedidos.
 2. Elegir modalidad y completar destinatario, dirección/indicaciones cuando
-   corresponda, repartidor interno si corresponde y comidas.
+   corresponda, elegir explícitamente el repartidor interno si corresponde y comidas.
 3. Registrar el pedido. En su tarjeta abrir **Cobrar pedido → Iniciar cobro**.
 4. Mostrar el **QR del pedido** al cliente, que lo escanea con la cámara de su
    teléfono y paga en el checkout público de Mercado Pago. Para delivery usar
@@ -80,11 +80,16 @@ el formulario estaba abierto. Los importes se suman en centavos en el servidor.
    Mercado Pago en Internet, sin conectarse a la PC del restaurante.
    En la prueba usar el comprador de prueba, incluso en el teléfono. El diálogo
    consulta el estado cada 10 s y tiene **Consultar estado**. No cerrar el backend.
-5. Solo una aprobación consultada al servidor habilita Cocina. La URL de regreso,
+5. Cocina muestra los pedidos nuevos en **Esperando pago**, sin controles de
+   preparación. Reparto distingue ese estado de **En cocina**. Solo una aprobación
+   consultada al servidor habilita la cola de preparación. La URL de regreso,
    un parámetro del navegador o un clic del usuario no aprueban el pago.
 6. Chef pasa pendiente → preparación → listo.
 7. Moto: el repartidor asignado retira y entrega desde Reparto. Cadetería: mozo/admin
    registra salida y entrega desde Pedidos. Retiro: mozo/admin confirma el retiro.
+   Las tarjetas de Pedidos y Cocina muestran el repartidor asignado y el próximo
+   paso. Reparto ofrece **Retirar pedido** únicamente al estar listo y pagado, y
+   **Confirmar entrega** después de iniciar el viaje.
 8. Antes de despachar/entregar, **Cancelar y reembolsar** cancela la orden y pide
    devolución total a Mercado Pago. También expira el enlace para impedir otro cobro.
    Si demora, queda Reembolso pendiente y se

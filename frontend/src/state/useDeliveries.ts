@@ -17,9 +17,11 @@ export function adaptarEnvios(rows: DeliveryRow[]): Delivery[] {
         status:
           row.estado !== 'pendiente'
             ? row.estado
-            : row.estado_pedido === 'listo'
-              ? 'listo'
-              : 'en_cocina',
+            : row.pago_requerido && row.pago_estado !== 'aprobado'
+              ? 'esperando_pago'
+              : row.estado_pedido === 'listo'
+                ? 'listo'
+                : 'en_cocina',
       })
     result.get(id)!.items.push({
       name: row.nombre_comida,

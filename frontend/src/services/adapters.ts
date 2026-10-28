@@ -16,6 +16,7 @@ export function adaptarPedidos(filas: PedidoFilaApi[]): Order[] {
         id,
         kind: fila.id_mesa === null ? 'delivery' : 'mesa',
         deliveryStatus: fila.envio_estado ?? undefined,
+        courierName: fila.repartidor_nombre ?? undefined,
         paymentRequired: Boolean(fila.pago_requerido),
         paymentStatus: fila.pago_estado ?? undefined,
         shippingCost: Number(fila.costo_envio ?? 0),
