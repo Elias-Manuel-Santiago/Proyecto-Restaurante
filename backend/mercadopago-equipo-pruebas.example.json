@@ -1,0 +1,5 @@
+{
+  "access_token": "TEST-COMPLETAR-access-token-del-vendedor-de-prueba",
+  "vendedor_id": "COMPLETAR-id-numerico-del-vendedor-de-prueba",
+  "compradores_ids": ["COMPLETAR-id-comprador-de-prueba"]
+}

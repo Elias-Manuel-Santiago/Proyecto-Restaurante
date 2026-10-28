@@ -33,10 +33,11 @@ admin con contraseña propia. El seed privado sigue disponible por separado.
 
 El comando de Mercado Pago carga `MP_ACCESS_TOKEN` y `MP_TEST_BUYER_IDS`, conservando la
 conexión SQL. Verifica contra `/users/me` que sea el vendedor de prueba esperado.
-La credencial está en `mercadopago-equipo-pruebas.json`, compartida en el repo
-**por pedido explícito del equipo para esta entrega académica**. Cualquiera con
-acceso al repo puede usarla; si se renueva, actualizar ese archivo o configurar
-un token nuevo en cada `.env`. Nunca colocar una credencial de producción allí.
+La credencial está en `mercadopago-equipo-pruebas.json`, un archivo **local e
+ignorado por Git** (plantilla: `mercadopago-equipo-pruebas.example.json`). Estuvo
+versionado hasta `c16fda4`, por eso hay que renovarla (ver
+[ACCESOS-EQUIPO.md](ACCESOS-EQUIPO.md)). Si el archivo falta, el preparador conserva
+el `MP_ACCESS_TOKEN` del `.env`. Nunca colocar una credencial de producción.
 Las contraseñas de cuentas comprador/vendedor de Mercado Pago no se necesitan
 en el código ni son las contraseñas de los usuarios NÁCAR.
 

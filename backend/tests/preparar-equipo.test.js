@@ -34,6 +34,30 @@ async function ejecutar(args, env) {
 test("preparación del equipo: instalación vacía, actualización con datos y cinco cuentas reales", async () => {
   const carpeta = await mkdtemp(join(tmpdir(), "nacar-equipo-"));
   const archivo = join(carpeta, ".env");
+  // Claves aleatorias de esta prueba: no depende de archivos locales con secretos.
+  const archivoAccesos = join(carpeta, "accesos.json");
+  const archivoMp = join(carpeta, "mercadopago.json");
+  const clave = () => randomBytes(18).toString("base64url");
+  await writeFile(
+    archivoAccesos,
+    JSON.stringify({
+      ADMIN_USERNAME: "elias",
+      ADMIN_NAME: "Elías Manuel Santiago",
+      ADMIN_PASSWORD: clave(),
+      SEED_PASSWORD_MARTIN: clave(),
+      SEED_PASSWORD_LAUREANO: clave(),
+      SEED_PASSWORD_SANTIAGO: clave(),
+      SEED_PASSWORD_NEHUEN: clave(),
+    }),
+  );
+  await writeFile(
+    archivoMp,
+    JSON.stringify({
+      access_token: `TEST-${clave()}`,
+      vendedor_id: "100",
+      compradores_ids: ["200", "300"],
+    }),
+  );
   const administrador = await db.getConnection();
   const plantilla = await readFile(
     new URL("../.env.example", import.meta.url),
@@ -111,11 +135,13 @@ test("preparación del equipo: instalación vacía, actualización con datos y c
           NODE_ENV: "test",
           DB_DATABASE: nombre,
           NACAR_ENV_FILE: archivo,
+          NACAR_ACCESOS_FILE: archivoAccesos,
+          NACAR_MP_FILE: archivoMp,
           ...(existente ? { TEST_ADMIN_PASSWORD: claveAnterior } : {}),
         };
-        // Solo se sustituye la prevalidación HTTP de la credencial compartida.
+        // Solo se sustituye la prevalidación HTTP de la credencial de prueba.
         // El SQL, el instalador, las migraciones, los hashes y la API son reales.
-        const codigo = `import {readFile} from 'node:fs/promises'; const datos=JSON.parse(await readFile(new URL('./mercadopago-equipo-pruebas.json',import.meta.url),'utf8')); globalThis.fetch=async(url)=>{if(url!=='https://api.mercadopago.com/users/me')throw Error('Solicitud inesperada');return {ok:true,json:async()=>({id:datos.vendedor_id,tags:['test_user']})}}; const {prepararEquipo}=await import('./modules/preparar-equipo.js'); await prepararEquipo();`;
+        const codigo = `import {readFile} from 'node:fs/promises'; const datos=JSON.parse(await readFile(process.env.NACAR_MP_FILE,'utf8')); globalThis.fetch=async(url)=>{if(url!=='https://api.mercadopago.com/users/me')throw Error('Solicitud inesperada');return {ok:true,json:async()=>({id:datos.vendedor_id,tags:['test_user']})}}; const {prepararEquipo}=await import('./modules/preparar-equipo.js'); await prepararEquipo();`;
         await ejecutar(["--input-type=module", "-e", codigo], env);
         await ejecutar(["--input-type=module", "-e", codigo], env);
         aislada = await mysql.createConnection({

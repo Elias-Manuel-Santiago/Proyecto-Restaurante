@@ -17,11 +17,14 @@ const sentencias = (sql) =>
 test("inventario: migración aditiva, repetible, restricciones y compatibilidad", async () => {
   const nombre = `codex_restaurante_test_${randomBytes(6).toString("hex")}`;
   assert.match(nombre, /^codex_restaurante_test_[a-f0-9]+$/);
-  const conexion = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-  });
+  // Misma conexión que el resto de las pruebas (.env o variables del entorno).
+  const acceso = {
+    host: process.env.DB_HOST || "127.0.0.1",
+    port: Number(process.env.DB_PORT || 3306),
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "",
+  };
+  const conexion = await mysql.createConnection(acceso);
   let pool;
   let creada = false;
   try {
@@ -31,12 +34,7 @@ test("inventario: migración aditiva, repetible, restricciones y compatibilidad"
     );
     creada = true;
     await conexion.query("USE ??", [nombre]);
-    pool = mysql.createPool({
-      host: "localhost",
-      user: "root",
-      password: "",
-      database: nombre,
-    });
+    pool = mysql.createPool({ ...acceso, database: nombre });
     const esquema = sentencias(
       await readFile(
         new URL("../../frontend/database/restaurante.sql", import.meta.url),

@@ -4,8 +4,8 @@ Requiere Node.js 22.16+ o 24, MySQL 8.0.16+ / MariaDB 10.4+ y una base operativa
 Cada integrante configura su conexión local: GitHub comparte código y esquema,
 pero no sincroniza pedidos ni cambios de cuentas entre computadoras.
 Para cargar las mismas cinco cuentas de la presentación, usar
-[ACCESOS-EQUIPO.md](ACCESOS-EQUIPO.md): incluye las claves compartidas de prueba
-y el comando npm run seed:equipo:pruebas.
+[ACCESOS-EQUIPO.md](ACCESOS-EQUIPO.md): explica el archivo local (ignorado por Git)
+con las claves de prueba y el comando npm run seed:equipo:pruebas.
 
 ## Actualizar una instalación existente
 
@@ -58,7 +58,8 @@ npm run seed:equipo
 | nehuen                   | Parrondo Nehuen                      | Mozo          |
 
 El flujo privado no tiene contraseñas de fábrica. La presentación puede cargar
-explícitamente las claves de accesos-equipo-pruebas.json. Las cuentas existentes
+explícitamente las claves del archivo local accesos-equipo-pruebas.json (no
+versionado; plantilla en accesos-equipo-pruebas.example.json). Las cuentas existentes
 se conservan; repetir el
 script no duplica cuentas ni altera nombres, roles o claves. Desde Equipo el admin
 puede crear otros administradores, editar perfiles, restablecer contraseñas y

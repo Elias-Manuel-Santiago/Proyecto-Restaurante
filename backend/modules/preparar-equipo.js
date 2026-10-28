@@ -81,13 +81,11 @@ export async function prepararEquipo() {
     // Importar después de cargar .env: la conexión se crea con la base de esta PC.
     ({ default: pool } = await import("./db.js"));
     const { migrar } = await import("./migrate.js");
-    const { sembrarUsuarios, cargarAccesosPruebas } =
+    const { sembrarUsuarios, cargarAccesosPruebas, leerEquipo } =
       await import("./seed-usuarios.js");
     await migrar();
-    const creados = await sembrarUsuarios({
-      incluirEquipo: true,
-      env: await cargarAccesosPruebas(),
-    });
+    const accesos = await cargarAccesosPruebas();
+    const creados = await sembrarUsuarios({ incluirEquipo: true, env: accesos });
     console.log(
       creados.length
         ? `Cuentas creadas: ${creados.join(", ")}.`
@@ -95,7 +93,13 @@ export async function prepararEquipo() {
     );
     // Informa las cuentas conservadas: no promete que su clave coincida con el JSON.
     const [cuentas] = await pool.query(
-      "SELECT usuario,tipo,activo FROM usuarios WHERE usuario IN ('elias','martin','laureano','santiago','nehuen') ORDER BY usuario",
+      "SELECT usuario,tipo,activo FROM usuarios WHERE usuario IN (?) ORDER BY usuario",
+      [
+        [
+          (accesos.ADMIN_USERNAME || "elias").trim().toLowerCase(),
+          ...leerEquipo(accesos).map((u) => u.username),
+        ],
+      ],
     );
     for (const cuenta of cuentas)
       console.log(

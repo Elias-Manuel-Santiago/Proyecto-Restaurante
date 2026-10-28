@@ -74,6 +74,12 @@ web_modules/
 
 # dotenv environment variable files
 .env
+# Claves locales de la presentación (plantillas: *.example.json)
+backend/accesos-equipo-pruebas.json
+backend/mercadopago-equipo-pruebas.json
+# Respaldos SQL: nunca se suben datos reales ni hashes
+*.sql.bak
+respaldo-*.sql
 .env.development.local
 .env.test.local
 .env.production.local
