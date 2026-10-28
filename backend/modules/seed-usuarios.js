@@ -47,7 +47,10 @@ export async function cargarAccesosPruebas(entorno = process.env) {
   try {
     return {
       ...entorno,
-      ...JSON.parse(await readFile(archivoAccesos(entorno), "utf8")),
+      // Quita el BOM que agrega el Bloc de notas de Windows al guardar en UTF-8.
+      ...JSON.parse(
+        (await readFile(archivoAccesos(entorno), "utf8")).replace(/^﻿/, ""),
+      ),
     };
   } catch (error) {
     if (error.code !== "ENOENT") throw error;

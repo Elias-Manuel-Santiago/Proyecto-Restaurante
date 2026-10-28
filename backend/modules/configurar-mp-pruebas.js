@@ -11,7 +11,7 @@ export async function configurarMercadoPagoPruebas({
   // (plantilla: mercadopago-equipo-pruebas.example.json). Nunca credenciales reales.
   let datos;
   try {
-    datos = JSON.parse(await readFile(origen, "utf8"));
+    datos = JSON.parse((await readFile(origen, "utf8")).replace(/^﻿/, ""));
   } catch (error) {
     if (error.code !== "ENOENT") throw error;
     console.log(
