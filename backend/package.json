@@ -17,7 +17,9 @@
     "migrate:envios-pagos": "node modules/migrate-envios-pagos.js",
     "configurar:mp:pruebas": "node modules/configurar-mp-pruebas.js",
     "preparar:equipo": "node modules/preparar-equipo.js",
-    "iniciar:equipo": "npm run preparar:equipo && npm start"
+    "iniciar:equipo": "npm run preparar:equipo && npm start",
+    "preparar:online": "node modules/preparar-equipo.js --online",
+    "start:online": "npm run preparar:online && npm start"
   },
   "keywords": [],
   "author": "",

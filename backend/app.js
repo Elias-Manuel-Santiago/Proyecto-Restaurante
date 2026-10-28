@@ -4,6 +4,11 @@ import { registrarAcceso } from "./modules/rutas-acceso.js";
 import { vigilarSesion } from "./modules/autenticacion.js";
 import { crearEventosPrioridad } from "./modules/eventos-prioridad.js";
 import { crearColaPrioridad } from "./modules/prioridad.js";
+import {
+  configurarProxy,
+  cabecerasSeguridad,
+  servirFrontend,
+} from "./modules/produccion.js";
 import express from "express";
 import * as restaurante from "./modules/restaurante.js";
 import * as repartos from "./modules/repartos.js";
@@ -18,6 +23,8 @@ const prioridad = crearColaPrioridad();
 const eventosPrioridad = crearEventosPrioridad();
 
 export const app = express();
+configurarProxy(app);
+app.use(cabecerasSeguridad);
 app.use((req, res, next) => {
   res.header(
     "Access-Control-Allow-Origin",
@@ -36,6 +43,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.json({ limit: "256kb" }));
+servirFrontend(app);
 registrarAcceso(app);
 app.param("id", (req, res, next, id) => {
   if (!/^[1-9]\d*$/.test(id) || !Number.isSafeInteger(Number(id)))

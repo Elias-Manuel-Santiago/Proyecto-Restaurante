@@ -1,0 +1,12 @@
+{
+  "name": "nacar-restaurante",
+  "private": true,
+  "description": "Scripts para el modo online: un solo servicio donde Express sirve el frontend compilado.",
+  "engines": {
+    "node": ">=22.16"
+  },
+  "scripts": {
+    "build": "npm ci --prefix backend --omit=dev && npm ci --prefix frontend --include=dev && npm run build --prefix frontend",
+    "start": "npm run start:online --prefix backend"
+  }
+}

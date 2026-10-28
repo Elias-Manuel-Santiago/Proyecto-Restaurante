@@ -2,6 +2,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import mysql from "mysql2/promise";
 import { configurarMercadoPagoPruebas } from "./configurar-mp-pruebas.js";
+import { opcionesSsl } from "./conexion-ssl.js";
 
 export async function asegurarConfiguracion(destino) {
   try {
@@ -16,16 +17,20 @@ export async function asegurarConfiguracion(destino) {
   }
 }
 
-export async function prepararEquipo() {
-  if (process.env.NODE_ENV === "production")
+// online=true (hosting): la configuración viene del panel, no hay .env ni claves de
+// prueba del equipo. Solo instala o migra y crea el admin con ADMIN_PASSWORD.
+export async function prepararEquipo({ online = false } = {}) {
+  if (process.env.NODE_ENV === "production" && !online)
     throw new Error(
       "La preparación del equipo es solo para la presentación y pruebas.",
     );
   const destino =
     process.env.NACAR_ENV_FILE ||
     fileURLToPath(new URL("../.env", import.meta.url));
-  await asegurarConfiguracion(destino);
-  process.loadEnvFile(destino);
+  if (!online) {
+    await asegurarConfiguracion(destino);
+    process.loadEnvFile(destino);
+  }
   const base = process.env.DB_DATABASE || "restaurante";
   if (!/^[a-zA-Z0-9_]{1,64}$/.test(base))
     throw new Error("Revisá DB_DATABASE: usá letras, números y guiones bajos.");
@@ -34,6 +39,7 @@ export async function prepararEquipo() {
     port: Number(process.env.DB_PORT || 3306),
     user: process.env.DB_USER || "root",
     password: process.env.DB_PASSWORD || "",
+    ...opcionesSsl(),
   });
   let pool;
   try {
@@ -84,6 +90,15 @@ export async function prepararEquipo() {
     const { sembrarUsuarios, cargarAccesosPruebas, leerEquipo } =
       await import("./seed-usuarios.js");
     await migrar();
+    if (online) {
+      const creados = await sembrarUsuarios();
+      console.log(
+        creados.length
+          ? `Administrador creado: ${creados.join(", ")}. El resto del equipo se da de alta desde Equipo.`
+          : "Base online lista; se conservaron las cuentas existentes.",
+      );
+      return;
+    }
     const accesos = await cargarAccesosPruebas();
     const creados = await sembrarUsuarios({ incluirEquipo: true, env: accesos });
     console.log(
@@ -119,7 +134,7 @@ if (
   process.argv[1] &&
   import.meta.url === pathToFileURL(process.argv[1]).href
 ) {
-  prepararEquipo().catch((error) => {
+  prepararEquipo({ online: process.argv.includes("--online") }).catch((error) => {
     console.error(`No se completó la preparación: ${error.message}`);
     process.exitCode = 1;
   });
