@@ -35,7 +35,7 @@ try {
     .filter(Boolean)
   for (const statement of statements) await db.query(statement)
   const [tables] = await db.query('SHOW TABLES')
-  assert.equal(tables.length, 15)
+  assert.equal(tables.length, 16)
   await assert.rejects(
     db.query(statements[1]),
     (e) => e.code === 'ER_TABLE_EXISTS_ERROR',
@@ -154,7 +154,7 @@ try {
     await db.rollback()
   }
   console.log(
-    'OK: importación de 15 tablas, PK compuestas, CHECK, FK, cascadas, sesiones futuras y protección de históricos.',
+    'OK: importación de 16 tablas, PK compuestas, CHECK, FK, cascadas, sesiones futuras y protección de históricos.',
   )
 } finally {
   if (created) await db.query('DROP DATABASE ??', [name])

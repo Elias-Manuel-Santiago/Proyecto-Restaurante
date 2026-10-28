@@ -152,7 +152,7 @@ test("preparación del equipo: instalación vacía, actualización con datos y c
           database: nombre,
         });
         const [tablas] = await aislada.query("SHOW TABLES");
-        assert.equal(tablas.length, 15);
+        assert.equal(tablas.length, 16);
         const [[{ total }]] = await aislada.query(
           "SELECT COUNT(*) AS total FROM usuarios",
         );

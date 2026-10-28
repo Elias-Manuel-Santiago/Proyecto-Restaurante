@@ -66,7 +66,7 @@ export async function prepararEquipo({ online = false } = {}) {
         .map((s) => s.trim())
         .filter(Boolean))
         await conexion.query(sentencia);
-      console.log("Base vacía: se instalaron las 15 tablas.");
+      console.log("Base vacía: se instalaron las 16 tablas.");
     } else {
       const faltantes = [
         "mesas",
