@@ -1,4 +1,5 @@
 import { ShippingSettings } from '../components/ShippingSettings'
+import { InventorySettings } from '../components/InventorySettings'
 import { SummaryPanel } from '../components/SummaryPanel'
 import { useState } from 'react'
 import { Stats } from '../components/Stats'
@@ -20,6 +21,7 @@ export function AdminPage({
 }) {
   const { data, act } = useRestaurant()
   const [shippingSettings, setShippingSettings] = useState(false)
+  const [inventory, setInventory] = useState(false)
   const [editing, setEditing] = useState<RestaurantTable | 'new' | null>(null)
   const [deleting, setDeleting] = useState<RestaurantTable | null>(null)
   const [error, setError] = useState<string | Error>('')
@@ -46,12 +48,18 @@ export function AdminPage({
       {shippingSettings && (
         <ShippingSettings onClose={() => setShippingSettings(false)} />
       )}
-      <button
-        className="secondary-button"
-        onClick={() => setShippingSettings(true)}
-      >
-        Modalidades y tarifas de entrega
-      </button>
+      {inventory && <InventorySettings onClose={() => setInventory(false)} />}
+      <div className="actions">
+        <button
+          className="secondary-button"
+          onClick={() => setShippingSettings(true)}
+        >
+          Modalidades y tarifas de entrega
+        </button>
+        <button className="secondary-button" onClick={() => setInventory(true)}>
+          Inventario y recetas
+        </button>
+      </div>
       <section className="page-intro">
         <div>
           <span className="eyebrow">Administración · Vista general</span>

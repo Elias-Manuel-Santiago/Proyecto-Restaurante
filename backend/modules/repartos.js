@@ -2,6 +2,7 @@ import { validarModalidad } from "./modalidades-envio.js";
 import { exigirPago } from "./pagos.js";
 import db from "./db.js";
 import { comprobar, transaccion, guardarItems } from "./restaurante.js";
+import { consumirStock } from "./inventario.js";
 
 const texto = (valor, max) =>
   typeof valor === "string" && valor.trim().length > 0 && valor.length <= max;
@@ -51,6 +52,8 @@ export async function crearEnvio(datos) {
       ],
     );
     await guardarItems(conexion, pedido.insertId, datos.comidas);
+    // Reserva el stock aunque el pago esté pendiente; si se cancela, se repone.
+    await consumirStock(conexion, pedido.insertId, datos.id_mesero ?? null);
     await conexion.query(
       "INSERT INTO envios (id_pedido,destinatario,direccion,indicaciones,repartidor_id,repartidor_nombre) VALUES (?,?,?,?,?,?)",
       [

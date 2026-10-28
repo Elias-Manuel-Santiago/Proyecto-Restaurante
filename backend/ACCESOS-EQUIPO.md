@@ -1,10 +1,17 @@
-# Accesos compartidos para la presentación
+# Accesos del equipo para la presentación
 
-Las cinco cuentas usan las mismas contraseñas que en la base aislada de Martín.
-Los accesos están publicados por acuerdo del equipo para probar y presentar el trabajo.
-Las contraseñas se consultan en [accesos-equipo-pruebas.json](accesos-equipo-pruebas.json).
-ADMIN_PASSWORD corresponde a elias; las variables SEED_PASSWORD corresponden al usuario
-indicado en su nombre. No son contraseñas de conexión a MySQL ni tokens de sesión.
+Las contraseñas **no están en el repositorio**. Cada integrante guarda sus claves de
+prueba en archivos locales que Git ignora:
+
+| Archivo local (ignorado)          | Plantilla versionada                      | Contenido                                  |
+| --------------------------------- | ----------------------------------------- | ------------------------------------------ |
+| `accesos-equipo-pruebas.json`     | `accesos-equipo-pruebas.example.json`     | Claves iniciales de las cuentas del equipo |
+| `mercadopago-equipo-pruebas.json` | `mercadopago-equipo-pruebas.example.json` | Credencial del vendedor de PRUEBA de MP    |
+
+`ADMIN_PASSWORD` corresponde al administrador (`ADMIN_USERNAME`); cada `SEED_PASSWORD_X`
+corresponde al usuario indicado. La lista de cuentas puede cambiarse con la clave
+`EQUIPO` del JSON (o `SEED_EQUIPO` en `.env`); si no se define, se usa la lista de abajo.
+Si el archivo no existe, la carga toma las mismas variables desde `backend/.env`.
 
 | Usuario  | Nombre                | Rol           |
 | -------- | --------------------- | ------------- |
@@ -14,28 +21,36 @@ indicado en su nombre. No son contraseñas de conexión a MySQL ni tokens de ses
 | santiago | Santiago Oviedo       | Repartidor    |
 | nehuen   | Parrondo Nehuen       | Mozo          |
 
-## Cargar en la computadora de Elías
+Yeray reemplaza a Nehuen en la presentación: su cuenta se crea desde la pantalla
+**Equipo** (administrador). La cuenta `nehuen` se desactiva, no se borra, para conservar
+el historial de pedidos.
 
-1. Descargar los cambios y configurar backend/.env con la conexión a su base SQL.
-   Si no existe, copiar backend/.env.example. No reemplazar un .env ya configurado.
-2. Iniciar MySQL/MariaDB. El comando siguiente detecta base vacía o existente;
-   no hay que importar SQL manualmente ni reemplazar una base con datos.
-3. Desde backend ejecutar:
+## Preparar otra computadora
+
+1. Configurar `backend/.env` con la conexión a su base SQL (copiar `.env.example`).
+2. Copiar las dos plantillas `*.example.json` sin el `.example` y completar las claves.
+   Las claves se piden por privado; nunca se pegan en GitHub, issues ni chats públicos.
+3. Iniciar MySQL/MariaDB y, desde `backend`:
 
 ```powershell
 npm ci
 npm run iniciar:equipo
 ```
 
-Desde frontend ejecutar npm ci y npm run dev. Ingresar con uno de los usuarios de la
-tabla y su contraseña del JSON. No hace falta copiar las contraseñas al .env.
-El comando de carga las convierte a hashes Argon2id al insertarlas en SQL.
+Desde `frontend`: `npm ci` y `npm run dev`.
 
-Repetir la carga conserva las cuentas y contraseñas existentes. Si una cuenta ya
-existía con otra clave, no se cambia automáticamente: un admin puede restablecerla
-desde Equipo. Cambiar una contraseña desde la pantalla no actualiza el archivo JSON.
+Repetir la carga conserva las cuentas y contraseñas existentes: si una cuenta ya existía
+con otra clave, no se cambia. Un administrador puede restablecerla desde Equipo.
+El comando rechaza `NODE_ENV=production`.
 
-La configuración de la base sigue siendo propia de cada PC. Estos accesos compartidos
-solo se cargan al ejecutar el comando explícito; no se habilitan al iniciar el servidor.
-El comando rechaza NODE_ENV=production. Para cuentas con claves privadas sigue
-existiendo el flujo seed:admin / seed:equipo documentado en [LOGIN.md](LOGIN.md).
+## Rotación de claves (obligatoria antes de publicar)
+
+Hasta el commit `c16fda4` estas claves y el token de prueba de Mercado Pago estuvieron
+versionados. Siguen en el historial de Git, así que se consideran **comprometidos**:
+
+1. **Cuentas NÁCAR:** en cada base, el admin cambia la contraseña de cada cuenta desde
+   Equipo (eso revoca sus sesiones). Actualizar el JSON local con las nuevas.
+2. **Mercado Pago:** en el panel de desarrolladores, cuenta vendedora de prueba →
+   Credenciales de prueba → renovar el Access Token. Guardarlo solo en el JSON local o
+   en `.env`, y en el panel del hosting como variable de entorno.
+3. Una base publicada en Internet nunca usa las claves viejas.

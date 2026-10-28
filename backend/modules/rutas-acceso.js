@@ -74,6 +74,7 @@ export function registrarAcceso(app) {
       permitidos = req.method === "GET" ? ["mozo", "admin"] : ["admin"];
     else if (path.startsWith("/usuarios")) permitidos = ["admin"];
     else if (path.startsWith("/resumenes")) permitidos = ["admin"];
+    else if (path.startsWith("/inventario")) permitidos = ["admin"];
     else if (path.startsWith("/envios"))
       permitidos =
         path === "/envios" && req.method === "POST"

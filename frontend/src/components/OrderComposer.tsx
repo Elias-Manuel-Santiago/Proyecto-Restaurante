@@ -3,6 +3,7 @@ import { useState } from 'react'
 import {
   categories,
   type DraftItem,
+  type MenuDish,
   type RestaurantTable,
   type Order,
 } from '../types'
@@ -45,6 +46,13 @@ export function OrderComposer({
         (data.dishes.find((dish) => dish.id === item.dishId)?.price ?? 0),
     0,
   )
+  // Al editar, lo que el pedido ya reservó vuelve a estar disponible para él.
+  // Es una guía: el servidor vuelve a validar el stock al guardar.
+  const stockLimit = (dish: MenuDish) =>
+    dish.portions === null || dish.portions === undefined
+      ? 99
+      : dish.portions +
+        (order?.items.find((item) => item.dishId === dish.id)?.quantity ?? 0)
   const shippingCost = Number(
     delivery?.costo_confirmado ?? order?.shippingCost ?? 0,
   )
@@ -122,16 +130,31 @@ export function OrderComposer({
               visible.map((dish) => {
                 const quantity =
                   items.find((item) => item.dishId === dish.id)?.quantity ?? 0
+                const limit = stockLimit(dish)
                 return (
                   <article key={dish.id} className="composer-dish">
                     <div>
                       <h3>{dish.name}</h3>
                       <p>{dish.description}</p>
                       <strong>{money(dish.price)}</strong>
-                      {!dish.available && (
+                      {!dish.available ? (
                         <span className="status status--cancelado">
                           No disponible
                         </span>
+                      ) : (
+                        limit === 0 && (
+                          <span className="status status--cancelado">
+                            Sin stock
+                            {dish.missingIngredient
+                              ? `: falta ${dish.missingIngredient}`
+                              : ''}
+                          </span>
+                        )
+                      )}
+                      {dish.available && limit > 0 && limit < 99 && (
+                        <small className="stock-hint">
+                          Alcanza para {limit}
+                        </small>
                       )}
                     </div>
                     <div className="quantity">
@@ -148,7 +171,9 @@ export function OrderComposer({
                       </output>
                       <button
                         className="icon-button"
-                        disabled={!dish.available || quantity >= 99}
+                        disabled={
+                          !dish.available || quantity >= Math.min(99, limit)
+                        }
                         aria-label={`Agregar ${dish.name}`}
                         onClick={() => update(dish.id, quantity + 1)}
                       >
@@ -179,10 +204,16 @@ export function OrderComposer({
                     {item.quantity} × {dish?.name ?? 'Plato eliminado'}
                   </strong>
                   <span>{money(item.quantity * (dish?.price ?? 0))}</span>
-                  {!dish?.available && (
+                  {!dish?.available ? (
                     <p className="form-error">
                       Quitá este plato: ya no está disponible.
                     </p>
+                  ) : (
+                    item.quantity > stockLimit(dish) && (
+                      <p className="form-error">
+                        El stock alcanza para {stockLimit(dish)}.
+                      </p>
+                    )
                   )}
                   <label>
                     Observaciones para {dish?.name ?? 'el plato'}

@@ -22,11 +22,43 @@ const tablas = {
     checks: ["char_length(trim(nombre)) > 0", "cantidad >= 0"],
   },
   comida_stock: {
-    columnas: { id_comida: "int", id_stock: "int" },
+    columnas: {
+      id_comida: "int",
+      id_stock: "int",
+      cantidad_requerida: "decimal(12,3)",
+    },
+    // Las bases anteriores tienen la tabla sin la cantidad: se agrega sin tocar filas.
+    agregadas: {
+      cantidad_requerida: {
+        columna: "DECIMAL(12,3) NOT NULL DEFAULT 1",
+        check: "cantidad_requerida > 0",
+        nombreCheck: "comida_stock_cantidad_check",
+      },
+    },
     primaria: ["id_comida", "id_stock"],
     referencias: [
       ["id_comida", "comidas", "id_comida"],
       ["id_stock", "Stock", "id_stock"],
+    ],
+    checks: ["cantidad_requerida > 0"],
+  },
+  movimientos_stock: {
+    columnas: {
+      id_movimiento: "int",
+      id_stock: "int",
+      id_pedido: "int",
+      tipo: "varchar(20)",
+      cantidad: "decimal(12,3)",
+      id_usuario: "int",
+      creado_en: "datetime(3)",
+    },
+    nulables: ["id_pedido", "id_usuario"],
+    primaria: ["id_movimiento"],
+    autoincremento: "id_movimiento",
+    referencias: [
+      ["id_stock", "Stock", "id_stock"],
+      ["id_pedido", "pedidos", "id_pedidos"],
+      ["id_usuario", "usuarios", "id_usuario", "SET NULL"],
     ],
     checks: [],
   },
@@ -61,16 +93,25 @@ async function inspeccionar(conexion, tabla) {
   return { nombre: datos.TABLE_NAME, columnas, primaria };
 }
 
-async function validarTabla(conexion, tabla, esperado, actual) {
+// previa=true: antes de migrar se aceptan tablas a las que todavía les faltan
+// las columnas "agregadas" (versión anterior del inventario).
+async function validarTabla(conexion, tabla, esperado, actual, previa = false) {
   const error = `${tabla} existe con una estructura incompatible; no se modificó. Revisá sus columnas, claves y restricciones.`;
-  comprobar(
-    actual.columnas.length === Object.keys(esperado.columnas).length,
-    error,
+  const faltantes = previa
+    ? Object.keys(esperado.agregadas ?? {}).filter(
+        (nombre) => !actual.columnas.some((campo) => campo.Field === nombre),
+      )
+    : [];
+  const columnas = Object.entries(esperado.columnas).filter(
+    ([nombre]) => !faltantes.includes(nombre),
   );
-  for (const [nombre, tipo] of Object.entries(esperado.columnas)) {
+  comprobar(actual.columnas.length === columnas.length, error);
+  for (const [nombre, tipo] of columnas) {
     const columna = actual.columnas.find((campo) => campo.Field === nombre);
     comprobar(
-      columna && normalizarTipo(columna.Type) === tipo && columna.Null === "NO",
+      columna &&
+        normalizarTipo(columna.Type) === tipo &&
+        columna.Null === (esperado.nulables?.includes(nombre) ? "YES" : "NO"),
       error,
     );
     comprobar(
@@ -95,7 +136,7 @@ async function validarTabla(conexion, tabla, esperado, actual) {
   );
   const [[{ base }]] = await conexion.query("SELECT DATABASE() AS base");
   comprobar(referencias.length === esperado.referencias.length, error);
-  for (const [columna, padre, clave] of esperado.referencias) {
+  for (const [columna, padre, clave, alBorrar] of esperado.referencias) {
     comprobar(
       referencias.some(
         (fk) =>
@@ -103,7 +144,9 @@ async function validarTabla(conexion, tabla, esperado, actual) {
           fk.REFERENCED_TABLE_NAME.toLowerCase() === padre.toLowerCase() &&
           fk.REFERENCED_COLUMN_NAME === clave &&
           fk.REFERENCED_TABLE_SCHEMA === base &&
-          ["RESTRICT", "NO ACTION"].includes(fk.DELETE_RULE) &&
+          (alBorrar
+            ? fk.DELETE_RULE === alBorrar
+            : ["RESTRICT", "NO ACTION"].includes(fk.DELETE_RULE)) &&
           ["RESTRICT", "NO ACTION"].includes(fk.UPDATE_RULE),
       ),
       error,
@@ -117,7 +160,9 @@ async function validarTabla(conexion, tabla, esperado, actual) {
     [actual.nombre],
   );
   comprobar(
-    esperado.checks.every((clausula) =>
+    esperado.checks
+      .filter((clausula) => !faltantes.some((nombre) => clausula.includes(nombre)))
+      .every((clausula) =>
       checks.some(
         (check) =>
           normalizarCheck(check.CHECK_CLAUSE) === normalizarCheck(clausula),
@@ -127,26 +172,46 @@ async function validarTabla(conexion, tabla, esperado, actual) {
   );
 }
 
-/** Solo crea las tres tablas acordadas. No altera tablas ni datos existentes. */
+/**
+ * Crea las tablas de inventario que falten y agrega la cantidad por receta a
+ * comida_stock. No borra ni modifica filas existentes.
+ */
 export async function migrarStock(pool = db) {
   const conexion = await pool.getConnection();
   try {
-    const comidas = await inspeccionar(conexion, "comidas");
-    comprobar(
-      comidas &&
-        comidas.columnas.some(
-          (campo) =>
-            campo.Field === "id_comida" &&
-            normalizarTipo(campo.Type) === "int" &&
-            campo.Null === "NO",
-        ) &&
-        JSON.stringify(comidas.primaria) === '["id_comida"]',
-      "se requiere comidas.id_comida INT con clave primaria en la misma base.",
-    );
+    for (const [tabla, clave] of [
+      ["comidas", "id_comida"],
+      ["pedidos", "id_pedidos"],
+      ["usuarios", "id_usuario"],
+    ]) {
+      const padre = await inspeccionar(conexion, tabla);
+      comprobar(
+        padre &&
+          padre.columnas.some(
+            (campo) =>
+              campo.Field === clave &&
+              normalizarTipo(campo.Type) === "int" &&
+              campo.Null === "NO",
+          ) &&
+          JSON.stringify(padre.primaria) === JSON.stringify([clave]),
+        `se requiere ${tabla}.${clave} INT con clave primaria en la misma base.`,
+      );
+    }
     // Validar TODO antes del primer CREATE evita ocultar tablas incompatibles.
+    const anteriores = {};
     for (const [tabla, esperado] of Object.entries(tablas)) {
       const actual = await inspeccionar(conexion, tabla);
-      if (actual) await validarTabla(conexion, tabla, esperado, actual);
+      if (actual) await validarTabla(conexion, tabla, esperado, actual, true);
+      anteriores[tabla] = actual;
+    }
+    for (const [tabla, esperado] of Object.entries(tablas)) {
+      const actual = anteriores[tabla];
+      for (const [nombre, agregada] of Object.entries(esperado.agregadas ?? {}))
+        if (actual && !actual.columnas.some((campo) => campo.Field === nombre))
+          await conexion.query(
+            `ALTER TABLE ?? ADD COLUMN ${nombre} ${agregada.columna}, ADD CONSTRAINT ${agregada.nombreCheck} CHECK (${agregada.check})`,
+            [actual.nombre],
+          );
     }
     const sql = await readFile(
       new URL("../../frontend/database/inventario.sql", import.meta.url),

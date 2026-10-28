@@ -1,5 +1,5 @@
 import db from "./db.js";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { readFile } from "node:fs/promises";
 import { hashClave, claveValida } from "./autenticacion.js";
 
@@ -10,18 +10,52 @@ export const equipo = [
   { username: "nehuen", name: "Parrondo Nehuen", role: "mozo" },
 ];
 
+// La lista puede venir de la configuración (EQUIPO en el JSON local o SEED_EQUIPO en .env).
+export function leerEquipo(env = process.env) {
+  let lista = env.EQUIPO ?? env.SEED_EQUIPO;
+  if (lista === undefined || lista === "") return equipo;
+  if (typeof lista === "string") lista = JSON.parse(lista);
+  if (
+    !Array.isArray(lista) ||
+    !lista.every(
+      (u) =>
+        /^[a-z0-9._-]{3,40}$/.test(u?.username || "") &&
+        typeof u.name === "string" &&
+        u.name.trim() &&
+        u.name.length <= 80 &&
+        ["mozo", "chef", "repartidor", "admin"].includes(u.role),
+    )
+  )
+    throw new Error(
+      "Revisá EQUIPO/SEED_EQUIPO: cada cuenta necesita username, name y role válidos.",
+    );
+  return lista;
+}
+
+// Archivo local e ignorado por Git. La plantilla sin claves es accesos-equipo-pruebas.example.json.
+export const archivoAccesos = (entorno = process.env) =>
+  entorno.NACAR_ACCESOS_FILE ||
+  fileURLToPath(new URL("../accesos-equipo-pruebas.json", import.meta.url));
+
 // Carga explícita para la presentación del equipo; no cambia el acceso normal.
+// Si falta el archivo local, se usan las variables del .env (ADMIN_PASSWORD, SEED_...).
 export async function cargarAccesosPruebas(entorno = process.env) {
   if (entorno.NODE_ENV === "production")
     throw new Error(
       "La carga de accesos compartidos está disponible solo para pruebas.",
     );
-  return JSON.parse(
-    await readFile(
-      new URL("../accesos-equipo-pruebas.json", import.meta.url),
-      "utf8",
-    ),
-  );
+  try {
+    return {
+      ...entorno,
+      // Quita el BOM que agrega el Bloc de notas de Windows al guardar en UTF-8.
+      ...JSON.parse(
+        (await readFile(archivoAccesos(entorno), "utf8")).replace(/^﻿/, ""),
+      ),
+    };
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+    return entorno;
+  }
 }
 
 export async function sembrarUsuarios({
@@ -52,7 +86,7 @@ export async function sembrarUsuarios({
     const cuentas = [
       { username, name: nombre, role: "admin", password: env.ADMIN_PASSWORD },
       ...(incluirEquipo
-        ? equipo.map((u) => ({
+        ? leerEquipo(env).map((u) => ({
             ...u,
             password:
               env[`SEED_PASSWORD_${u.username.toUpperCase()}`] ||

@@ -1,0 +1,15 @@
+{
+  "ADMIN_USERNAME": "elias",
+  "ADMIN_NAME": "Elías Manuel Santiago",
+  "ADMIN_PASSWORD": "COMPLETAR-10-a-128-caracteres",
+  "SEED_PASSWORD_MARTIN": "COMPLETAR-10-a-128-caracteres",
+  "SEED_PASSWORD_LAUREANO": "COMPLETAR-10-a-128-caracteres",
+  "SEED_PASSWORD_SANTIAGO": "COMPLETAR-10-a-128-caracteres",
+  "SEED_PASSWORD_NEHUEN": "COMPLETAR-10-a-128-caracteres",
+  "EQUIPO": [
+    { "username": "martin", "name": "Martín Porcelli", "role": "mozo" },
+    { "username": "laureano", "name": "Laureano Desantadina", "role": "chef" },
+    { "username": "santiago", "name": "Santiago Oviedo", "role": "repartidor" },
+    { "username": "nehuen", "name": "Parrondo Nehuen", "role": "mozo" }
+  ]
+}

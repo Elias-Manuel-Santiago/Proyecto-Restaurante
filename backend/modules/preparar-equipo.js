@@ -2,6 +2,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import mysql from "mysql2/promise";
 import { configurarMercadoPagoPruebas } from "./configurar-mp-pruebas.js";
+import { opcionesSsl } from "./conexion-ssl.js";
 
 export async function asegurarConfiguracion(destino) {
   try {
@@ -16,16 +17,20 @@ export async function asegurarConfiguracion(destino) {
   }
 }
 
-export async function prepararEquipo() {
-  if (process.env.NODE_ENV === "production")
+// online=true (hosting): la configuración viene del panel, no hay .env ni claves de
+// prueba del equipo. Solo instala o migra y crea el admin con ADMIN_PASSWORD.
+export async function prepararEquipo({ online = false } = {}) {
+  if (process.env.NODE_ENV === "production" && !online)
     throw new Error(
       "La preparación del equipo es solo para la presentación y pruebas.",
     );
   const destino =
     process.env.NACAR_ENV_FILE ||
     fileURLToPath(new URL("../.env", import.meta.url));
-  await asegurarConfiguracion(destino);
-  process.loadEnvFile(destino);
+  if (!online) {
+    await asegurarConfiguracion(destino);
+    process.loadEnvFile(destino);
+  }
   const base = process.env.DB_DATABASE || "restaurante";
   if (!/^[a-zA-Z0-9_]{1,64}$/.test(base))
     throw new Error("Revisá DB_DATABASE: usá letras, números y guiones bajos.");
@@ -34,6 +39,7 @@ export async function prepararEquipo() {
     port: Number(process.env.DB_PORT || 3306),
     user: process.env.DB_USER || "root",
     password: process.env.DB_PASSWORD || "",
+    ...opcionesSsl(),
   });
   let pool;
   try {
@@ -60,7 +66,7 @@ export async function prepararEquipo() {
         .map((s) => s.trim())
         .filter(Boolean))
         await conexion.query(sentencia);
-      console.log("Base vacía: se instalaron las 15 tablas.");
+      console.log("Base vacía: se instalaron las 16 tablas.");
     } else {
       const faltantes = [
         "mesas",
@@ -81,12 +87,29 @@ export async function prepararEquipo() {
     // Importar después de cargar .env: la conexión se crea con la base de esta PC.
     ({ default: pool } = await import("./db.js"));
     const { migrar } = await import("./migrate.js");
-    const { sembrarUsuarios, cargarAccesosPruebas } =
+    const { sembrarUsuarios, cargarAccesosPruebas, leerEquipo } =
       await import("./seed-usuarios.js");
     await migrar();
+    if (online) {
+      const creados = await sembrarUsuarios();
+      console.log(
+        creados.length
+          ? `Administrador creado: ${creados.join(", ")}. El resto del equipo se da de alta desde Equipo.`
+          : "Base online lista; se conservaron las cuentas existentes.",
+      );
+      // NACAR_DATOS_DEMO=1 (expo): mesas, platos, tarifas, insumos y recetas de ejemplo.
+      if (process.env.NACAR_DATOS_DEMO === "1") {
+        const { cargarDatosDemo } = await import("./datos-demo.js");
+        console.log(
+          `Datos de ejemplo: ${JSON.stringify(await cargarDatosDemo())}.`,
+        );
+      }
+      return;
+    }
+    const accesos = await cargarAccesosPruebas();
     const creados = await sembrarUsuarios({
       incluirEquipo: true,
-      env: await cargarAccesosPruebas(),
+      env: accesos,
     });
     console.log(
       creados.length
@@ -95,7 +118,13 @@ export async function prepararEquipo() {
     );
     // Informa las cuentas conservadas: no promete que su clave coincida con el JSON.
     const [cuentas] = await pool.query(
-      "SELECT usuario,tipo,activo FROM usuarios WHERE usuario IN ('elias','martin','laureano','santiago','nehuen') ORDER BY usuario",
+      "SELECT usuario,tipo,activo FROM usuarios WHERE usuario IN (?) ORDER BY usuario",
+      [
+        [
+          (accesos.ADMIN_USERNAME || "elias").trim().toLowerCase(),
+          ...leerEquipo(accesos).map((u) => u.username),
+        ],
+      ],
     );
     for (const cuenta of cuentas)
       console.log(
@@ -115,8 +144,10 @@ if (
   process.argv[1] &&
   import.meta.url === pathToFileURL(process.argv[1]).href
 ) {
-  prepararEquipo().catch((error) => {
-    console.error(`No se completó la preparación: ${error.message}`);
-    process.exitCode = 1;
-  });
+  prepararEquipo({ online: process.argv.includes("--online") }).catch(
+    (error) => {
+      console.error(`No se completó la preparación: ${error.message}`);
+      process.exitCode = 1;
+    },
+  );
 }

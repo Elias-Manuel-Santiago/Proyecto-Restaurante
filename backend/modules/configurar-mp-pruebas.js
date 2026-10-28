@@ -4,15 +4,21 @@ import { pathToFileURL } from "node:url";
 export async function configurarMercadoPagoPruebas({
   destino = new URL("../.env", import.meta.url),
   solicitar = fetch,
+  origen = process.env.NACAR_MP_FILE ||
+    new URL("../mercadopago-equipo-pruebas.json", import.meta.url),
 } = {}) {
-  // Credencial compartida del entorno académico, publicada a pedido del equipo.
-  // No usa credenciales de producción ni modifica la conexión SQL de cada integrante.
-  const datos = JSON.parse(
-    await readFile(
-      new URL("../mercadopago-equipo-pruebas.json", import.meta.url),
-      "utf8",
-    ),
-  );
+  // Credencial del vendedor de PRUEBA en un archivo local ignorado por Git
+  // (plantilla: mercadopago-equipo-pruebas.example.json). Nunca credenciales reales.
+  let datos;
+  try {
+    datos = JSON.parse((await readFile(origen, "utf8")).replace(/^﻿/, ""));
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+    console.log(
+      "Sin mercadopago-equipo-pruebas.json: se conserva MP_ACCESS_TOKEN del .env. Para cobrar, pedí el archivo al equipo o completá el .env.",
+    );
+    return false;
+  }
   const respuesta = await solicitar("https://api.mercadopago.com/users/me", {
     headers: { Authorization: `Bearer ${datos.access_token}` },
     signal: AbortSignal.timeout(15000),
@@ -53,6 +59,7 @@ export async function configurarMercadoPagoPruebas({
   console.log(
     "Mercado Pago de prueba configurado en .env. Se conservó la conexión SQL; reiniciá el backend.",
   );
+  return true;
 }
 if (
   process.argv[1] &&

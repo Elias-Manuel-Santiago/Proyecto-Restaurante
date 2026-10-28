@@ -17,11 +17,14 @@ const sentencias = (sql) =>
 test("inventario: migración aditiva, repetible, restricciones y compatibilidad", async () => {
   const nombre = `codex_restaurante_test_${randomBytes(6).toString("hex")}`;
   assert.match(nombre, /^codex_restaurante_test_[a-f0-9]+$/);
-  const conexion = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-  });
+  // Misma conexión que el resto de las pruebas (.env o variables del entorno).
+  const acceso = {
+    host: process.env.DB_HOST || "127.0.0.1",
+    port: Number(process.env.DB_PORT || 3306),
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "",
+  };
+  const conexion = await mysql.createConnection(acceso);
   let pool;
   let creada = false;
   try {
@@ -31,12 +34,7 @@ test("inventario: migración aditiva, repetible, restricciones y compatibilidad"
     );
     creada = true;
     await conexion.query("USE ??", [nombre]);
-    pool = mysql.createPool({
-      host: "localhost",
-      user: "root",
-      password: "",
-      database: nombre,
-    });
+    pool = mysql.createPool({ ...acceso, database: nombre });
     const esquema = sentencias(
       await readFile(
         new URL("../../frontend/database/restaurante.sql", import.meta.url),
@@ -50,7 +48,9 @@ test("inventario: migración aditiva, repetible, restricciones y compatibilidad"
       ),
     );
     const nuevas = esquema.filter((sql) =>
-      /^CREATE TABLE (Unidades|Stock|comida_stock)\b/.test(sql),
+      /^CREATE TABLE (Unidades|Stock|comida_stock|movimientos_stock)\b/.test(
+        sql,
+      ),
     );
     assert.deepEqual(
       nuevas,
@@ -85,7 +85,7 @@ test("inventario: migración aditiva, repetible, restricciones y compatibilidad"
       [plato.insertId],
     );
     await migrarStock(pool);
-    assert.equal((await conexion.query("SHOW TABLES"))[0].length, 11);
+    assert.equal((await conexion.query("SHOW TABLES"))[0].length, 12);
     const [unidad] = await conexion.query(
       "INSERT INTO Unidades (nombre) VALUES (?)",
       ["Kilogramo"],
@@ -105,7 +105,11 @@ test("inventario: migración aditiva, repetible, restricciones y compatibilidad"
     );
     assert.equal(insumo.cantidad, "2.750");
     assert.deepEqual((await conexion.query("SELECT * FROM comida_stock"))[0], [
-      { id_comida: plato.insertId, id_stock: stock.insertId },
+      {
+        id_comida: plato.insertId,
+        id_stock: stock.insertId,
+        cantidad_requerida: "1.000",
+      },
     ]);
     assert.deepEqual(
       (
@@ -157,6 +161,22 @@ test("inventario: migración aditiva, repetible, restricciones y compatibilidad"
         "INSERT INTO Stock (nombre,id_unidad) VALUES (?,?)",
         ["", unidad.insertId],
       ],
+      [
+        "UPDATE comida_stock SET cantidad_requerida=? WHERE id_stock=?",
+        [0, stock.insertId],
+      ],
+      [
+        "INSERT INTO movimientos_stock (id_stock,tipo,cantidad) VALUES (?,?,?)",
+        [stock.insertId, "consumo", 1],
+      ],
+      [
+        "INSERT INTO movimientos_stock (id_stock,tipo,cantidad) VALUES (?,?,?)",
+        [stock.insertId, "ajuste", 0],
+      ],
+      [
+        "INSERT INTO movimientos_stock (id_stock,tipo,cantidad) VALUES (?,?,?)",
+        [stock.insertId, "robo", 1],
+      ],
     ])
       await assert.rejects(conexion.query(sql, valores), (error) =>
         [3819, 4025].includes(error.errno),
@@ -190,7 +210,7 @@ test("inventario: migración aditiva, repetible, restricciones y compatibilidad"
     );
     assert.equal(
       (await conexion.query("SHOW TABLES"))[0].length,
-      10,
+      11,
       "Rechaza la incompatibilidad antes de crear la tabla faltante",
     );
     assert.equal(
@@ -202,5 +222,85 @@ test("inventario: migración aditiva, repetible, restricciones y compatibilidad"
     if (creada) await conexion.query("DROP DATABASE ??", [nombre]);
     await conexion.end();
     await db.end();
+  }
+});
+
+test("inventario: una base con la versión anterior recibe la cantidad por receta sin perder filas", async () => {
+  const nombre = `codex_restaurante_test_${randomBytes(6).toString("hex")}`;
+  const acceso = {
+    host: process.env.DB_HOST || "127.0.0.1",
+    port: Number(process.env.DB_PORT || 3306),
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "",
+  };
+  const conexion = await mysql.createConnection(acceso);
+  let pool;
+  let creada = false;
+  try {
+    await conexion.query("CREATE DATABASE ??", [nombre]);
+    creada = true;
+    await conexion.query("USE ??", [nombre]);
+    pool = mysql.createPool({ ...acceso, database: nombre });
+    const esquema = sentencias(
+      await readFile(
+        new URL("../../frontend/database/restaurante.sql", import.meta.url),
+        "utf8",
+      ),
+    );
+    for (const sql of esquema.filter(
+      (sql) =>
+        !/^CREATE TABLE (comida_stock|movimientos_stock|envios|modalidades_envio|envio_modalidad|pagos)\b/.test(
+          sql,
+        ),
+    ))
+      await conexion.query(sql);
+    // comida_stock tal como la creaba la versión anterior (sin cantidad).
+    await conexion.query(`CREATE TABLE comida_stock (
+      id_comida INT NOT NULL, id_stock INT NOT NULL,
+      PRIMARY KEY (id_comida,id_stock), KEY comida_stock_stock_idx (id_stock),
+      CONSTRAINT comida_stock_comida_fk FOREIGN KEY (id_comida)
+        REFERENCES comidas (id_comida) ON DELETE RESTRICT ON UPDATE RESTRICT,
+      CONSTRAINT comida_stock_stock_fk FOREIGN KEY (id_stock)
+        REFERENCES Stock (id_stock) ON DELETE RESTRICT ON UPDATE RESTRICT
+    ) ENGINE=InnoDB`);
+    const [plato] = await conexion.query(
+      "INSERT INTO comidas (tipo,nombre,descripcion,precio) VALUES ('Principales','Milanesa','',1000)",
+    );
+    const [unidad] = await conexion.query(
+      "INSERT INTO Unidades (nombre) VALUES ('kg')",
+    );
+    const [stock] = await conexion.query(
+      "INSERT INTO Stock (nombre,cantidad,id_unidad) VALUES ('Carne',4,?)",
+      [unidad.insertId],
+    );
+    await conexion.query(
+      "INSERT INTO comida_stock (id_comida,id_stock) VALUES (?,?)",
+      [plato.insertId, stock.insertId],
+    );
+    await migrarStock(pool);
+    await migrarStock(pool);
+    assert.deepEqual((await conexion.query("SELECT * FROM comida_stock"))[0], [
+      {
+        id_comida: plato.insertId,
+        id_stock: stock.insertId,
+        cantidad_requerida: "1.000",
+      },
+    ]);
+    assert.equal(
+      (await conexion.query("SELECT cantidad FROM Stock"))[0][0].cantidad,
+      "4.000",
+    );
+    const [[{ total }]] = await conexion.query(
+      "SELECT COUNT(*) AS total FROM movimientos_stock",
+    );
+    assert.equal(total, 0);
+    await assert.rejects(
+      conexion.query("UPDATE comida_stock SET cantidad_requerida=-1"),
+      (error) => [3819, 4025].includes(error.errno),
+    );
+  } finally {
+    if (pool) await pool.end();
+    if (creada) await conexion.query("DROP DATABASE ??", [nombre]);
+    await conexion.end();
   }
 });

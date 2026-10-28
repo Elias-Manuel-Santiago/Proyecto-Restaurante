@@ -16,6 +16,8 @@ export const money = (value: number) =>
   }).format(value)
 export const orderTotal = (order: Order) =>
   order.items.reduce((total, item) => total + item.quantity * item.unitPrice, 0)
+// Se puede vender si cocina no lo marcó agotado y el stock alcanza (o no tiene receta).
+export const canSell = (dish: MenuDish) => dish.available && dish.portions !== 0
 export const isActive = (order: Order) =>
   !['entregado', 'cancelado'].includes(order.status)
 export const isAwaitingPayment = (order: Order) =>
