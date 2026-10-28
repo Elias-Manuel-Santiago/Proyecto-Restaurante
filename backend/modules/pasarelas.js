@@ -99,7 +99,11 @@ registrarPasarela("mercadopago", {
   preparar: vendedorPrueba,
   async crear(pago) {
     await vendedorPrueba();
-    const origin = process.env.FRONTEND_ORIGIN || "http://localhost:5173";
+    // Render define RENDER_EXTERNAL_URL (https://…onrender.com) en cada servicio.
+    const origin =
+      process.env.FRONTEND_ORIGIN ||
+      process.env.RENDER_EXTERNAL_URL ||
+      "http://localhost:5173";
     const body = {
       external_reference: pago.id_pago,
       items: [

@@ -1,0 +1,47 @@
+# Blueprint de Render: un solo servicio web gratis (Express sirve el frontend y la API).
+# En Render: New → Blueprint → elegir este repositorio. Los valores con sync: false los
+# pide el panel al crear el servicio y nunca se guardan en el repositorio.
+services:
+  - type: web
+    name: nacar-restaurante
+    runtime: node
+    plan: free
+    region: virginia
+    branch: etapa-4/expo
+    buildCommand: npm run build
+    startCommand: npm start
+    healthCheckPath: /login
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TZ
+        value: America/Argentina/Buenos_Aires
+      - key: NACAR_DATOS_DEMO
+        value: "1"
+      - key: DB_SSL
+        value: "1"
+      - key: DB_DATABASE
+        value: nacar
+      # Datos del MySQL de Aiven (Overview del servicio).
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_SSL_CA
+        sync: false
+      # Admin inicial: elegir una clave nueva de 10 caracteres o más.
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_NAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      # Vendedor de prueba de Mercado Pago (opcional: sin esto no se cobra, el resto anda).
+      - key: MP_ACCESS_TOKEN
+        sync: false
+      - key: MP_TEST_BUYER_IDS
+        sync: false
