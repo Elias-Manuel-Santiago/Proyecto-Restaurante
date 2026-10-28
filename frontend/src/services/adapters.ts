@@ -98,5 +98,11 @@ export function adaptarComidas(comidas: ComidaApi[]): MenuDish[] {
     price: Number(comida.precio),
     available: Boolean(Number(comida.disponible)),
     image: '',
+    portions:
+      comida.porciones_disponibles === undefined ||
+      comida.porciones_disponibles === null
+        ? null
+        : Number(comida.porciones_disponibles),
+    missingIngredient: comida.insumo_faltante ?? undefined,
   }))
 }

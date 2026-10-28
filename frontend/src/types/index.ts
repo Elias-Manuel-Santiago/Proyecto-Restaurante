@@ -92,6 +92,9 @@ export interface MenuDish {
   image: string
   category: (typeof categories)[number]
   available: boolean
+  // Porciones que permite el insumo más escaso; null = sin receta.
+  portions?: number | null
+  missingIngredient?: string
 }
 export interface RestaurantData {
   version: 1

@@ -38,6 +38,43 @@ export interface ComidaApi extends Omit<
   precio: number | string
   disponible: boolean | number
   eliminado?: number
+  // null = plato sin receta (no descuenta stock).
+  porciones_disponibles?: number | null
+  insumo_faltante?: string | null
+}
+// Inventario: las cantidades DECIMAL(12,3) llegan como texto ("2.750").
+export interface UnidadApi {
+  id_unidad: number
+  nombre: string
+}
+export interface InsumoApi {
+  id_stock: number
+  nombre: string
+  cantidad: string
+  id_unidad: number
+  unidad: string
+}
+export interface RecetaApi {
+  id_comida: number
+  id_stock: number
+  cantidad_requerida: string
+}
+export interface MovimientoApi {
+  id_movimiento: number
+  id_stock: number
+  insumo: string
+  unidad: string
+  id_pedido: number | null
+  tipo: 'consumo' | 'reposicion' | 'ajuste'
+  cantidad: string
+  creado_en: string
+  usuario: string | null
+}
+export interface InventarioApi {
+  unidades: UnidadApi[]
+  insumos: InsumoApi[]
+  recetas: RecetaApi[]
+  movimientos: MovimientoApi[]
 }
 export interface ComidaPedido {
   id_comida: number
@@ -140,6 +177,27 @@ export const guardarModalidad = (mode: ShippingMode) =>
     requiere_repartidor: Boolean(mode.requiere_repartidor),
     activo: Boolean(mode.activo),
   })
+export const obtenerInventario = () =>
+  consultar<InventarioApi>('GET', '/inventario')
+export const crearUnidad = (nombre: string) =>
+  consultar<{ id_unidad: number }>('POST', '/inventario/unidades', { nombre })
+export const crearInsumo = (insumo: {
+  nombre: string
+  id_unidad: number
+  cantidad: number
+}) => consultar<{ id_stock: number }>('POST', '/inventario/insumos', insumo)
+export const ajustarInsumo = (id: number, cantidad: number) =>
+  consultar<{ cantidad: string }>('POST', `/inventario/insumos/${id}/ajuste`, {
+    cantidad,
+  })
+export const guardarReceta = (
+  id_comida: number,
+  insumos: { id_stock: number; cantidad_requerida: number }[],
+) =>
+  consultar<MensajeApi>('PUT', `/inventario/recetas/${id_comida}`, {
+    insumos,
+  })
+
 export const obtenerPago = (id: string) =>
   consultar<Payment | null>('GET', `/pagos/${id}`)
 export const iniciarPago = (id: string) =>

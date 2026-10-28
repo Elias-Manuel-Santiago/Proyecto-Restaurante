@@ -5,7 +5,7 @@ import { DishEditor } from '../components/DishEditor'
 import { ConfirmDialog } from '../components/Dialog'
 import { useRestaurant } from '../state/useRestaurant'
 import { categories, type MenuDish } from '../types'
-import { isActive } from '../state/model'
+import { canSell, isActive } from '../state/model'
 
 export function MenuPage() {
   const { data, session, act } = useRestaurant()
@@ -19,7 +19,7 @@ export function MenuPage() {
   const visible = data.dishes.filter(
     (dish) =>
       (!category || dish.category === category) &&
-      (!availability || dish.available === (availability === 'available')) &&
+      (!availability || canSell(dish) === (availability === 'available')) &&
       dish.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
   )
   const canManage = session?.role === 'admin'
@@ -41,8 +41,7 @@ export function MenuPage() {
           </button>
         ) : (
           <p className="item-count">
-            {data.dishes.filter((dish) => dish.available).length} platos
-            disponibles
+            {data.dishes.filter(canSell).length} platos disponibles
           </p>
         )}
       </section>

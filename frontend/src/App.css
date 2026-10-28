@@ -2389,3 +2389,33 @@ body:has(dialog[open]) {
 .theme-toggle {
   flex-shrink: 0;
 }
+
+/* Stock: porciones disponibles y panel de inventario. */
+.stock-hint {
+  color: var(--muted);
+  display: block;
+  font-size: 0.72rem;
+  margin-top: 0.35rem;
+}
+.inventory-adjust {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+.inventory-adjust input {
+  max-width: 8rem;
+}
+.recipe-row {
+  align-items: end;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .recipe-row {
+    grid-template-columns: 2fr 1.5fr auto;
+  }
+  .inventory-forms {
+    grid-template-columns: 2fr 1fr;
+  }
+}
