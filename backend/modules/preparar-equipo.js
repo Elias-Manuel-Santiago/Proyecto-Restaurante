@@ -97,10 +97,20 @@ export async function prepararEquipo({ online = false } = {}) {
           ? `Administrador creado: ${creados.join(", ")}. El resto del equipo se da de alta desde Equipo.`
           : "Base online lista; se conservaron las cuentas existentes.",
       );
+      // NACAR_DATOS_DEMO=1 (expo): mesas, platos, tarifas, insumos y recetas de ejemplo.
+      if (process.env.NACAR_DATOS_DEMO === "1") {
+        const { cargarDatosDemo } = await import("./datos-demo.js");
+        console.log(
+          `Datos de ejemplo: ${JSON.stringify(await cargarDatosDemo())}.`,
+        );
+      }
       return;
     }
     const accesos = await cargarAccesosPruebas();
-    const creados = await sembrarUsuarios({ incluirEquipo: true, env: accesos });
+    const creados = await sembrarUsuarios({
+      incluirEquipo: true,
+      env: accesos,
+    });
     console.log(
       creados.length
         ? `Cuentas creadas: ${creados.join(", ")}.`
@@ -134,8 +144,10 @@ if (
   process.argv[1] &&
   import.meta.url === pathToFileURL(process.argv[1]).href
 ) {
-  prepararEquipo({ online: process.argv.includes("--online") }).catch((error) => {
-    console.error(`No se completó la preparación: ${error.message}`);
-    process.exitCode = 1;
-  });
+  prepararEquipo({ online: process.argv.includes("--online") }).catch(
+    (error) => {
+      console.error(`No se completó la preparación: ${error.message}`);
+      process.exitCode = 1;
+    },
+  );
 }
