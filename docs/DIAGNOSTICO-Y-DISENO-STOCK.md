@@ -14,9 +14,9 @@ contradice el resumen anterior, manda el código. "A verificar" = no se pudo com
 | B1 Tarjeta / MercadoPago / transferencia | Parcial | Checkout Pro (el checkout de MP ofrece tarjeta y dinero en cuenta). Solo se probó con saldo de prueba. Transferencia bancaria: no hay pasarela | "Integramos MP; la pasarela es un registro de adaptadores, sumar otra es un objeto con 4 funciones." |
 | B2 Cobros y reembolsos | Cumple | `pagos.iniciarPago / consultarPago / reembolsarPago`, claves de idempotencia | "El importe lo calcula el servidor; el reembolso no se duplica." |
 | B3 Sin pago aprobado no va a cocina ni se despacha | Parcial (decisión) | `exigirPago` solo si `pago_requerido=1`: delivery y retiro sí, **mesas no** | Defender: en salón se cobra al final (ver §4). Preguntar a Pereyra. |
-| C1 Descuento automático al confirmar | **Falta** | `comida_stock` no tiene cantidad por plato | Ver diseño §5. |
-| C2 Validar disponibilidad (no se puede elegir sin stock) | Parcial | Solo `comidas.disponible` manual (chef/admin) | "Hoy el chef marca agotado; falta calcularlo del stock." |
-| C3 Reposición si se cancela antes de despachar | **Falta** | — | Ver diseño §5. |
+| C1 Descuento automático al confirmar | Cumple (rama `etapa-2/stock`) | `inventario.consumirStock` en la misma transacción que crea o edita el pedido o el envío | "La receta dice cuánto usa cada porción; al registrar el pedido se descuenta, y si falta un insumo no se guarda nada." |
+| C2 Validar disponibilidad (no se puede elegir sin stock) | Cumple (rama `etapa-2/stock`) | `porciones_disponibles` en la carta; el "+" se bloquea; el backend revalida con `FOR UPDATE` | "La carta muestra cuántas porciones quedan; aunque dos mozos pidan a la vez, el bloqueo deja pasar solo a uno." |
+| C3 Reposición si se cancela antes de despachar | Cumple (rama `etapa-2/stock`) | `inventario.reponerStock` en las 3 rutas de cancelación, desde `movimientos_stock` | "Se devuelve exactamente lo descontado, una sola vez." |
 
 ## 2. Criterios de evaluación
 
@@ -65,7 +65,13 @@ ofrezca el botón de cobro (a verificar).
 adaptador cuyo `crear` devuelve los datos del CBU/alias y cuyo `consultar` lee un estado que
 el admin marca a mano. No se tocan `pagos.js` ni las rutas.
 
-## 5. Diseño propuesto de stock (ESPERA APROBACIÓN, no está implementado)
+## 5. Diseño de stock (aprobado el 28/10 e implementado en `etapa-2/stock`)
+
+Lo implementado sigue este diseño. Detalle de reglas, API y pruebas en
+[backend/STOCK.md](../backend/STOCK.md). Diferencia con lo propuesto: al editar un
+pedido no se repone y se vuelve a descontar todo, sino que se ajusta solo la
+diferencia sobre la misma fila de consumo (así el `UNIQUE` sigue valiendo). Sigue
+**a confirmar con Elías**: altera `comida_stock`, la tabla que él pidió.
 
 ### Esquema (migración aditiva y repetible)
 

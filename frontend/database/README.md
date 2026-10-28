@@ -1,6 +1,13 @@
-## Envíos y pagos (actualización vigente)
+## Control de stock (actualización vigente)
 
-El esquema completo tiene **15 tablas**. Se agregan `modalidades_envio`,
+El esquema completo tiene **16 tablas**: se agrega `movimientos_stock` y la columna
+`comida_stock.cantidad_requerida`. `npm run migrate` actualiza una base existente sin
+borrar filas. Reglas y pruebas en [STOCK.md](../../backend/STOCK.md). El diagrama
+(`diagrama.*`) todavía muestra 15 tablas: falta regenerarlo.
+
+## Envíos y pagos
+
+El esquema de esa entrega tenía **15 tablas**. Se agregan `modalidades_envio`,
 `envio_modalidad` y `pagos`, sin cambiar las tres tablas de inventario.
 Para una base existente ejecutar `npm run migrate` desde `backend/`; para una
 base vacía importar `restaurante.sql` y luego ejecutar la misma migración.

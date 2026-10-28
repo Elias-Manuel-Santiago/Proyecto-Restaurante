@@ -8,7 +8,8 @@ Mercado Pago (entorno de prueba) y administración del equipo.
 - Base: MariaDB 10.4 / MySQL 8 (`frontend/database/restaurante.sql` + migraciones)
 
 Documentación por tema: [LOGIN.md](backend/LOGIN.md) · [ENVIOS-PAGOS.md](backend/ENVIOS-PAGOS.md) ·
-[ACCESOS-EQUIPO.md](backend/ACCESOS-EQUIPO.md) · [database/README.md](frontend/database/README.md)
+[ACCESOS-EQUIPO.md](backend/ACCESOS-EQUIPO.md) · [STOCK.md](backend/STOCK.md) ·
+[database/README.md](frontend/database/README.md)
 
 ## Modo local
 
