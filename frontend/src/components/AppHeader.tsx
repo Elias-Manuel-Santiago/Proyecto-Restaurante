@@ -3,6 +3,7 @@ import { roleLabels, type AppRoute } from '../types'
 import { homeRoute, roleRoutes } from '../state/model'
 import { useRestaurant } from '../state/useRestaurant'
 import { Icon } from './Icon'
+import { ThemeToggle } from './ThemeToggle'
 
 const navigation: {
   route: AppRoute
@@ -85,6 +86,7 @@ export function AppHeader({
             {session.name}
             <small>{roleLabels[session.role]}</small>
           </span>
+          <ThemeToggle />
           <button className="text-button" onClick={onLogout}>
             Cerrar sesión
           </button>

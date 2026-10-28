@@ -10,6 +10,14 @@
       content="NÁCAR Restaurante · Salón, cocina y administración al mismo ritmo."
     />
     <title>NÁCAR Restaurante</title>
+    <script>
+      // Aplica el tema guardado antes de pintar (evita el destello claro).
+      try {
+        var tema = localStorage.getItem('nacar-tema')
+        if (tema === 'light' || tema === 'dark')
+          document.documentElement.dataset.theme = tema
+      } catch (error) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

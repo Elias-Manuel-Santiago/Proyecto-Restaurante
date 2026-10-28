@@ -1,22 +1,147 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
 
+/* Tema claro (predeterminado). --wine se usa para texto y bordes;
+   --accent-bg para fondos con texto blanco. */
 :root {
+  color-scheme: light;
   --ink: #21231f;
-  --muted: #6b6b65;
+  --muted: #5f5e58;
   --paper: #f7f5ef;
   --card: #fffefa;
   --line: #e4e0d5;
+  --line-strong: #cfc8b9;
   --sage: #728170;
   --sage-pale: #e3e8df;
+  --sage-ink: #3e543e;
+  --sage-strong: #4e6b4f;
   --wine: #762e39;
   --wine-dark: #59222c;
+  --wine-pale: #f2e6e7;
+  --wine-line: #b58b90;
+  --wine-wash: #762e390a;
+  --accent-bg: #762e39;
   --sand: #eee8da;
   --amber: #c88938;
+  --text-soft: #41423e;
+  --danger: #a12737;
+  --header-bg: rgba(255, 254, 250, 0.94);
+  --shadow-rgb: 35 34 29;
+  --backdrop: rgba(27, 26, 22, 0.42);
+  --selection: #e9cbd0;
+  --lane: #eeebe3;
+  --lane-prep: #eee3d7;
+  --lane-listo: #e4e9df;
+  --st-pend-bg: #f5e4c8;
+  --st-pend-fg: #865210;
+  --st-prep-bg: #e8d8c7;
+  --st-prep-fg: #815030;
+  --st-listo-bg: #dce9db;
+  --st-listo-fg: #3d6441;
+  --st-entr-bg: #e4e7e3;
+  --st-entr-fg: #4d564f;
+  --st-canc-bg: #f0dada;
+  --st-canc-fg: #893b43;
+  --warn-bg: #f5e4c8;
+  --warn-line: #e5cda5;
+  --warn-fg: #6b4317;
   font-family: 'DM Sans', Arial, sans-serif;
   color: var(--ink);
   background: var(--paper);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+}
+/* Tema oscuro: por preferencia del sistema o elegido con el botón (data-theme). */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --ink: #ecebe5;
+    --muted: #a9a89f;
+    --paper: #161614;
+    --card: #1f1f1c;
+    --line: #34332e;
+    --line-strong: #4a4943;
+    --sage: #9db39a;
+    --sage-pale: #26302a;
+    --sage-ink: #a9c9a5;
+    --sage-strong: #7fa57c;
+    --wine: #e8a3ae;
+    --wine-dark: #a8404f;
+    --wine-pale: #3d2328;
+    --wine-line: #7d4f56;
+    --wine-wash: #e8a3ae14;
+    --accent-bg: #93394a;
+    --sand: #2a2924;
+    --amber: #e0a85a;
+    --text-soft: #d6d4cc;
+    --danger: #f08a96;
+    --header-bg: rgba(31, 31, 28, 0.94);
+    --shadow-rgb: 0 0 0;
+    --backdrop: rgba(0, 0, 0, 0.62);
+    --selection: #5a2a33;
+    --lane: #1c1c19;
+    --lane-prep: #241f1b;
+    --lane-listo: #1b221c;
+    --st-pend-bg: #42331b;
+    --st-pend-fg: #f2cf95;
+    --st-prep-bg: #3d2f25;
+    --st-prep-fg: #e8c4a5;
+    --st-listo-bg: #263526;
+    --st-listo-fg: #a9d3a6;
+    --st-entr-bg: #2f312c;
+    --st-entr-fg: #c4c8c0;
+    --st-canc-bg: #43262a;
+    --st-canc-fg: #f0b0b6;
+    --warn-bg: #3a2f1c;
+    --warn-line: #6b5530;
+    --warn-fg: #f2cf95;
+  }
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --ink: #ecebe5;
+  --muted: #a9a89f;
+  --paper: #161614;
+  --card: #1f1f1c;
+  --line: #34332e;
+  --line-strong: #4a4943;
+  --sage: #9db39a;
+  --sage-pale: #26302a;
+  --sage-ink: #a9c9a5;
+  --sage-strong: #7fa57c;
+  --wine: #e8a3ae;
+  --wine-dark: #a8404f;
+  --wine-pale: #3d2328;
+  --wine-line: #7d4f56;
+  --wine-wash: #e8a3ae14;
+  --accent-bg: #93394a;
+  --sand: #2a2924;
+  --amber: #e0a85a;
+  --text-soft: #d6d4cc;
+  --danger: #f08a96;
+  --header-bg: rgba(31, 31, 28, 0.94);
+  --shadow-rgb: 0 0 0;
+  --backdrop: rgba(0, 0, 0, 0.62);
+  --selection: #5a2a33;
+  --lane: #1c1c19;
+  --lane-prep: #241f1b;
+  --lane-listo: #1b221c;
+  --st-pend-bg: #42331b;
+  --st-pend-fg: #f2cf95;
+  --st-prep-bg: #3d2f25;
+  --st-prep-fg: #e8c4a5;
+  --st-listo-bg: #263526;
+  --st-listo-fg: #a9d3a6;
+  --st-entr-bg: #2f312c;
+  --st-entr-fg: #c4c8c0;
+  --st-canc-bg: #43262a;
+  --st-canc-fg: #f0b0b6;
+  --warn-bg: #3a2f1c;
+  --warn-line: #6b5530;
+  --warn-fg: #f2cf95;
+}
+body {
+  background: var(--paper);
+  color: var(--ink);
 }
 * {
   box-sizing: border-box;
@@ -70,7 +195,7 @@ input,
 select,
 textarea {
   background: var(--card);
-  border: 1px solid #ccc7ba;
+  border: 1px solid var(--line-strong);
   border-radius: 0.45rem;
   color: var(--ink);
   min-height: 44px;
@@ -92,7 +217,7 @@ svg {
   flex-shrink: 0;
 }
 ::selection {
-  background: #e9cbd0;
+  background: var(--selection);
 }
 @media (prefers-reduced-motion: reduce) {
   *,

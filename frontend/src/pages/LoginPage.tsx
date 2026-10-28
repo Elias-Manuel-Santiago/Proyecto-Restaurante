@@ -1,5 +1,6 @@
 import { useRef, useState, type FormEvent } from 'react'
 import { PasswordInput } from '../components/PasswordInput'
+import { ThemeToggle } from '../components/ThemeToggle'
 import { useRestaurant } from '../state/useRestaurant'
 
 export function LoginPage({
@@ -42,6 +43,7 @@ export function LoginPage({
           <p>
             NÁCAR <small>RESTAURANTE</small>
           </p>
+          <ThemeToggle />
         </div>
         <div>
           <span className="eyebrow">Tu espacio en el restaurante</span>
