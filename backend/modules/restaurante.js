@@ -1,4 +1,5 @@
 import { exigirPago, asegurarSinCobro } from "./pagos.js";
+import { consumirStock, reponerStock } from "./inventario.js";
 import { randomUUID } from "node:crypto";
 import db from "./db.js";
 
@@ -238,9 +239,23 @@ export async function eliminarComida(id) {
     ]);
   });
 }
+// porciones_disponibles: cuántas porciones permite el insumo más escaso
+// (NULL = plato sin receta, no descuenta stock).
 export async function listarTodasLasComidas() {
-  const [filas] = await db.query("SELECT * FROM comidas WHERE eliminado=0");
-  return filas;
+  const [filas] = await db.query(`SELECT c.*,
+    (SELECT MIN(FLOOR(s.cantidad / cs.cantidad_requerida)) FROM comida_stock cs
+      JOIN Stock s ON s.id_stock=cs.id_stock WHERE cs.id_comida=c.id_comida) AS porciones_disponibles,
+    (SELECT s.nombre FROM comida_stock cs JOIN Stock s ON s.id_stock=cs.id_stock
+      WHERE cs.id_comida=c.id_comida AND s.cantidad < cs.cantidad_requerida
+      ORDER BY s.nombre LIMIT 1) AS insumo_faltante
+    FROM comidas c WHERE c.eliminado=0`);
+  return filas.map((fila) => ({
+    ...fila,
+    porciones_disponibles:
+      fila.porciones_disponibles === null
+        ? null
+        : Number(fila.porciones_disponibles),
+  }));
 }
 
 // Los precios y nombres se fijan en el servidor al enviar/editar la comanda.
@@ -318,6 +333,7 @@ export async function crearPedido(
       ],
     );
     await guardarItems(conexion, resultado.insertId, comidas);
+    await consumirStock(conexion, resultado.insertId, id_mesero);
     return resultado.insertId;
   });
 }
@@ -335,6 +351,8 @@ export async function editarPedido(id, comidas) {
     await asegurarSinCobro(conexion, id);
     await conexion.query("DELETE FROM pedidos_comida WHERE id_pedido=?", [id]);
     await guardarItems(conexion, id, comidas);
+    // Solo descuenta o devuelve la diferencia con lo ya reservado.
+    await consumirStock(conexion, id);
   });
 }
 
@@ -383,6 +401,8 @@ export async function cambiarEstadoPedido(id, estado, actor) {
       "UPDATE pedidos SET estado=?,historial=? WHERE id_pedidos=?",
       [estado, JSON.stringify(historial), id],
     );
+    // Siempre es antes de despachar: lo reservado vuelve al inventario.
+    if (estado === "cancelado") await reponerStock(conexion, id);
   });
 }
 

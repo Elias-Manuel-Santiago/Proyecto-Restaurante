@@ -3,6 +3,7 @@ import db from "./db.js";
 import { transaccion, comprobar } from "./restaurante.js";
 import { centavos, decimal } from "./importes.js";
 import { obtenerPasarela } from "./pasarelas.js";
+import { reponerStock } from "./inventario.js";
 
 export async function exigirPago(conexion, pedido) {
   if (!pedido.pago_requerido) return; // Históricos: no se inventan pagos anteriores.
@@ -205,6 +206,7 @@ export async function reembolsarPago(id, actor) {
           [JSON.stringify(historial), id],
         );
       }
+      await reponerStock(conexion, id);
       await conexion.query(
         "UPDATE pagos SET estado='reembolsando',actualizado_en=NOW(3) WHERE id_pedido=?",
         [id],
@@ -268,6 +270,7 @@ async function cancelarConBloqueo(id, actor) {
         [JSON.stringify(historial), id],
       );
     }
+    await reponerStock(conexion, id);
     await conexion.query(
       "UPDATE pagos SET estado='cancelando',actualizado_en=NOW(3) WHERE id_pedido=?",
       [id],

@@ -7,6 +7,7 @@ import db from "../modules/db.js";
 import { migrar } from "../modules/migrate.js";
 import { app } from "../app.js";
 import { probarRepartos } from "./repartos-scenario.js";
+import { probarStock } from "./stock-scenario.js";
 
 assert.match(process.env.DB_DATABASE, /^codex_restaurante_test_[a-f0-9]+$/);
 await migrar();
@@ -172,6 +173,7 @@ try {
   assert.equal(frontendCode, 0, "El frontend debe operar contra la API real");
   await probarRepartos(request, db, clientes);
   await probarPagos(request, db, clientes);
+  await probarStock(request, db);
   await probarAuth(base, db, clientes);
   const preflight = await fetch(base + "/pedidos/1/estado", {
     method: "OPTIONS",

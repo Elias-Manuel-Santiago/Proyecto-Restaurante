@@ -12,6 +12,7 @@ import {
 import express from "express";
 import * as restaurante from "./modules/restaurante.js";
 import * as repartos from "./modules/repartos.js";
+import * as inventario from "./modules/inventario.js";
 import {
   crearResumen,
   listarResumenes,
@@ -148,6 +149,42 @@ ruta("patch", "/api/comidas/:id/disponibilidad", async ({ params, body }) => {
 ruta("delete", "/api/comidas/:id", async ({ params }) => {
   await restaurante.eliminarComida(params.id);
   return mensaje("Comida eliminada.");
+});
+
+// Inventario: unidades, insumos, ajustes manuales y recetas (solo admin).
+ruta("get", "/api/inventario", () => inventario.listarInventario());
+ruta(
+  "post",
+  "/api/inventario/unidades",
+  async ({ body }) => ({ id_unidad: await inventario.crearUnidad(body) }),
+  201,
+);
+ruta(
+  "post",
+  "/api/inventario/insumos",
+  async ({ body, usuario }) => ({
+    id_stock: await inventario.crearInsumo(body, Number(usuario.id)),
+  }),
+  201,
+);
+ruta("put", "/api/inventario/insumos/:id", async ({ params, body }) => {
+  await inventario.editarInsumo(params.id, body);
+  return mensaje("Insumo actualizado.");
+});
+ruta(
+  "post",
+  "/api/inventario/insumos/:id/ajuste",
+  async ({ params, body, usuario }) => ({
+    cantidad: await inventario.ajustarInsumo(
+      params.id,
+      body,
+      Number(usuario.id),
+    ),
+  }),
+);
+ruta("put", "/api/inventario/recetas/:id", async ({ params, body }) => {
+  await inventario.guardarReceta(params.id, body);
+  return mensaje("Receta guardada.");
 });
 
 app.get("/api/pedidos/eventos", (req, res) => {
