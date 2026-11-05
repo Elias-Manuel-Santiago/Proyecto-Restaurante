@@ -9,7 +9,9 @@ Mercado Pago (entorno de prueba) y administración del equipo.
 
 Documentación por tema: [LOGIN.md](backend/LOGIN.md) · [ENVIOS-PAGOS.md](backend/ENVIOS-PAGOS.md) ·
 [ACCESOS-EQUIPO.md](backend/ACCESOS-EQUIPO.md) · [STOCK.md](backend/STOCK.md) ·
-[database/README.md](frontend/database/README.md)
+[database/README.md](frontend/database/README.md) ·
+[Arquitectura y convenciones](docs/ARQUITECTURA.md) ·
+[Mapa de mesas](frontend/PLANO-MESAS.md)
 
 ## Modo local
 

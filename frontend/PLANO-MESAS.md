@@ -70,6 +70,12 @@ Las pruebas HTTP usan la API Express real y una conexión SQL simulada: no
 modifican la base del restaurante. Cubren roles, colisiones, límites, conflictos,
 IDs nuevos, conservación de visitas y rollback ante fallos durante el guardado.
 
+Para comprobar también la persistencia con MySQL/MariaDB, ejecutar
+`node database/verify.mjs` desde frontend contra una instancia de pruebas.
+El verificador instala el esquema completo en una base temporal, aplica las
+migraciones y ejecuta el escenario del restaurante, incluido el guardado del plano
+con un pedido activo. Ver [arquitectura y convenciones](../docs/ARQUITECTURA.md).
+
 La geometría fuente está en `src/state/floorGeometry.ts`. Si se modifica,
 ejecutar `npm run sync:floor-geometry` para regenerar
 `backend/modules/plano-geometria.js`. Una prueba compara ambos módulos para

@@ -11,6 +11,7 @@ const output =
     compilerOptions: {
       target: ts.ScriptTarget.ES2023,
       module: ts.ModuleKind.ESNext,
+      newLine: ts.NewLineKind.LineFeed,
     },
   }).outputText
 await fs.writeFile(

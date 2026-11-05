@@ -1,35 +1,38 @@
 import { ErrorMessage } from '../components/ErrorMessage'
 import { useState } from 'react'
 import { OrderCard } from '../components/OrderCard'
-import { FloorPlan } from '../components/FloorPlan'
+import { FloorPlan } from '../features/floor-plan/FloorPlan'
 import { ConfirmDialog, Dialog } from '../components/Dialog'
 import { OrderComposer } from '../components/OrderComposer'
 import { DeliveryEditor } from '../components/DeliveryEditor'
 import { Stats } from '../components/Stats'
-import { useRestaurant } from '../state/useRestaurant'
-import { isActive, money, orderTotal, serviceOrders } from '../state/model'
-import type { RestaurantTable } from '../types'
+import { useTableService } from '../features/table-service/useTableService'
+import { isActive, money } from '../state/model'
 
 export function TablesPage() {
-  const { data, session, act } = useRestaurant()
-  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const {
+    data,
+    session,
+    selected,
+    selectedOrders,
+    diners,
+    setDiners,
+    error,
+    confirmClose,
+    setConfirmClose,
+    composing,
+    setComposing,
+    hasActiveOrders,
+    consumption,
+    select,
+    open,
+    close,
+    deliver,
+    clearError,
+    dismiss,
+  } = useTableService()
   const [filter, setFilter] = useState('')
-  const [diners, setDiners] = useState(2)
-  const [error, setError] = useState<string | Error>('')
-  const [confirmClose, setConfirmClose] = useState(false)
-  const [composing, setComposing] = useState(false)
   const [creatingDelivery, setCreatingDelivery] = useState(false)
-  const selected = data.tables.find((table) => table.id === selectedId)
-  const selectedOrders = selected ? serviceOrders(data, selected) : []
-  const select = (table: RestaurantTable) => {
-    setSelectedId(table.id)
-    setDiners(Math.min(2, table.capacity))
-    setError('')
-  }
-  const open = async () => {
-    if (selected)
-      setError(await act({ type: 'openTable', id: selected.id, diners }))
-  }
   return (
     <>
       <section className="page-intro">
@@ -91,10 +94,7 @@ export function TablesPage() {
         <p className="empty-state">No hay mesas con esta disponibilidad.</p>
       )}
       {selected && (
-        <Dialog
-          title={`Mesa ${selected.number}`}
-          onClose={() => setSelectedId(null)}
-        >
+        <Dialog title={`Mesa ${selected.number}`} onClose={dismiss}>
           <div className="detail-title">
             <span
               className={`status status--${selected.status === 'ocupada' ? 'preparacion' : 'entregado'}`}
@@ -135,13 +135,7 @@ export function TablesPage() {
                 </div>
                 <div>
                   <span>Consumo de esta visita</span>
-                  <b>
-                    {money(
-                      selectedOrders
-                        .filter((order) => order.status !== 'cancelado')
-                        .reduce((sum, order) => sum + orderTotal(order), 0),
-                    )}
-                  </b>
+                  <b>{money(consumption)}</b>
                 </div>
               </div>
               <div className="actions">
@@ -155,16 +149,16 @@ export function TablesPage() {
                 )}
                 <button
                   className="secondary-button"
-                  disabled={selectedOrders.some(isActive)}
+                  disabled={hasActiveOrders}
                   onClick={() => {
-                    setError('')
+                    clearError()
                     setConfirmClose(true)
                   }}
                 >
                   Cerrar mesa
                 </button>
               </div>
-              {selectedOrders.some(isActive) && (
+              {hasActiveOrders && (
                 <p className="muted helper">
                   Para cerrar, entregá o cancelá los pedidos activos.
                 </p>
@@ -176,15 +170,7 @@ export function TablesPage() {
                     {session?.role === 'mozo' && order.status === 'listo' && (
                       <button
                         className="primary-button"
-                        onClick={async () =>
-                          setError(
-                            await act({
-                              type: 'transition',
-                              id: order.id,
-                              status: 'entregado',
-                            }),
-                          )
-                        }
+                        onClick={() => void deliver(order.id)}
                       >
                         Marcar entregado
                       </button>
@@ -214,11 +200,7 @@ export function TablesPage() {
           description="La mesa quedará disponible para una nueva visita. Sus pedidos se conservan en el historial. Cerrar no registra un cobro."
           onClose={() => setConfirmClose(false)}
           error={error}
-          onConfirm={async () => {
-            const message = await act({ type: 'closeTable', id: selected.id })
-            setError(message)
-            if (!message) setConfirmClose(false)
-          }}
+          onConfirm={close}
         />
       )}
     </>
