@@ -1,7 +1,7 @@
 import { ErrorMessage } from '../components/ErrorMessage'
 import { useState } from 'react'
 import { OrderCard } from '../components/OrderCard'
-import { TableCard } from '../components/TableCard'
+import { FloorPlan } from '../components/FloorPlan'
 import { ConfirmDialog, Dialog } from '../components/Dialog'
 import { OrderComposer } from '../components/OrderComposer'
 import { DeliveryEditor } from '../components/DeliveryEditor'
@@ -86,13 +86,7 @@ export function TablesPage() {
           ))}
         </div>
       </div>
-      <section className="table-grid" aria-label="Mapa del restaurante">
-        {data.tables
-          .filter((table) => !filter || table.status === filter)
-          .map((table) => (
-            <TableCard key={table.id} table={table} onSelect={select} />
-          ))}
-      </section>
+      <FloorPlan filter={filter} onSelect={select} />
       {!data.tables.some((table) => !filter || table.status === filter) && (
         <p className="empty-state">No hay mesas con esta disponibilidad.</p>
       )}

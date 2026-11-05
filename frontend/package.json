@@ -4,6 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "test:floor": "node --test tests/floor-plan*.mjs",
+    "sync:floor-geometry": "node scripts/sync-floor-geometry.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",

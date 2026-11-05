@@ -6,6 +6,7 @@ import {
 } from '../services/adapters'
 import type { Role, UserProfile } from '../types'
 import { createInitialData, type Action } from './model'
+import { validateFloor } from './floorGeometry'
 let snapshot = {
   data: createInitialData(),
   session: null as UserProfile | null,
@@ -60,6 +61,7 @@ const allowed: Record<RemoteAction['type'], Role[]> = {
   saveDish: ['admin'],
   deleteDish: ['admin'],
   saveTable: ['admin'],
+  saveFloorPlan: ['admin'],
   deleteTable: ['admin'],
   createSummary: ['admin'],
   deleteSummary: ['admin'],
@@ -154,6 +156,22 @@ export const restaurantStore = {
         throw new Error('Este cambio corresponde a otro rol.')
       let result
       switch (action.type) {
+        case 'saveFloorPlan': {
+          const error = validateFloor(action.tables)
+          if (error) throw new Error(error)
+          const saved = await api.guardarPlano(action.base, action.tables)
+          if (saved instanceof Error) throw saved
+          // Use the committed rows immediately, even if the subsequent refresh fails.
+          snapshot = {
+            ...snapshot,
+            data: {
+              ...snapshot.data,
+              tables: adaptarMesas(saved.data, snapshot.data.orders),
+            },
+          }
+          result = saved
+          break
+        }
         case 'advanceDelivery':
           result = await api.actualizarEnvio(
             action.id,

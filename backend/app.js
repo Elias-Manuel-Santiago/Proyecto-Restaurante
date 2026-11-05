@@ -10,6 +10,7 @@ import {
   servirFrontend,
 } from "./modules/produccion.js";
 import express from "express";
+import { guardarPlano } from "./modules/plano.js";
 import * as restaurante from "./modules/restaurante.js";
 import * as repartos from "./modules/repartos.js";
 import * as inventario from "./modules/inventario.js";
@@ -107,6 +108,7 @@ ruta(
   }),
   201,
 );
+ruta("put", "/api/mesas/plano", ({ body }) => guardarPlano(body));
 ruta("put", "/api/mesas/:id", async ({ params, body }) => {
   await restaurante.cambiarTamanoMesa(
     params.id,

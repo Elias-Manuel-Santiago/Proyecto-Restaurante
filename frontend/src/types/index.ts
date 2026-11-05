@@ -83,6 +83,24 @@ export interface RestaurantTable {
   diners: number
   serviceId: string | null
   orderIds: string[]
+  layout?: TableLayout | null
+}
+export interface TableLayout {
+  shape: 'rectangle' | 'circle'
+  x: number
+  y: number
+  width: number
+  height: number
+  rotation: number
+}
+export interface FloorTable {
+  id: string
+  number: number
+  capacity: number
+  layout: TableLayout | null
+}
+export interface PlacedTable extends FloorTable {
+  layout: TableLayout
 }
 export interface MenuDish {
   id: string

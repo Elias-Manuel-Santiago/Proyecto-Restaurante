@@ -1,0 +1,164 @@
+.floor-plan {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.floor-toolbar,
+.floor-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+}
+.floor-toolbar p {
+  margin: 0.4rem 0 0;
+}
+.floor-plan--editing {
+  border-color: var(--wine);
+}
+.floor-tools {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+}
+.floor-create,
+.floor-selection {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.floor-create label,
+.floor-selection label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  margin: 0;
+}
+.floor-create input {
+  width: 6rem;
+}
+.floor-tools select {
+  width: auto;
+  max-width: 100%;
+}
+.floor-selection {
+  align-items: center;
+}
+.floor-selection-actions {
+  display: contents;
+}
+.floor-size {
+  min-width: 8rem;
+}
+.floor-plan > .warning,
+.floor-plan > .error-message {
+  margin: 1rem;
+}
+.floor-scroll {
+  overflow: auto;
+  background: var(--paper);
+}
+.floor-unplaced {
+  padding: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.floor-unplaced p {
+  width: 100%;
+}
+.floor-canvas {
+  display: block;
+  width: 100%;
+  min-width: 700px;
+  background-image: radial-gradient(var(--line-strong) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+.floor-plan--editing .floor-canvas {
+  touch-action: none;
+  user-select: none;
+}
+.floor-table {
+  cursor: pointer;
+  outline: none;
+}
+.floor-plan--editing .floor-table {
+  cursor: grab;
+}
+.floor-plan--editing .floor-table:active {
+  cursor: grabbing;
+}
+.floor-surface {
+  fill: var(--sage-pale);
+  stroke: var(--sage-strong);
+  stroke-width: 2;
+}
+.floor-table.is-occupied .floor-surface {
+  fill: var(--wine-pale);
+  stroke: var(--wine);
+}
+.floor-table.is-selected .floor-surface,
+.floor-table:focus-visible .floor-surface {
+  stroke: var(--ink);
+  stroke-width: 4;
+  stroke-dasharray: 7 4;
+}
+.floor-table.is-dimmed {
+  opacity: 0.18;
+  pointer-events: none;
+}
+.floor-label {
+  pointer-events: none;
+  fill: var(--ink);
+  text-anchor: middle;
+  font-size: 13px;
+}
+.floor-number {
+  font-size: 25px;
+  font-weight: 700;
+}
+.floor-status {
+  font-size: 11px;
+}
+.floor-handle {
+  fill: var(--card);
+  stroke: var(--wine);
+  stroke-width: 2;
+}
+.floor-handle:focus-visible {
+  stroke: var(--ink);
+  stroke-width: 4;
+}
+.floor-handle--width {
+  cursor: ew-resize;
+}
+.floor-handle--height {
+  cursor: ns-resize;
+}
+.floor-handle--both {
+  cursor: nwse-resize;
+}
+.floor-footer {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+@media (max-width: 600px) {
+  .floor-toolbar,
+  .floor-tools {
+    padding: 0.85rem;
+  }
+  .floor-toolbar .actions {
+    width: 100%;
+  }
+  .floor-selection {
+    align-items: start;
+  }
+}

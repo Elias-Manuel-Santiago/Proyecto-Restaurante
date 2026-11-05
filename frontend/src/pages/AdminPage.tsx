@@ -3,28 +3,19 @@ import { InventorySettings } from '../components/InventorySettings'
 import { SummaryPanel } from '../components/SummaryPanel'
 import { useState } from 'react'
 import { Stats } from '../components/Stats'
-import { TableEditor } from '../components/TableEditor'
-import { ConfirmDialog } from '../components/Dialog'
+import { FloorPlan } from '../components/FloorPlan'
 import { useRestaurant } from '../state/useRestaurant'
 import { isActive, money, orderTotal, serviceOrders } from '../state/model'
-import {
-  statusLabels,
-  type AppRoute,
-  type OrderStatus,
-  type RestaurantTable,
-} from '../types'
+import { statusLabels, type AppRoute, type OrderStatus } from '../types'
 
 export function AdminPage({
   onNavigate,
 }: {
   onNavigate: (route: AppRoute) => void
 }) {
-  const { data, act } = useRestaurant()
+  const { data } = useRestaurant()
   const [shippingSettings, setShippingSettings] = useState(false)
   const [inventory, setInventory] = useState(false)
-  const [editing, setEditing] = useState<RestaurantTable | 'new' | null>(null)
-  const [deleting, setDeleting] = useState<RestaurantTable | null>(null)
-  const [error, setError] = useState<string | Error>('')
   const today = new Date().toLocaleDateString('sv-SE')
   const todayOrders = data.orders.filter(
     (order) => new Date(order.createdAt).toLocaleDateString('sv-SE') === today,
@@ -159,15 +150,13 @@ export function AdminPage({
           )}
         </section>
       </div>
+      <FloorPlan />
       <section className="panel">
         <div className="section-heading">
           <div>
             <span className="eyebrow">Organización del salón</span>
             <h2>Mesas y consumo</h2>
           </div>
-          <button className="primary-button" onClick={() => setEditing('new')}>
-            Agregar mesa
-          </button>
         </div>
         <div className="data-table-wrap">
           <table className="data-table">
@@ -181,7 +170,6 @@ export function AdminPage({
                 <th scope="col">Estado</th>
                 <th scope="col">Comensales</th>
                 <th scope="col">Consumo actual</th>
-                <th scope="col">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -204,33 +192,6 @@ export function AdminPage({
                         .reduce((sum, order) => sum + orderTotal(order), 0),
                     )}
                   </td>
-                  <td>
-                    <div className="actions">
-                      <button
-                        className="text-button"
-                        aria-label={`Editar mesa ${table.number}`}
-                        onClick={() => setEditing(table)}
-                      >
-                        Editar
-                      </button>
-                      <button
-                        className="text-button danger-text"
-                        aria-label={`Eliminar mesa ${table.number}`}
-                        disabled={table.status === 'ocupada'}
-                        title={
-                          table.status === 'ocupada'
-                            ? 'Cerrá la mesa desde el mapa para eliminarla'
-                            : undefined
-                        }
-                        onClick={() => {
-                          setError('')
-                          setDeleting(table)
-                        }}
-                      >
-                        Eliminar
-                      </button>
-                    </div>
-                  </td>
                 </tr>
               ))}
             </tbody>
@@ -245,25 +206,6 @@ export function AdminPage({
         </p>
       </section>
       <SummaryPanel />
-      {editing && (
-        <TableEditor
-          table={editing === 'new' ? undefined : editing}
-          onClose={() => setEditing(null)}
-        />
-      )}
-      {deleting && (
-        <ConfirmDialog
-          title={`Eliminar mesa ${deleting.number}`}
-          description="La mesa se quitará del salón. Sus pedidos se conservan en el historial con el número original."
-          error={error}
-          onClose={() => setDeleting(null)}
-          onConfirm={async () => {
-            const message = await act({ type: 'deleteTable', id: deleting.id })
-            setError(message)
-            if (!message) setDeleting(null)
-          }}
-        />
-      )}
     </>
   )
 }

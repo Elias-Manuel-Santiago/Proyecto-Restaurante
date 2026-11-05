@@ -65,6 +65,10 @@ export function adaptarMesas(
     id: String(mesa.id_mesa),
     number: Number(mesa.numero),
     capacity: Number(mesa.cantidad_personas),
+    layout:
+      typeof mesa.plano === 'string'
+        ? JSON.parse(mesa.plano)
+        : (mesa.plano ?? null),
     status: mesa.estado,
     diners: Number(mesa.comensales),
     serviceId: mesa.servicio_id,

@@ -42,6 +42,7 @@ CREATE TABLE mesas (
   estado VARCHAR(30) NOT NULL DEFAULT 'desocupada',
   comensales INT NOT NULL DEFAULT 0,
   servicio_id VARCHAR(64) NULL,
+  plano LONGTEXT NULL,
   eliminado TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (id_mesa),
   UNIQUE KEY mesas_numero_unique (numero),

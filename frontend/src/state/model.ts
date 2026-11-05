@@ -7,6 +7,7 @@ import type {
   Role,
   DraftItem,
   OrderStatus,
+  FloorTable,
 } from '../types'
 export const money = (value: number) =>
   new Intl.NumberFormat('es-AR', {
@@ -57,6 +58,7 @@ export function createInitialData(): RestaurantData {
   return { version: 1, tables: [], dishes: [], orders: [], users: [] }
 }
 export type Action =
+  | { type: 'saveFloorPlan'; base: FloorTable[]; tables: FloorTable[] }
   | { type: 'openTable'; id: string; diners: number }
   | { type: 'closeTable'; id: string }
   | { type: 'createOrder'; tableId: string; items: DraftItem[] }

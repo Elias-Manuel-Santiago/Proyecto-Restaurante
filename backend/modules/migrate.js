@@ -10,6 +10,7 @@ export async function migrar() {
   await migrarStock();
   const columnas = {
     mesas: {
+      plano: "LONGTEXT NULL",
       eliminado: "TINYINT(1) NOT NULL DEFAULT 0",
       numero: "INT NULL",
       estado: "VARCHAR(30) NOT NULL DEFAULT 'desocupada'",

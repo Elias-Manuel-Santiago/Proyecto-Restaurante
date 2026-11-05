@@ -5,6 +5,8 @@ import type {
   TableStatus,
   StatusEvent,
   UserProfile,
+  TableLayout,
+  FloorTable,
 } from '../types'
 import type {
   DeliveryDraft,
@@ -21,6 +23,7 @@ export interface MesaApi {
   estado: TableStatus
   comensales: number
   servicio_id: string | null
+  plano?: TableLayout | string | null
 }
 export interface ComidaParametros {
   tipo: string
@@ -283,6 +286,8 @@ async function consultar<T>(
 // Mesas: cantidad_personas es la capacidad; el ID lo asigna MySQL.
 export const obtenerMesas = () =>
   consultar<MesaApi[]>('POST', '/mesas/obtener', {})
+export const guardarPlano = (base: FloorTable[], tables: FloorTable[]) =>
+  consultar<MesaApi[]>('PUT', '/mesas/plano', { base, tables })
 export const cargarMesas = (cantidad_personas: number, numero?: number) =>
   consultar<{ id_mesa: number; cantidad_personas: number; numero?: number }>(
     'POST',
