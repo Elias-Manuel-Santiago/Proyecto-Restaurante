@@ -8,6 +8,7 @@ import { migrar } from "../modules/migrate.js";
 import { app } from "../app.js";
 import { probarRepartos } from "./repartos-scenario.js";
 import { probarStock } from "./stock-scenario.js";
+import { probarPlano } from "./plano-scenario.js";
 
 assert.match(process.env.DB_DATABASE, /^codex_restaurante_test_[a-f0-9]+$/);
 await migrar();
@@ -72,6 +73,7 @@ try {
   );
   const pedido = await request("POST", "/pedidos", body, 201);
   const orderId = pedido.id_pedido;
+  await probarPlano(request, db, id, orderId);
   await request("PATCH", `/mesas/${id}/cerrar`, {}, 400);
   await request("DELETE", `/comidas/${dishId}`, undefined, 400);
   await request(

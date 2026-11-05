@@ -161,7 +161,7 @@ export const restaurantStore = {
           if (error) throw new Error(error)
           const saved = await api.guardarPlano(action.base, action.tables)
           if (saved instanceof Error) throw saved
-          // Use the committed rows immediately, even if the subsequent refresh fails.
+          // Publicar las filas confirmadas incluso si falla el refresco posterior.
           snapshot = {
             ...snapshot,
             data: {

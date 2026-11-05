@@ -14,8 +14,22 @@ const compiled = ts.transpileModule(source, {
     module: ts.ModuleKind.ESNext,
   },
 }).outputText
-const geometry = await import(
-  'data:text/javascript;base64,' + Buffer.from(compiled).toString('base64')
+const moduleUrl = (code) =>
+  'data:text/javascript;base64,' + Buffer.from(code).toString('base64')
+const geometryUrl = moduleUrl(compiled)
+const geometry = await import(geometryUrl)
+const transformsSource = await fs.readFile(
+  new URL('../src/features/floor-plan/floorTransforms.ts', import.meta.url),
+  'utf8',
+)
+const transforms = await import(
+  moduleUrl(
+    ts
+      .transpileModule(transformsSource, {
+        compilerOptions: { module: ts.ModuleKind.ESNext },
+      })
+      .outputText.replace('../../state/floorGeometry', geometryUrl),
+  )
 )
 const rect = (patch = {}) => ({
   shape: 'rectangle',
@@ -30,13 +44,43 @@ const circle = (patch = {}) =>
   rect({ shape: 'circle', width: 100, height: 100, ...patch })
 const table = (id, layout) => ({ id, number: Number(id), capacity: 4, layout })
 
+test('redimensionar una mesa girada usa sus ejes y conserva el centro', () => {
+  const original = rect({ rotation: 90 })
+  const resized = transforms.transformLayout(original, 'width', 0, 15)
+  assert.equal(resized.width, original.width + 30)
+  assert.equal(resized.height, original.height)
+  assert.equal(resized.x, original.x)
+  assert.equal(resized.y, original.y)
+  const smallCircle = transforms.resizeLayout(circle(), 'both', -500, -500)
+  assert.equal(smallCircle.width, geometry.FLOOR.minSize)
+  assert.equal(smallCircle.height, smallCircle.width)
+})
+
+test('un arrastre rápido se detiene antes de atravesar otra mesa', () => {
+  const moving = table('1', rect())
+  const obstacle = table('2', rect({ x: 430 }))
+  const target = { ...moving.layout, x: 850 }
+  const next = transforms.constrainMotion(
+    moving,
+    target,
+    [moving, obstacle],
+    true,
+  )
+  assert.ok(next.x > moving.layout.x && next.x < obstacle.layout.x)
+  assert.equal(geometry.overlaps(next, obstacle.layout), false)
+  assert.equal(geometry.overlaps(target, obstacle.layout), false)
+})
+
 test('cliente y servidor ejecutan la misma geometría', async () => {
   const backend = await fs.readFile(
     new URL('../../backend/modules/plano-geometria.js', import.meta.url),
     'utf8',
   )
   assert.equal(
-    backend.slice(backend.indexOf('\n') + 1).trim(),
+    backend
+      .slice(backend.indexOf('\n') + 1)
+      .replace(/\r\n/g, '\n')
+      .trim(),
     compiled.trim(),
     'Regenerar plano-geometria.js desde floorGeometry.ts si cambia la geometría',
   )

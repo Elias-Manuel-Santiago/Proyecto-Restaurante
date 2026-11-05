@@ -11,10 +11,18 @@ const requireBackend = createRequire(
 const mysql = requireBackend('mysql2/promise')
 const name = `codex_restaurante_test_${randomBytes(6).toString('hex')}`
 assert.match(name, /^codex_restaurante_test_[a-f0-9]+$/)
+// El instalador y el escenario HTTP deben usar la misma instancia de pruebas.
+const connectionEnv = {
+  DB_HOST: process.env.DB_HOST || '127.0.0.1',
+  DB_PORT: process.env.DB_PORT || '3306',
+  DB_USER: process.env.DB_USER || 'root',
+  DB_PASSWORD: process.env.DB_PASSWORD ?? '',
+}
 const db = await mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
+  host: connectionEnv.DB_HOST,
+  port: Number(connectionEnv.DB_PORT),
+  user: connectionEnv.DB_USER,
+  password: connectionEnv.DB_PASSWORD,
 })
 let created = false
 try {
@@ -43,7 +51,7 @@ try {
   // El escenario existente prueba migración dos veces, API y store real del frontend.
   const run = spawnSync(process.execPath, ['tests/scenario.js'], {
     cwd: fileURLToPath(new URL('../../backend/', import.meta.url)),
-    env: { ...process.env, DB_DATABASE: name },
+    env: { ...process.env, ...connectionEnv, DB_DATABASE: name },
     encoding: 'utf8',
     timeout: 120000,
   })
