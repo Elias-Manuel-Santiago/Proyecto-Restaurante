@@ -4,11 +4,11 @@ import { FLOOR } from '../../state/floorGeometry'
 import { resizeLayout } from './floorTransforms'
 import { FloorTableGlyph } from './FloorTableGlyph'
 import type { useFloorEditor } from './useFloorEditor'
-import type { useFloorPointer } from './useFloorPointer'
+import { useFloorPointer } from './useFloorPointer'
 
 interface FloorCanvasProps {
   editor: ReturnType<typeof useFloorEditor>
-  pointer: ReturnType<typeof useFloorPointer>
+  onGestureChange: (active: boolean) => void
   filter: string
   onSelect?: (table: RestaurantTable) => void
 }
@@ -23,7 +23,7 @@ const keyboardOffsets: Record<string, [number, number]> = {
 /** Conecta la escena SVG con las acciones del editor; no escribe en la API. */
 export function FloorCanvas({
   editor,
-  pointer,
+  onGestureChange,
   filter,
   onSelect,
 }: FloorCanvasProps) {
@@ -37,6 +37,10 @@ export function FloorCanvas({
     change,
     rotate,
   } = editor
+  const { bindSvg, move, finish, clear, start } = useFloorPointer(
+    editor,
+    onGestureChange,
+  )
 
   function onTableKey(
     event: KeyboardEvent<SVGGElement>,
@@ -74,15 +78,15 @@ export function FloorCanvas({
   return (
     <div className="floor-scroll">
       <svg
-        ref={pointer.bindSvg}
+        ref={bindSvg}
         viewBox={`0 0 ${FLOOR.width} ${FLOOR.height}`}
         className="floor-canvas"
         role="group"
         aria-label="Mapa del restaurante"
-        onPointerMove={pointer.move}
-        onPointerUp={(event) => pointer.finish(event)}
-        onPointerCancel={(event) => pointer.finish(event, true)}
-        onLostPointerCapture={pointer.clear}
+        onPointerMove={move}
+        onPointerUp={(event) => finish(event)}
+        onPointerCancel={(event) => finish(event, true)}
+        onLostPointerCapture={clear}
         onPointerDown={(event) => {
           if (event.target === event.currentTarget) select(null)
         }}
@@ -109,9 +113,7 @@ export function FloorCanvas({
               editing={editing}
               onActivate={activate}
               onKeyDown={(event) => onTableKey(event, placed, activate)}
-              onPointerStart={(event, handle) =>
-                pointer.start(event, placed, handle)
-              }
+              onPointerStart={(event, handle) => start(event, placed, handle)}
               onResize={(handle, delta) =>
                 change(
                   table.id,

@@ -13,16 +13,19 @@ interface Gesture {
 }
 
 /** Traduce los eventos del navegador a coordenadas lógicas del SVG. */
-export function useFloorPointer({
-  editing,
-  locked,
-  change,
-  select,
-  clearError,
-}: Pick<
-  ReturnType<typeof useFloorEditor>,
-  'editing' | 'locked' | 'change' | 'select' | 'clearError'
->) {
+export function useFloorPointer(
+  {
+    editing,
+    locked,
+    change,
+    select,
+    clearError,
+  }: Pick<
+    ReturnType<typeof useFloorEditor>,
+    'editing' | 'locked' | 'change' | 'select' | 'clearError'
+  >,
+  onGestureChange: (active: boolean) => void,
+) {
   const svg = useRef<SVGSVGElement>(null)
   const gesture = useRef<Gesture | null>(null)
   const bindSvg = useCallback((element: SVGSVGElement | null) => {
@@ -57,6 +60,7 @@ export function useFloorPointer({
       handle,
     }
     svg.current?.setPointerCapture(event.pointerId)
+    onGestureChange(true)
   }
   function move(event: PointerEvent<SVGSVGElement>) {
     const drag = gesture.current
@@ -80,6 +84,7 @@ export function useFloorPointer({
     const drag = gesture.current
     if (!drag) return
     gesture.current = null
+    onGestureChange(false)
     if (svg.current?.hasPointerCapture(drag.pointer))
       svg.current.releasePointerCapture(drag.pointer)
   }
@@ -90,6 +95,5 @@ export function useFloorPointer({
     move,
     finish,
     clear,
-    isActive: () => gesture.current !== null,
   }
 }

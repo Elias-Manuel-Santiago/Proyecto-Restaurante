@@ -1,10 +1,10 @@
+import { useState } from 'react'
 import type { RestaurantTable } from '../../types'
 import { ErrorMessage } from '../../components/ErrorMessage'
 import { FloorCanvas } from './FloorCanvas'
 import { FloorToolbar } from './FloorToolbar'
 import { FloorTools } from './FloorTools'
 import { useFloorEditor } from './useFloorEditor'
-import { useFloorPointer } from './useFloorPointer'
 import './FloorPlan.css'
 
 /** Entrada del módulo, compartida por Administración y Mesas. */
@@ -16,7 +16,7 @@ export function FloorPlan({
   onSelect?: (table: RestaurantTable) => void
 }) {
   const editor = useFloorEditor()
-  const pointer = useFloorPointer(editor)
+  const [gestureActive, setGestureActive] = useState(false)
   const {
     canEdit,
     editing,
@@ -36,17 +36,12 @@ export function FloorPlan({
       <FloorToolbar
         canEdit={canEdit}
         editing={editing}
-        locked={locked}
+        locked={locked || gestureActive}
         saving={saving}
         invalid={!!validation}
         onBegin={editor.begin}
-        onSave={() => {
-          if (!pointer.isActive()) void editor.save()
-        }}
-        onCancel={() => {
-          pointer.clear()
-          editor.cancel()
-        }}
+        onSave={() => void editor.save()}
+        onCancel={editor.cancel}
       />
       {editing && (
         <FloorTools
@@ -54,7 +49,7 @@ export function FloorPlan({
           selected={editor.selected}
           selectedId={editor.selectedId}
           selectedOccupied={editor.selectedOccupied}
-          locked={locked}
+          locked={locked || gestureActive}
           onSelect={editor.select}
           onAdd={editor.add}
           onRemove={editor.remove}
@@ -94,7 +89,7 @@ export function FloorPlan({
       )}
       <FloorCanvas
         editor={editor}
-        pointer={pointer}
+        onGestureChange={setGestureActive}
         filter={filter}
         onSelect={onSelect}
       />
