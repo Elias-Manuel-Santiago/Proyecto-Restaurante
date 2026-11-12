@@ -1,3 +1,6 @@
+/**
+ * Consulta y guarda resúmenes administrativos y sus detalles mediante apiAccess.
+ */
 import { useState } from 'react'
 import { useRestaurant } from '../state/useRestaurant'
 import { money } from '../state/model'

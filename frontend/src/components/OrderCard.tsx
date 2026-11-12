@@ -1,10 +1,12 @@
+/**
+ * Presenta ítems, estado e importes históricos del pedido; sus acciones llegan desde la página.
+ */
 import type { ReactNode } from 'react'
-import { statusLabels, type Order, type Waiter } from '../types'
+import { statusLabels, type Order } from '../types'
 import { isActive, isAwaitingPayment, money, orderTotal } from '../state/model'
 
 interface Props {
   order: Order
-  waiter?: Waiter
   compact?: boolean
   summary?: boolean
   kitchen?: boolean
@@ -13,7 +15,6 @@ interface Props {
 }
 export function OrderCard({
   order,
-  waiter,
   compact = false,
   summary = false,
   kitchen = false,
@@ -90,7 +91,7 @@ export function OrderCard({
       {(summary || kitchen) && (
         <div className="order-meta">
           <span>
-            Mozo: <b>{waiter?.name ?? order.waiterName}</b>
+            Mozo: <b>{order.waiterName}</b>
           </span>
           <time dateTime={order.createdAt}>
             {date?.toLocaleString('es-AR', {
@@ -152,7 +153,7 @@ export function OrderCard({
       )}
       {!compact && !summary && !kitchen && (
         <footer>
-          <span>{waiter?.name ?? order.waiterName}</span>
+          <span>{order.waiterName}</span>
           <time dateTime={order.createdAt}>
             {date?.toLocaleTimeString('es-AR', {
               hour: '2-digit',

@@ -1,3 +1,6 @@
+/**
+ * Resuelve el nombre del icono en el sprite SVG compartido por los controles.
+ */
 const paths = {
   eye: 'M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12 M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0',
   eyeOff:

@@ -1,3 +1,4 @@
+/** Verificación del instalador SQL en una base temporal: instala, ejecuta escenarios y comprueba relaciones; elimina la base al terminar. */
 import assert from 'node:assert/strict'
 import { randomBytes } from 'node:crypto'
 import { readFile, writeFile, mkdir } from 'node:fs/promises'

@@ -1,3 +1,4 @@
+/** Verifica instalación vacía y migración existente con configuraciones temporales; comprueba cuentas, claves e idempotencia. */
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
@@ -6,9 +7,9 @@ import { mkdtemp, readFile, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import mysql from "mysql2/promise";
-import db from "../modules/db.js";
-import { hashClave } from "../modules/autenticacion.js";
-import { asegurarConfiguracion } from "../modules/preparar-equipo.js";
+import db from "../modules/database/db.js";
+import { hashClave } from "../modules/auth/autenticacion.js";
+import { asegurarConfiguracion } from "../scripts/preparar-equipo.js";
 
 async function ejecutar(args, env) {
   const hijo = spawn(process.execPath, args, {
@@ -141,7 +142,7 @@ test("preparación del equipo: instalación vacía, actualización con datos y c
         };
         // Solo se sustituye la prevalidación HTTP de la credencial de prueba.
         // El SQL, el instalador, las migraciones, los hashes y la API son reales.
-        const codigo = `import {readFile} from 'node:fs/promises'; const datos=JSON.parse(await readFile(process.env.NACAR_MP_FILE,'utf8')); globalThis.fetch=async(url)=>{if(url!=='https://api.mercadopago.com/users/me')throw Error('Solicitud inesperada');return {ok:true,json:async()=>({id:datos.vendedor_id,tags:['test_user']})}}; const {prepararEquipo}=await import('./modules/preparar-equipo.js'); await prepararEquipo();`;
+        const codigo = `import {readFile} from 'node:fs/promises'; const datos=JSON.parse(await readFile(process.env.NACAR_MP_FILE,'utf8')); globalThis.fetch=async(url)=>{if(url!=='https://api.mercadopago.com/users/me')throw Error('Solicitud inesperada');return {ok:true,json:async()=>({id:datos.vendedor_id,tags:['test_user']})}}; const {prepararEquipo}=await import('./scripts/preparar-equipo.js'); await prepararEquipo();`;
         await ejecutar(["--input-type=module", "-e", codigo], env);
         await ejecutar(["--input-type=module", "-e", codigo], env);
         aislada = await mysql.createConnection({

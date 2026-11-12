@@ -1,9 +1,10 @@
+/** Verifica que la migración de envíos y pagos conserve históricos y rechace esquemas incompatibles en una base temporal. */
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
 import mysql from "mysql2/promise";
-import db from "../modules/db.js";
-import { migrarEnviosPagos } from "../modules/migrate-envios-pagos.js";
+import db from "../modules/database/db.js";
+import { migrarEnviosPagos } from "../scripts/migrations/migrate-envios-pagos.js";
 
 test("envíos/pagos: conserva históricos y tarifas; rechaza estructuras incompatibles", async () => {
   const nombre = `codex_restaurante_test_${randomBytes(6).toString("hex")}`;

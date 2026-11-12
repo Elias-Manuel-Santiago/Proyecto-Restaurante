@@ -1,3 +1,4 @@
+/** Ejecuta las acciones del store contra la API y MySQL de la base temporal; lo lanza backend/tests/scenario.js. */
 import axios from 'axios'
 import assert from 'node:assert/strict'
 import fs from 'node:fs/promises'
@@ -87,7 +88,6 @@ try {
     name: 'Prueba desde frontend',
     description: 'Datos reales de la base temporal',
     price: 1550,
-    image: '',
     category: 'Entradas',
     available: true,
   }

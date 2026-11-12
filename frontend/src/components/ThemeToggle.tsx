@@ -1,3 +1,6 @@
+/**
+ * Muestra y cambia la preferencia visual mediante el estado compartido de theme.ts.
+ */
 import { setTheme, useTheme } from '../state/theme'
 import { Icon } from './Icon'
 

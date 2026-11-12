@@ -1,7 +1,8 @@
+/** Comprueba el contrato HTTPS de Mercado Pago con fetch controlado; no envía cobros al proveedor. */
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import { obtenerPasarela } from "../modules/pasarelas.js";
+import { obtenerPasarela } from "../modules/payments/pasarelas.js";
 
 test("MercadoPago: contrato HTTP, entorno de prueba, vendedor, importe, moneda y reembolso", async (t) => {
   const anterior = process.env.MP_ACCESS_TOKEN;

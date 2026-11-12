@@ -1,3 +1,6 @@
+/**
+ * Edita modalidades y tarifas del catálogo; los envíos existentes conservan su costo histórico.
+ */
 import { useEffect, useState } from 'react'
 import { Dialog } from './Dialog'
 import { ErrorMessage } from './ErrorMessage'

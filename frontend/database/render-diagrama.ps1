@@ -1,3 +1,4 @@
+# Genera la representación visual del esquema; los archivos SQL y las migraciones son la referencia ejecutable.
 ﻿$ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
 $layout = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'diagrama-layout.json') -Raw -Encoding utf8 | ConvertFrom-Json

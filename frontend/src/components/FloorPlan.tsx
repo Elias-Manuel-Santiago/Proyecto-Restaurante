@@ -1,3 +1,7 @@
+/**
+ * Edita un borrador del salón con puntero o teclado y valida límites y colisiones.
+ * Al guardar envía la base y el borrador para detectar conflictos sin alterar visitas ni pedidos.
+ */
 import { useRef, useState, type PointerEvent, type KeyboardEvent } from 'react'
 import type {
   FloorTable,
@@ -41,6 +45,7 @@ export function FloorPlan({
   onSelect?: (table: RestaurantTable) => void
 }) {
   const { data, session, act, busy, loading } = useRestaurant()
+  // El borrador conserva base y cambios; cancelar no escribe y guardar permite detectar conflictos.
   const [draft, setDraft] = useState<Draft | null>(null)
   const [shape, setShape] = useState<TableLayout['shape']>('rectangle')
   const [capacity, setCapacity] = useState(4)

@@ -1,3 +1,6 @@
+/**
+ * Expone arrastre y teclado para mover una comanda; KitchenPage envía el cambio al servidor.
+ */
 import { useRef, useState, type ReactNode } from 'react'
 
 interface Props {

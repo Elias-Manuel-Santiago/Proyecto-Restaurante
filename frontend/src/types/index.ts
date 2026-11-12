@@ -1,3 +1,7 @@
+/**
+ * Contratos del estado y de las acciones de la interfaz.
+ * apiAccess.ts describe el transporte SQL/HTTP; adapters.ts lo transforma a estas entidades.
+ */
 export type TableStatus = 'ocupada' | 'desocupada'
 export type OrderStatus =
   'pendiente' | 'preparacion' | 'listo' | 'entregado' | 'cancelado'
@@ -31,11 +35,9 @@ export const roleLabels: Record<Role, string> = {
   admin: 'Administrador',
   repartidor: 'Repartidor',
 }
-export interface Waiter {
+export interface UserProfile {
   id: string
   name: string
-}
-export interface UserProfile extends Waiter {
   role: Role
   active: boolean
   username?: string
@@ -107,7 +109,6 @@ export interface MenuDish {
   name: string
   description: string
   price: number
-  image: string
   category: (typeof categories)[number]
   available: boolean
   // Porciones que permite el insumo más escaso; null = sin receta.
@@ -115,7 +116,6 @@ export interface MenuDish {
   missingIngredient?: string
 }
 export interface RestaurantData {
-  version: 1
   tables: RestaurantTable[]
   dishes: MenuDish[]
   orders: Order[]

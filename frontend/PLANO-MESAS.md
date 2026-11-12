@@ -72,5 +72,5 @@ IDs nuevos, conservación de visitas y rollback ante fallos durante el guardado.
 
 La geometría fuente está en `src/state/floorGeometry.ts`. Si se modifica,
 ejecutar `npm run sync:floor-geometry` para regenerar
-`backend/modules/plano-geometria.js`. Una prueba compara ambos módulos para
+`backend/modules/restaurant/plano-geometria.js`. Una prueba compara ambos módulos para
 evitar que frontend y servidor acepten distribuciones diferentes.

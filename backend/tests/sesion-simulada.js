@@ -1,4 +1,5 @@
-import { hashToken } from "../modules/autenticacion.js";
+/** Proporciona identidades de prueba para rutas y SSE; el sustituto de SQL evita depender de cuentas o sesiones locales. */
+import { hashToken } from "../modules/auth/autenticacion.js";
 
 // Fixture de las pruebas de prioridad; la autenticación real se prueba con SQL.
 export const cookieChef = `nacar_session=${"a".repeat(64)}`;

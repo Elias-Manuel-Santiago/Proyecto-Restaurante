@@ -1,10 +1,11 @@
+/** Prueba instalación y migración de inventario en bases temporales, con restricciones y conservación de registros. */
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import mysql from "mysql2/promise";
-import { migrarStock } from "../modules/migrate-stock.js";
-import db from "../modules/db.js";
+import { migrarStock } from "../scripts/migrations/migrate-stock.js";
+import db from "../modules/database/db.js";
 
 const sentencias = (sql) =>
   sql

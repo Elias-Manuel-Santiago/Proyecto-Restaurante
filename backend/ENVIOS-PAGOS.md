@@ -124,7 +124,7 @@ Se integra una pasarela real en entorno de prueba, no un botón de aprobación
 simulada. No se implementó una pasarela bancaria independiente ni validación
 manual de transferencias; no afirmar que cualquier transferencia ya se valida
 automáticamente. La arquitectura permite registrar otros adaptadores en
-`modules/pasarelas.js` sin reescribir pedidos ni envíos.
+`modules/payments/pasarelas.js` sin reescribir pedidos ni envíos.
 
 ## Modelo y API
 
@@ -195,5 +195,5 @@ no se alteró `Unidades`, `Stock` ni `comida_stock`. Tampoco se agregó modo osc
 son editables, y `.svg` permite ampliar sin pérdida. Representa el contrato de
 pasarela, módulos, componentes funcionales y objetos SQL reales, con sus estereotipos;
 el backend no declara clases JavaScript. Para reproducirlo ejecutar
-`python generar-diagrama-pagos.py` y `powershell -File render-diagrama-pagos.ps1`
+`python scripts/diagrams/generar-diagrama-pagos.py` y `powershell -File scripts/diagrams/render-diagrama-pagos.ps1`
 desde `backend/`. Los archivos no contienen credenciales ni datos de clientes.

@@ -1,3 +1,6 @@
+/**
+ * Genera y muestra el QR del checkout y permite copiar el enlace para el cliente.
+ */
 import { useEffect, useState } from 'react'
 import { crearQrPago } from '../services/pagoQr'
 

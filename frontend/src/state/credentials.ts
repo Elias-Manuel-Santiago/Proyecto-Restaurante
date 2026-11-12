@@ -1,3 +1,7 @@
+/**
+ * Validación de formato para formularios de acceso y equipo.
+ * El backend vuelve a validar, verifica contraseñas y calcula sus hashes.
+ */
 // Las contraseñas se verifican y hashean exclusivamente en el backend.
 export const normalizeUsername = (username: string) =>
   username.trim().toLowerCase()

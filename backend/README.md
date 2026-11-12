@@ -22,21 +22,54 @@ iniciado; si tu conexión es diferente, ajustar `DB_*` antes de ejecutarlo.
 Se puede repetir. Para cuentas privadas siguen disponibles `migrate` y `seed:admin`.
 
 `npm run dev` reinicia el servidor al editar archivos. El puerto predeterminado es
-3005; puede cambiarse con `PORT`. La conexión existente está en `modules/db.js` y usa
+3005; puede cambiarse con `PORT`. La conexión existente está en `modules/database/db.js` y usa
 un pool para las transacciones. `DB_DATABASE` permite elegir otra base.
 `FRONTEND_ORIGIN` configura el origen CORS; el valor inicial es `http://localhost:5173`.
 Se admite `PATCH`, necesario para estados, disponibilidad y apertura/cierre de mesas.
 
-## Código
+## Organización y recorrido
+
+```text
+backend/
+  server.js                 Puerto HTTP y arranque del proceso
+  app.js                    Middleware, rutas y salida de errores
+  modules/
+    auth/                   Credenciales, sesiones, permisos y usuarios
+    database/               Pool MySQL, TLS y zona horaria
+    restaurant/             Mesas, carta, pedidos, plano y resúmenes
+    inventory/              Insumos, recetas y movimientos
+    delivery/               Envíos y modalidades de entrega
+    payments/               Cobros y adaptadores de pasarela
+    priority/               Orden de comandas y avisos SSE
+    http/                   Proxy, cabeceras y frontend en producción
+    shared/                 Utilidades de importes
+  scripts/                  Preparación y carga inicial de cuentas
+    migrations/             Instalación incremental del esquema SQL
+    diagrams/               Generación y renderizado de diagramas
+  tests/                    Pruebas y escenarios aislados
+```
+
+Para seguir una operación, comenzar en los bloques numerados de `app.js`: la
+solicitud pasa por `modules/auth/rutas-acceso.js`, que valida sesión y rol, y luego
+por la ruta de negocio. El módulo correspondiente valida y consulta SQL mediante
+`modules/database/db.js`. Las operaciones de pedidos coordinan ítems, stock y pago
+antes de confirmar la transacción. La ruta devuelve JSON o delega al manejador
+final de errores.
+
+La preparación corre antes del servidor: `scripts/preparar-equipo.js` instala una
+base vacía o ejecuta `scripts/migrations/migrate.js` y crea las cuentas faltantes.
+Los comandos npm mantienen sus nombres; sus rutas apuntan a estas carpetas.
+
+## Archivos principales
 
 - `app.js`: rutas HTTP y un único try/catch por solicitud. Los errores se devuelven
   con un mensaje de negocio, sin exponer SQL, hashes ni stack.
-- `modules/restaurante.js`: operaciones de mesas, comidas y pedidos. Las escrituras
+- `modules/restaurant/restaurante.js`: operaciones de mesas, comidas y pedidos. Las escrituras
   en varias tablas usan transacciones y revierten ante errores.
-- `modules/consultas.js`: consultas de resúmenes y sus posiciones.
-- `modules/migrate.js`: migración repetible de los campos que necesita el frontend.
-- `modules/migrate-stock.js`: migración aditiva de las cuatro tablas de inventario.
-- `modules/inventario.js`: descuento, validación y reposición de stock; ABM de
+- `modules/restaurant/resumenes.js`: consultas de resúmenes y sus posiciones.
+- `scripts/migrations/migrate.js`: migración repetible de los campos que necesita el frontend.
+- `scripts/migrations/migrate-stock.js`: migración aditiva de las cuatro tablas de inventario.
+- `modules/inventory/inventario.js`: descuento, validación y reposición de stock; ABM de
   inventario y recetas.
 
 `npm run migrate:stock` crea `Unidades`, `Stock`, `comida_stock` y

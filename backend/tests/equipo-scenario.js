@@ -1,8 +1,9 @@
+/** Prueba el ingreso y los permisos de las cuentas creadas por preparar-equipo en la base temporal del test llamador. */
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
-import db from "../modules/db.js";
+import db from "../modules/database/db.js";
 import { app } from "../app.js";
-import { cargarAccesosPruebas } from "../modules/seed-usuarios.js";
+import { cargarAccesosPruebas } from "../scripts/seed-usuarios.js";
 
 assert.match(process.env.DB_DATABASE, /^codex_restaurante_test_[a-f0-9]+$/);
 const accesos = await cargarAccesosPruebas();

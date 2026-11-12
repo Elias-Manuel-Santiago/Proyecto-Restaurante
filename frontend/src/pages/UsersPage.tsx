@@ -1,3 +1,7 @@
+/**
+ * Administra cuentas SQL y sus roles; guarda y desactiva mediante restaurantStore.
+ * Los estados locales controlan filtros y diálogos; los datos confirmados provienen del servidor.
+ */
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
 import { ConfirmDialog, Dialog } from '../components/Dialog'
 import { PasswordInput } from '../components/PasswordInput'

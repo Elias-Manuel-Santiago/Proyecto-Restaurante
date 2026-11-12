@@ -1,3 +1,4 @@
+/** Generación del validador del backend desde floorGeometry.ts; conserva una única fuente de reglas geométricas. */
 // El servidor valida con la misma geometría que el editor, sin depender de TypeScript en runtime.
 import fs from 'node:fs/promises'
 import ts from 'typescript'
@@ -14,6 +15,6 @@ const output =
     },
   }).outputText
 await fs.writeFile(
-  new URL('../../backend/modules/plano-geometria.js', import.meta.url),
+  new URL('../../backend/modules/restaurant/plano-geometria.js', import.meta.url),
   output,
 )

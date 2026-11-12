@@ -1,4 +1,5 @@
-import { registrarPasarela } from "../modules/pasarelas.js";
+/** Recorre creación, cocina, asignación y entrega por HTTP; verifica SQL, concurrencia y rollback en la base temporal. */
+import { registrarPasarela } from "../modules/payments/pasarelas.js";
 import assert from "node:assert/strict";
 
 export async function probarRepartos(request, db, clientes) {

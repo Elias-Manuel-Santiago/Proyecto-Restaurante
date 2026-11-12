@@ -9,8 +9,6 @@ La vista de repartidor está conectada a la API y a SQL. La configuración y el
 circuito completo están en [REPARTIDOR.md](REPARTIDOR.md).
 
 El SQL de instalación y el diagrama actualizado están en [database/README.md](database/README.md).
-La importación se verificó en una base temporal MariaDB. La base local `restaurante`
-presenta un error del motor (1932); consultar esa guía antes de importar o iniciar.
 
 Frontend React + TypeScript conectado a la API Express/MySQL de `../backend`.
 Mesas, comidas, pedidos y resúmenes se leen y guardan en el servidor. Los usuarios,
@@ -19,7 +17,7 @@ Ver [configuración del login real](../backend/LOGIN.md).
 
 ## Ejecutar
 
-En `backend/`, con MySQL disponible y la conexión de `modules/db.js` configurada:
+En `backend/`, con MySQL disponible y la conexión de `modules/database/db.js` configurada:
 
 ```sh
 npm ci
@@ -48,11 +46,24 @@ VITE_API_ROUTE=/api
 VITE_API_TARGET=http://localhost:3005
 ```
 
-Si creás o cambiás `.env`, reiniciá Vite. `API_ROUTE` sin el prefijo `VITE_` ya no se usa.
+Si creás o cambiás `.env`, reiniciá Vite.
 En producción, configurar el proxy `/api` en el servidor o establecer `VITE_API_ROUTE`
 con la dirección pública del backend al compilar. Configurar `FRONTEND_ORIGIN` en el
 backend si el origen del frontend es diferente de `http://localhost:5173`.
 Las rutas de la SPA necesitan fallback a `index.html`.
+
+## Recorrido del programa
+
+Seguir los comentarios de `src/main.tsx` → `src/App.tsx` → página en `src/pages/`
+→ acción en `src/state/store.ts` → solicitud en `src/services/apiAccess.ts`.
+En el backend, continuar por los bloques numerados de `backend/app.js` y el módulo
+de negocio correspondiente. La respuesta vuelve por `adapters.ts` al snapshot del
+store; `useRestaurant` avisa a React para actualizar las pantallas.
+
+Los formularios mantienen un borrador local hasta guardar. El repartidor utiliza
+`useDeliveries` para consultar sus envíos; inventario, tarifas y cobros consultan
+sus recursos específicos. El editor del salón comparte las reglas geométricas con
+el backend mediante `npm run sync:floor-geometry`.
 
 ## Organización del código
 
@@ -63,7 +74,6 @@ Las rutas de la SPA necesitan fallback a `index.html`.
 - `src/state/store.ts`: carga inicial, acciones remotas y recarga después de guardar.
   No crea datos operativos de demostración ni usa un fallback a mocks.
 - `src/state/model.ts`: utilidades de presentación y rutas por rol.
-- `src/mocks/restaurant.ts`: conserva únicamente los perfiles iniciales de usuarios.
 
 El estado conserva el objeto de error completo. `ErrorMessage` muestra un mensaje en
 pantalla sin reemplazarlo ni resumirlo en el servicio. No hay interceptores de errores,

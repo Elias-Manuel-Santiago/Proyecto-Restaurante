@@ -1,15 +1,16 @@
+/** Verifica adaptación del esquema de acceso y conservación de claves y sesiones en una base temporal; la semilla usa accesos locales del equipo. */
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import mysql from "mysql2/promise";
-import db from "../modules/db.js";
-import { migrarAutenticacion } from "../modules/migrate-auth.js";
+import db from "../modules/database/db.js";
+import { migrarAutenticacion } from "../scripts/migrations/migrate-auth.js";
 import {
   cargarAccesosPruebas,
   sembrarUsuarios,
   equipo,
-} from "../modules/seed-usuarios.js";
+} from "../scripts/seed-usuarios.js";
 import argon2 from "argon2";
 
 test("acceso: migra el esquema anterior sin borrar cuentas, claves ni sesiones", async () => {

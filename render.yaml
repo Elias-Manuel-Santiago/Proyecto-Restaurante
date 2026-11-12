@@ -16,8 +16,6 @@ services:
         value: production
       - key: TZ
         value: America/Argentina/Buenos_Aires
-      - key: NACAR_DATOS_DEMO
-        value: "1"
       - key: DB_SSL
         value: "1"
       - key: DB_DATABASE

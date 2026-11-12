@@ -123,5 +123,3 @@ Laureano (bloque de base de datos).
 - CSP (Content-Security-Policy): requiere permitir Google Fonts y el script inline del tema.
 - Webhook de Mercado Pago (hoy consulta cada 10 s con el diálogo abierto).
 - FK de `repartidor_id`; prueba end-to-end automatizada del circuito completo.
-- Confirmar con el equipo si se borran `frontend/src/mocks/restaurant.ts` (no se importa en
-  ningún lado) y `frontend/src.zip` (subido el 22/10).

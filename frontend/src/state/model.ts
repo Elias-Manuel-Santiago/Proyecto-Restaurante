@@ -1,3 +1,7 @@
+/**
+ * Reglas de presentación compartidas: importes, estados activos, prioridad y rutas por rol.
+ * Los datos iniciales están vacíos; store.ts los completa con respuestas del servidor.
+ */
 import type {
   AppRoute,
   MenuDish,
@@ -55,7 +59,7 @@ export const homeRoute = (role?: Role): AppRoute =>
         : '/mesas'
 
 export function createInitialData(): RestaurantData {
-  return { version: 1, tables: [], dishes: [], orders: [], users: [] }
+  return { tables: [], dishes: [], orders: [], users: [] }
 }
 export type Action =
   | { type: 'saveFloorPlan'; base: FloorTable[]; tables: FloorTable[] }

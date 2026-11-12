@@ -1,3 +1,7 @@
+/**
+ * Contratos del reparto: filas recibidas, entregas agrupadas y borrador de creación.
+ * useDeliveries deriva el estado visible combinando preparación, pago y traslado.
+ */
 export type DeliveryStatus =
   'esperando_pago' | 'en_cocina' | 'listo' | 'en_camino' | 'entregado'
 

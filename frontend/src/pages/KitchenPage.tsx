@@ -1,3 +1,7 @@
+/**
+ * Agrupa pedidos por preparación; permite transiciones y reordenamiento compartido por HTTP y SSE.
+ * Los estados locales controlan filtros y diálogos; los datos confirmados provienen del servidor.
+ */
 import { ErrorMessage } from '../components/ErrorMessage'
 import { useEffect, useRef, useState } from 'react'
 import { Dialog } from '../components/Dialog'
@@ -33,6 +37,7 @@ function KitchenLane({
   onMove: (id: string, targetId: string, before: boolean) => void
   canReorder: boolean
 }) {
+  // Cada estado pagina su propia cola; mostrar todos permite mover pedidos entre páginas.
   const [page, setPage] = useState(1)
   const [showAll, setShowAll] = useState(false)
   const [dropTarget, setDropTarget] = useState<string | null>(null)

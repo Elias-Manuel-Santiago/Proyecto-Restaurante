@@ -1,3 +1,6 @@
+/**
+ * Muestra dirección, indicaciones e ítems de la entrega elegida por CourierPage.
+ */
 import { deliveryStatusLabels, type Delivery } from '../types/delivery'
 import { Dialog } from './Dialog'
 

@@ -1,3 +1,7 @@
+/**
+ * Filtra la carta real; administración edita platos y cocina cambia su disponibilidad.
+ * Los estados locales controlan filtros y diálogos; los datos confirmados provienen del servidor.
+ */
 import { ErrorMessage } from '../components/ErrorMessage'
 import { useState } from 'react'
 import { MenuDishCard } from '../components/MenuDishCard'

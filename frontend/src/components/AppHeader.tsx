@@ -1,3 +1,6 @@
+/**
+ * Navegación y sesión visibles según el rol; comunica el cambio de ruta a App.
+ */
 import { useState } from 'react'
 import { roleLabels, type AppRoute } from '../types'
 import { homeRoute, roleRoutes } from '../state/model'

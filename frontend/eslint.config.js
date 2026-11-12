@@ -1,3 +1,4 @@
+/** Reglas de análisis estático para TypeScript y React; excluye compilados y verificaciones temporales. */
 import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
@@ -6,7 +7,7 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', '.verification']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [

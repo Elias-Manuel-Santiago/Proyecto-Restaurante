@@ -1,3 +1,4 @@
+/** Comprueba que chef y mozo lean el mismo orden usando Express y Axios con filas SQL controladas. */
 import axios from 'axios'
 import {
   cookieChef,
@@ -10,7 +11,7 @@ import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import ts from 'typescript'
 import { app } from '../../backend/app.js'
-import db from '../../backend/modules/db.js'
+import db from '../../backend/modules/database/db.js'
 
 // API Express y Axios reales, con filas simuladas: no necesita una base disponible.
 test('prioridad compartida entre chef y mozo, sin persistencia local ni escrituras SQL', async (t) => {

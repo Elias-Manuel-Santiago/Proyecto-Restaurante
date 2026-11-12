@@ -1,3 +1,8 @@
+/**
+ * Geometría del salón compartida por editor y servidor: límites, colisiones y distribución inicial.
+ * Después de modificar este archivo ejecutar npm run sync:floor-geometry para generar el equivalente JS.
+ * La validación local da respuesta inmediata; el backend repite la validación antes de persistir.
+ */
 import type { FloorTable, PlacedTable, TableLayout } from '../types'
 
 export const FLOOR = { width: 1200, height: 800, minSize: 64, maxSize: 400 }
@@ -112,6 +117,7 @@ export function placementError(table: PlacedTable, others: FloorTable[]) {
     return 'Las mesas no pueden superponerse.'
   return ''
 }
+/** Valida el conjunto completo antes del envío: dimensiones, números de mesa, límites y superposiciones. */
 export function validateFloor(tables: FloorTable[]) {
   if (tables.length > 150) return 'El plano admite hasta 150 mesas.'
   if (tables.some((table) => !table || typeof table !== 'object'))
@@ -160,6 +166,7 @@ export function findSpace(
     }
   return null
 }
+/** Conserva ubicaciones válidas y busca espacio para mesas sin plano; no persiste esa distribución. */
 export function initializeFloor(tables: FloorTable[]): FloorTable[] {
   let result: FloorTable[] = []
   // Try compact tables when an older salon has too many tables for the default size.
@@ -185,6 +192,7 @@ export function initializeFloor(tables: FloorTable[]): FloorTable[] {
   }
   return result.sort((a, b) => a.number - b.number)
 }
+/** Extrae solo los campos del plano para comparar cambios sin mezclar estados de ocupación. */
 export const floorSnapshot = (
   tables: {
     id: string

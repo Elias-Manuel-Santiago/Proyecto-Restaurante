@@ -1,5 +1,6 @@
+/** Recorre cobro, consulta, cancelación y reembolso con una pasarela controlada; verifica SQL y reglas del pedido. */
 import assert from "node:assert/strict";
-import { registrarPasarela } from "../modules/pasarelas.js";
+import { registrarPasarela } from "../modules/payments/pasarelas.js";
 
 export async function probarPagos(request, db, clientes) {
   const remotos = new Map();

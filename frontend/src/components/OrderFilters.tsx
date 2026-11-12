@@ -1,3 +1,6 @@
+/**
+ * Emite filtros controlados a OrdersPage; obtiene opciones desde los datos del servicio.
+ */
 import type { ChangeEvent } from 'react'
 import { useRestaurant } from '../state/useRestaurant'
 import type { OrderStatus } from '../types'

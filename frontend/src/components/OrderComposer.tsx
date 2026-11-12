@@ -1,3 +1,6 @@
+/**
+ * Construye ítems, cantidades y notas; crear o editar delega en el store y respeta el stock disponible.
+ */
 import { ErrorMessage } from './ErrorMessage'
 import { useState } from 'react'
 import {
@@ -68,6 +71,7 @@ export function OrderComposer({
           : [...current, { dishId, quantity, notes: '' }],
     )
   }
+  // El mismo borrador se traduce a edición, envío o pedido de mesa; el store confirma y recarga.
   const submit = async () => {
     const message = await act(
       order

@@ -1,3 +1,6 @@
+/**
+ * Presenta precio, disponibilidad y porciones; la página suministra las acciones permitidas.
+ */
 import type { ReactNode } from 'react'
 import type { MenuDish } from '../types'
 import { money } from '../state/model'

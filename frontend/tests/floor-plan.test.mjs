@@ -1,8 +1,9 @@
+/** Compara geometría generada y fuente TypeScript; prueba límites, colisiones y distribución sin base de datos. */
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs/promises'
 import ts from 'typescript'
-import * as serverGeometry from '../../backend/modules/plano-geometria.js'
+import * as serverGeometry from '../../backend/modules/restaurant/plano-geometria.js'
 
 const source = await fs.readFile(
   new URL('../src/state/floorGeometry.ts', import.meta.url),
@@ -32,7 +33,7 @@ const table = (id, layout) => ({ id, number: Number(id), capacity: 4, layout })
 
 test('cliente y servidor ejecutan la misma geometría', async () => {
   const backend = await fs.readFile(
-    new URL('../../backend/modules/plano-geometria.js', import.meta.url),
+    new URL('../../backend/modules/restaurant/plano-geometria.js', import.meta.url),
     'utf8',
   )
   assert.equal(

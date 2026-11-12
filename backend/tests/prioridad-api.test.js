@@ -1,8 +1,9 @@
+/** Comprueba permisos y movimientos por HTTP usando sesiones y filas SQL controladas; reordenar no escribe en la base. */
 import { cookieChef, simularSesion } from "./sesion-simulada.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { app } from "../app.js";
-import db from "../modules/db.js";
+import db from "../modules/database/db.js";
 
 test("HTTP: comparte prioridad entre lecturas, valida movimientos y no escribe en MySQL", async (t) => {
   const filas = [

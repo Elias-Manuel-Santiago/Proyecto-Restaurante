@@ -1,3 +1,7 @@
+/**
+ * Preferencia visual compartida: lee el tema guardado o el del sistema y notifica a React.
+ * El almacenamiento local conserva únicamente esta preferencia de apariencia.
+ */
 import { useSyncExternalStore } from 'react'
 
 // Modo claro/oscuro: se guarda la elección; sin elección se sigue al sistema.

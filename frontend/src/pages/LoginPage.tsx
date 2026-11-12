@@ -1,3 +1,7 @@
+/**
+ * Recoge credenciales y espera el resultado del login del store antes de entrar al servicio.
+ * Los estados locales controlan filtros y diálogos; los datos confirmados provienen del servidor.
+ */
 import { useRef, useState, type FormEvent } from 'react'
 import { PasswordInput } from '../components/PasswordInput'
 import { ThemeToggle } from '../components/ThemeToggle'

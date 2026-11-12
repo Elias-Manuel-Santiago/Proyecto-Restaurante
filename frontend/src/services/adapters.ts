@@ -1,3 +1,7 @@
+/**
+ * Transformación API → interfaz: agrupa ítems por pedido y convierte IDs, importes y planos.
+ * Conserva nombres y precios históricos enviados por SQL; store.refresh publica el resultado.
+ */
 import type { ComidaApi, MesaApi, PedidoFilaApi } from './apiAccess'
 import type { MenuDish, Order, RestaurantTable, StatusEvent } from '../types'
 
@@ -101,7 +105,6 @@ export function adaptarComidas(comidas: ComidaApi[]): MenuDish[] {
     category: categorias[comida.tipo] ?? 'Principales',
     price: Number(comida.precio),
     available: Boolean(Number(comida.disponible)),
-    image: '',
     portions:
       comida.porciones_disponibles === undefined ||
       comida.porciones_disponibles === null

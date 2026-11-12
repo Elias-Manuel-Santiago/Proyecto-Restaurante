@@ -1,9 +1,10 @@
+/** Prueba el guardado HTTP del plano con SQL controlado: permisos, conflictos y conservación del servicio. */
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { app } from '../../backend/app.js'
-import db from '../../backend/modules/db.js'
-import { planoDeFilas } from '../../backend/modules/plano.js'
-import { hashToken } from '../../backend/modules/autenticacion.js'
+import db from '../../backend/modules/database/db.js'
+import { planoDeFilas } from '../../backend/modules/restaurant/plano.js'
+import { hashToken } from '../../backend/modules/auth/autenticacion.js'
 
 const layout = (x = 200, patch = {}) => ({
   shape: 'rectangle',

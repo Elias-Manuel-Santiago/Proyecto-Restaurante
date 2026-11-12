@@ -1,3 +1,7 @@
+/**
+ * Reúne métricas del servicio, acceso al plano y configuración de inventario y entrega.
+ * Los estados locales controlan filtros y diálogos; los datos confirmados provienen del servidor.
+ */
 import { ShippingSettings } from '../components/ShippingSettings'
 import { InventorySettings } from '../components/InventorySettings'
 import { SummaryPanel } from '../components/SummaryPanel'
@@ -17,6 +21,7 @@ export function AdminPage({
   const [shippingSettings, setShippingSettings] = useState(false)
   const [inventory, setInventory] = useState(false)
   const today = new Date().toLocaleDateString('sv-SE')
+  // Estas métricas se derivan del snapshot; los resúmenes guardados tienen su propio recurso SQL.
   const todayOrders = data.orders.filter(
     (order) => new Date(order.createdAt).toLocaleDateString('sv-SE') === today,
   )

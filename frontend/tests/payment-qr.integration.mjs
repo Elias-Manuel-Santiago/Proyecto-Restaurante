@@ -1,3 +1,4 @@
+/** Genera y decodifica un QR real; verifica el enlace exacto y el rechazo de destinos no permitidos. */
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFile, writeFile, mkdir, unlink } from 'node:fs/promises'

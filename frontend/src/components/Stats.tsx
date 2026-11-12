@@ -1,3 +1,6 @@
+/**
+ * Presenta métricas calculadas por las páginas; no consulta ni modifica datos.
+ */
 export function Stats({
   items,
   compact = items.every((item) => !item.detail),

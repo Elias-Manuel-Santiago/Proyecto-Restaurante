@@ -1,3 +1,6 @@
+/**
+ * Consulta inventario, recetas y movimientos; guarda cambios por apiAccess y actualiza la vista.
+ */
 import { useCallback, useEffect, useState } from 'react'
 import { Dialog } from './Dialog'
 import { ErrorMessage } from './ErrorMessage'

@@ -1,3 +1,4 @@
+/** Verifica el flujo del repartidor y adaptación de filas mediante módulos compilados en un directorio temporal. */
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs/promises'

@@ -1,3 +1,8 @@
+/**
+ * Coordinación de la interfaz: restaura sesión → elige ruta según rol → carga el restaurante.
+ * Las acciones de las páginas pasan por store.ts y apiAccess.ts; las respuestas actualizan los suscriptores.
+ * Combina avisos SSE de prioridad con recarga periódica y limpia ambos al salir de la sesión.
+ */
 import { ErrorMessage } from './components/ErrorMessage'
 import { useEffect, useState } from 'react'
 import { AppHeader } from './components/AppHeader'
@@ -21,6 +26,7 @@ function App() {
     useRestaurant()
   const [path, setPath] = useState(() => window.location.pathname)
   const [routeNotice, setRouteNotice] = useState('')
+  // 1. La cookie recupera la identidad antes de decidir qué pantalla puede abrirse.
   useEffect(() => {
     void restaurantStore.restoreSession()
   }, [])
@@ -42,6 +48,7 @@ function App() {
       window.history.replaceState({}, '', target)
   }, [session, route, authChecking])
   useEffect(() => {
+    // 2. Salón y cocina comparten el store; reparto utiliza su propio hook y catálogo de entregas.
     if (!session || session.role === 'repartidor') return
     void restaurantStore.refresh()
     const unsubscribe = suscribirPrioridadPedidos(() => {

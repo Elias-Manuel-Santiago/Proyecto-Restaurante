@@ -1,17 +1,18 @@
+/** Arranca un servidor local en modo producción y comprueba SPA, proxy, cabeceras y zona horaria. */
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { mkdtemp, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { husoNode } from "../modules/db.js";
-import db from "../modules/db.js";
+import { husoNode } from "../modules/database/db.js";
+import db from "../modules/database/db.js";
 
 // Proceso aparte: NODE_ENV=production se lee al importar app.js.
 const escenario = `
 import assert from "node:assert/strict";
 import { app } from "./app.js";
-import db from "./modules/db.js";
+import db from "./modules/database/db.js";
 const servidor = app.listen(0, "127.0.0.1");
 await new Promise((r) => servidor.once("listening", r));
 const base = "http://127.0.0.1:" + servidor.address().port;

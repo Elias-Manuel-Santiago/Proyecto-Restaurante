@@ -77,14 +77,7 @@ cancelación, ajustes, mesa y envío compitiendo por la última porción, reembo
 cancelación de cobro que reponen una sola vez. `tests/stock.test.js` prueba la
 migración en una base nueva y en una con la versión anterior de `comida_stock`.
 
-## Para la demo
+## Configuración
 
-`node modules/datos-demo.js` (o `NACAR_DATOS_DEMO=1` online) carga 18 insumos y la
-receta de 12 platos; la hamburguesa queda con 900 g de carne picada a 180 g por porción.
-
-1. Admin → Inventario y recetas: con los datos de ejemplo ya está cargado; si no, crear
-   la unidad "g", el insumo "Carne" con 900 y la receta de la hamburguesa con 180 g.
-   La carta muestra "Stock para 5 porciones".
-2. Mozo: pedir 5 hamburguesas. El botón "+" se bloquea y la carta pasa a "Sin stock".
-3. Cancelar el pedido: el stock vuelve a 900 y aparece la reposición en
-   "Últimos movimientos".
+Crear las unidades, insumos y existencias reales desde **Administración → Inventario y
+recetas**. Asociar a cada plato su receta y las cantidades necesarias por porción.

@@ -1,3 +1,7 @@
+/**
+ * Lista las entregas del usuario conectado mediante useDeliveries y permite retirarlas o confirmarlas.
+ * Los estados locales controlan filtros y diálogos; los datos confirmados provienen del servidor.
+ */
 import { useState } from 'react'
 import { ConfirmDialog } from '../components/Dialog'
 import { DeliveryCard } from '../components/DeliveryCard'

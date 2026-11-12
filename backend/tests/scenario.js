@@ -1,10 +1,11 @@
+/** Coordina la API real y escenarios de negocio en la base temporal recibida; incluye el store del frontend con Axios. */
 import { probarPagos } from "./pagos-scenario.js";
 import { crearClientes, rolSolicitud } from "./clientes-auth.js";
 import { probarAuth } from "./auth-scenario.js";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import db from "../modules/db.js";
-import { migrar } from "../modules/migrate.js";
+import db from "../modules/database/db.js";
+import { migrar } from "../scripts/migrations/migrate.js";
 import { app } from "../app.js";
 import { probarRepartos } from "./repartos-scenario.js";
 import { probarStock } from "./stock-scenario.js";

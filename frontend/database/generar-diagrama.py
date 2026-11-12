@@ -1,3 +1,4 @@
+# Genera la representación visual del esquema; los archivos SQL y las migraciones son la referencia ejecutable.
 """Genera SVG y draw.io desde las columnas reales del SQL, sin dependencias."""
 import json
 import re

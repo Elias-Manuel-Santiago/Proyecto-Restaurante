@@ -1,30 +1,36 @@
-import * as pagos from "./modules/pagos.js";
-import * as modalidades from "./modules/modalidades-envio.js";
-import { registrarAcceso } from "./modules/rutas-acceso.js";
-import { vigilarSesion } from "./modules/autenticacion.js";
-import { crearEventosPrioridad } from "./modules/eventos-prioridad.js";
-import { crearColaPrioridad } from "./modules/prioridad.js";
+/**
+ * Mapa del recorrido HTTP: cabeceras y JSON → acceso y permisos → rutas de negocio → respuesta o error.
+ * Cada ruta delega en modules/; esas funciones validan y persisten en SQL.
+ * La cola de prioridad y sus avisos SSE pertenecen a esta instancia del servidor.
+ */
+import * as pagos from "./modules/payments/pagos.js";
+import * as modalidades from "./modules/delivery/modalidades-envio.js";
+import { registrarAcceso } from "./modules/auth/rutas-acceso.js";
+import { vigilarSesion } from "./modules/auth/autenticacion.js";
+import { crearEventosPrioridad } from "./modules/priority/eventos-prioridad.js";
+import { crearColaPrioridad } from "./modules/priority/prioridad.js";
 import {
   configurarProxy,
   cabecerasSeguridad,
   servirFrontend,
-} from "./modules/produccion.js";
+} from "./modules/http/produccion.js";
 import express from "express";
-import { guardarPlano } from "./modules/plano.js";
-import * as restaurante from "./modules/restaurante.js";
-import * as repartos from "./modules/repartos.js";
-import * as inventario from "./modules/inventario.js";
+import { guardarPlano } from "./modules/restaurant/plano.js";
+import * as restaurante from "./modules/restaurant/restaurante.js";
+import * as repartos from "./modules/delivery/repartos.js";
+import * as inventario from "./modules/inventory/inventario.js";
 import {
   crearResumen,
   listarResumenes,
   borrarResumen,
   listarDatosDeUnResumen,
-} from "./modules/consultas.js";
+} from "./modules/restaurant/resumenes.js";
 
 const prioridad = crearColaPrioridad();
 const eventosPrioridad = crearEventosPrioridad();
 
 export const app = express();
+// 1. Infraestructura: establecer origen, límites y archivos estáticos antes de autenticar la API.
 configurarProxy(app);
 app.use(cabecerasSeguridad);
 app.use((req, res, next) => {
@@ -46,6 +52,7 @@ app.use((req, res, next) => {
 });
 app.use(express.json({ limit: "256kb" }));
 servirFrontend(app);
+// 2. Acceso: login público; el resto de /api queda protegido por sesión y permisos de rol.
 registrarAcceso(app);
 app.param("id", (req, res, next, id) => {
   if (!/^[1-9]\d*$/.test(id) || !Number.isSafeInteger(Number(id)))
@@ -68,6 +75,7 @@ function ruta(metodo, url, operacion, status = 200) {
 }
 const mensaje = (message) => ({ message });
 
+// 3. Entrega y cobros: configuración → checkout → consulta/cancelación/reembolso.
 ruta("get", "/api/modalidades-envio", () => modalidades.listarModalidades());
 ruta("put", "/api/modalidades-envio/:codigo", async ({ params, body }) => {
   await modalidades.guardarModalidad(params.codigo, body);
@@ -84,6 +92,7 @@ ruta("post", "/api/pagos/:id/reembolsar", ({ params, usuario }) =>
 ruta("post", "/api/pagos/:id/cancelar", ({ params, usuario }) =>
   pagos.cancelarPago(params.id, usuario.name),
 );
+// 4. Reparto: crear un envío genera también su pedido; avanzar valida pago, cocina y asignación.
 ruta("post", "/api/envios/obtener", ({ body }) =>
   repartos.listarEnvios(body.repartidor_id),
 );
@@ -98,6 +107,7 @@ ruta("patch", "/api/envios/:id/estado", async ({ params, body, usuario }) => {
   return mensaje("Envío actualizado.");
 });
 
+// 5. Salón: administrar mesas y abrir/cerrar visitas; el plano se guarda con control de concurrencia.
 ruta("post", "/api/mesas/obtener", () => restaurante.listarTodasLasMesas());
 ruta(
   "post",
@@ -130,6 +140,7 @@ ruta("delete", "/api/mesas/:id", async ({ params }) => {
   return mensaje("Mesa eliminada.");
 });
 
+// 6. Carta: mantener platos y disponibilidad que consulta el compositor de pedidos.
 ruta("post", "/api/comidas/obtener", () => restaurante.listarTodasLasComidas());
 ruta(
   "post",
@@ -194,6 +205,7 @@ app.get("/api/pedidos/eventos", (req, res) => {
   vigilarSesion(req, res);
 });
 
+// 7. Comandas: lectura con prioridad compartida; las escrituras coordinan ítems, inventario e historial.
 ruta("post", "/api/pedidos/obtener", async () =>
   prioridad.listar(await restaurante.listarTodosLosPedidos()),
 );
@@ -248,6 +260,7 @@ ruta("patch", "/api/pedidos/:id/despachar", async ({ params, body }) => {
   return mensaje("Pedido entregado.");
 });
 
+// 8. Administración: resúmenes guardados y sus posiciones de platos.
 ruta("post", "/api/resumenes/obtener", () => listarResumenes());
 ruta("post", "/api/resumenes/detalle", async ({ body }) => {
   restaurante.comprobar(
@@ -296,6 +309,7 @@ ruta("delete", "/api/resumenes/:id", async ({ params }) => {
   return mensaje("Resumen eliminado.");
 });
 
+// 9. Salida de errores: conserva mensajes de negocio y evita devolver detalles internos de SQL.
 app.use((error, req, res, next) => {
   if (res.headersSent) return next(error);
   if (!error.status) console.error(error);

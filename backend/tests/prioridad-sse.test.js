@@ -1,10 +1,11 @@
+/** Comprueba difusión, reconexión, latidos y cierre del canal SSE con clientes locales y sesiones controladas. */
 import { cookieChef, simularSesion } from "./sesion-simulada.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { EventEmitter } from "node:events";
 import { app } from "../app.js";
-import db from "../modules/db.js";
-import { crearEventosPrioridad } from "../modules/eventos-prioridad.js";
+import db from "../modules/database/db.js";
+import { crearEventosPrioridad } from "../modules/priority/eventos-prioridad.js";
 
 test(
   "SSE HTTP: dos clientes reciben el movimiento y una reconexión lee el orden vigente",

@@ -1,3 +1,7 @@
+/**
+ * Filtra y pagina pedidos o historial; coordina creación, edición, cancelación y cobro.
+ * Los estados locales controlan filtros y diálogos; los datos confirmados provienen del servidor.
+ */
 import { PaymentDialog } from '../components/PaymentDialog'
 import { OrderComposer } from '../components/OrderComposer'
 import { DeliveryEditor } from '../components/DeliveryEditor'
@@ -39,6 +43,7 @@ export function OrdersPage({ history = false }: { history?: boolean }) {
     void restaurantStore.refresh(true)
   }, [])
   const search = query.trim().toLocaleLowerCase()
+  // Filtrar el snapshot confirmado; la paginación no cambia la prioridad de la cola del servidor.
   const visibleOrders = data.orders
     .filter(
       (order) =>

@@ -1,6 +1,7 @@
+/** Comprueba el orden en memoria, altas, bajas y movimientos inválidos sin usar servidor ni MySQL. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { crearColaPrioridad } from '../modules/prioridad.js';
+import { crearColaPrioridad } from '../modules/priority/prioridad.js';
 
 const pedido = (id, estado = 'pendiente') => ({
   id_pedidos: id, estado, creado_en: '2026-10-19T12:00:00Z',

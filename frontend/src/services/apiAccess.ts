@@ -1,3 +1,8 @@
+/**
+ * Frontera HTTP del frontend: contratos de datos y funciones para cada recurso de /api.
+ * Envía cookies de sesión; consultar conserva mensajes de negocio y avisa al store si vence la sesión.
+ * Los adaptadores convierten después las filas SQL al modelo que consumen las pantallas.
+ */
 import axios from 'axios'
 import type { AxiosResponse, Method } from 'axios'
 import type {

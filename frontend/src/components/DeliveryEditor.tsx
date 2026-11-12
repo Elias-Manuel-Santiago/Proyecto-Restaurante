@@ -1,3 +1,6 @@
+/**
+ * Compone destinatario, modalidad, repartidor e ítems; envía createDelivery al store.
+ */
 import { useState, useEffect } from 'react'
 import { obtenerModalidades } from '../services/apiAccess'
 import { money } from '../state/model'

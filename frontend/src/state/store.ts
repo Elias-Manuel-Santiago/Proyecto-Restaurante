@@ -1,3 +1,8 @@
+/**
+ * Estado compartido del restaurante: las páginas envían acciones y reciben snapshots confirmados por la API.
+ * Flujo de escritura: permiso local → solicitud HTTP → recarga SQL → aviso a React.
+ * La versión de sesión impide que una respuesta anterior restaure datos de otra identidad.
+ */
 import * as api from '../services/apiAccess'
 import {
   adaptarComidas,
@@ -20,6 +25,7 @@ let snapshot = {
 const listeners = new Set<() => void>()
 const emit = () => listeners.forEach((listener) => listener())
 let sessionVersion = 0
+// Cerrar o vencer la sesión vacía los datos y descarta respuestas pendientes de la identidad anterior.
 const clearSession = (message = '') => {
   sessionVersion++
   snapshot = {
@@ -44,7 +50,7 @@ type RemoteAction =
       delivery: import('../types/delivery').DeliveryDraft
       items: import('../types').DraftItem[]
     }
-  | Exclude<Action, { type: 'saveUser' | 'deleteUser' }>
+  | Action
   | { type: 'editOrder'; id: string; items: import('../types').DraftItem[] }
   | { type: 'createSummary'; summary: api.ResumenParametros }
   | { type: 'deleteSummary'; id: number }
@@ -77,7 +83,7 @@ export const restaurantStore = {
     if (snapshot.session && version === sessionVersion)
       await restaurantStore.refresh(true)
   },
-  /** Recarga datos reales; no hay fallback a mocks si la API falla. */
+  /** Recarga los datos del servidor. */
   async refresh(background = false): Promise<Error | null> {
     // El repartidor consulta sus envíos a través del hook específico.
     if (!snapshot.session || snapshot.session.role === 'repartidor') return null
@@ -88,6 +94,7 @@ export const restaurantStore = {
       snapshot = { ...snapshot, loading: !background }
       emit()
       try {
+        // Publicar un snapshot solo cuando terminaron todas las lecturas del rol conectado.
         const [mesas, comidas, pedidos, resumenes, usuarios] =
           await Promise.all([
             api.obtenerMesas(),
@@ -155,6 +162,7 @@ export const restaurantStore = {
       )
         throw new Error('Este cambio corresponde a otro rol.')
       let result
+      // Traducir acciones del modelo de interfaz al contrato HTTP; el servidor repite los permisos.
       switch (action.type) {
         case 'saveFloorPlan': {
           const error = validateFloor(action.tables)
@@ -297,6 +305,7 @@ export const restaurantStore = {
     }
   },
   getSnapshot: () => snapshot,
+  // Inicio y recarga del navegador: recuperar la cookie SQL sin pedir nuevamente credenciales.
   async restoreSession() {
     const version = sessionVersion
     const response = await api.consultarSesion()
@@ -319,6 +328,7 @@ export const restaurantStore = {
     }
     emit()
   },
+  // Un nuevo ingreso invalida cargas anteriores antes de enviar las credenciales.
   async login(username: string, password: string): Promise<string> {
     // Un intento nuevo reemplaza cualquier identidad anterior, incluso si falla.
     // También invalida restauraciones de sesión que todavía estén en vuelo.
@@ -359,6 +369,7 @@ export const restaurantStore = {
     }
     clearSession()
   },
+  // Las cuentas usan endpoints propios; después de guardar se actualiza el catálogo del equipo.
   async saveUser(profile: UserProfile, password?: string): Promise<string> {
     if (snapshot.session?.role !== 'admin')
       return 'Solo el administrador puede gestionar usuarios.'

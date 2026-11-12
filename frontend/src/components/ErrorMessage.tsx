@@ -1,3 +1,6 @@
+/**
+ * Presenta el mensaje de error recibido por una página o formulario.
+ */
 import axios from 'axios'
 
 /** El objeto original se conserva en el estado; aquí solo mostramos su mensaje. */

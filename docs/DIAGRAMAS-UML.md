@@ -33,14 +33,14 @@ Las asociaciones representan referencias a objetos; por eso se omiten las claves
 
 | Clases propuestas | Base en el código actual |
 | --- | --- |
-| `Mesa`, `Pedido`, `DetallePedido`, `Comida` | `backend/modules/restaurante.js`; interfaces `RestaurantTable`, `Order`, `OrderItem` y `MenuDish` de `frontend/src/types/index.ts`. |
-| `PosicionMesa`, `EventoEstado` | `TableLayout`, `StatusEvent`; `backend/modules/plano.js`; historial de pedidos. |
-| `Envio`, `TarifaEnvio`, `ModalidadEnvio` | `backend/modules/repartos.js`, `modalidades-envio.js`; tablas `envios`, `envio_modalidad` y `modalidades_envio`. |
-| `Pago`, `RegistroPasarelas`, `PasarelaPago`, `PasarelaMercadoPago` | `backend/modules/pagos.js`, `pasarelas.js`. El contrato estructural del adaptador se propone como interfaz. |
-| `Stock`, `Unidad`, `IngredienteReceta`, `MovimientoStock`, `Inventario` | `backend/modules/inventario.js`; tablas `Stock`, `Unidades`, `comida_stock`, `movimientos_stock`. |
-| `ColaPrioridad` | `backend/modules/prioridad.js`: lista ordenada temporal de pedidos activos. En POO se proponen referencias a pedidos en lugar de una lista de IDs. |
-| `Usuario`, `SesionUsuario`, `Autenticacion` | `backend/modules/usuarios.js`, `autenticacion.js`; tablas `usuarios` y `sesiones_usuarios`. |
-| `Resumen`, `PosicionResumen` | `backend/modules/consultas.js`; tablas `resumenes` y `resumen_comida`. |
+| `Mesa`, `Pedido`, `DetallePedido`, `Comida` | `backend/modules/restaurant/restaurante.js`; interfaces `RestaurantTable`, `Order`, `OrderItem` y `MenuDish` de `frontend/src/types/index.ts`. |
+| `PosicionMesa`, `EventoEstado` | `TableLayout`, `StatusEvent`; `backend/modules/restaurant/plano.js`; historial de pedidos. |
+| `Envio`, `TarifaEnvio`, `ModalidadEnvio` | `backend/modules/delivery/repartos.js`, `modalidades-envio.js`; tablas `envios`, `envio_modalidad` y `modalidades_envio`. |
+| `Pago`, `RegistroPasarelas`, `PasarelaPago`, `PasarelaMercadoPago` | `backend/modules/payments/pagos.js`, `pasarelas.js`. El contrato estructural del adaptador se propone como interfaz. |
+| `Stock`, `Unidad`, `IngredienteReceta`, `MovimientoStock`, `Inventario` | `backend/modules/inventory/inventario.js`; tablas `Stock`, `Unidades`, `comida_stock`, `movimientos_stock`. |
+| `ColaPrioridad` | `backend/modules/priority/prioridad.js`: lista ordenada temporal de pedidos activos. En POO se proponen referencias a pedidos en lugar de una lista de IDs. |
+| `Usuario`, `SesionUsuario`, `Autenticacion` | `backend/modules/auth/usuarios.js`, `autenticacion.js`; tablas `usuarios` y `sesiones_usuarios`. |
+| `Resumen`, `PosicionResumen` | `backend/modules/restaurant/resumenes.js`; tablas `resumenes` y `resumen_comida`. |
 
 Los métodos son una adaptación de responsabilidades, no una transcripción literal. Por ejemplo, `Mesa.abrir()` corresponde a `abrirMesa()`, `Pedido.editarItems()` a `editarPedido()`, `Pedido.cancelar()` al cambio de estado a `cancelado`, y `Pago.reembolsar()` a `reembolsarPago()`. `Envio.asignarRepartidor()` expresa la asignación validada durante `crearEnvio()`, sin agregar una función de reasignación a la aplicación.
 

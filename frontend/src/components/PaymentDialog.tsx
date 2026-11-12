@@ -1,3 +1,7 @@
+/**
+ * Inicia o consulta el pago y ofrece cancelar o reembolsar según su estado.
+ * Recarga el cobro mientras está abierto y comunica los cambios al estado del restaurante.
+ */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Dialog } from './Dialog'
 import { ErrorMessage } from './ErrorMessage'
@@ -38,6 +42,7 @@ export function PaymentDialog({
   const changing = useRef(false)
   const revision = useRef(0)
   const refresh = useCallback(async () => {
+    // Ignorar consultas que terminaron después de una acción de cobro más reciente.
     const current = ++revision.current
     const response = await obtenerPago(order.id)
     if (!mounted.current || current !== revision.current) return
@@ -61,6 +66,7 @@ export function PaymentDialog({
       void restaurantStore.refresh(true)
     }
   }, [refresh])
+  // Serializar acciones y refrescar el restaurante después de recibir el estado del pago.
   const run = async (
     action: 'iniciar' | 'cancelar' | 'reembolsar' = 'iniciar',
   ) => {

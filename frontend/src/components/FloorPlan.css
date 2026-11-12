@@ -1,3 +1,4 @@
+/* Estilos del editor SVG: mesas libres u ocupadas, selección, controles de tamaño y distribución adaptable. */
 .floor-plan {
   background: var(--card);
   border: 1px solid var(--line);

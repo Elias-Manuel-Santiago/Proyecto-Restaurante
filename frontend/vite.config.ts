@@ -1,3 +1,4 @@
+/** Desarrollo y compilación: plugins React y proxy de /api hacia Express. El servidor de producción sirve dist directamente. */
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
 import { defineConfig, loadEnv } from 'vite'

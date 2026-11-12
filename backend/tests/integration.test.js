@@ -1,8 +1,9 @@
+/** Entrada de integración SQL: copia estructura, ejecuta scenario.js y elimina la base temporal incluso ante fallos. */
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
 import { spawn } from "node:child_process";
-import db from "../modules/db.js";
+import db from "../modules/database/db.js";
 
 // Copia solo la estructura operativa. No lee usuarios ni copia datos reales.
 test("API y migración con MySQL en una base aislada", async () => {

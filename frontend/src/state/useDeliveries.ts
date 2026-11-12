@@ -1,8 +1,13 @@
+/**
+ * Estado exclusivo del repartidor: agrupa filas de la API en entregas y recarga cada diez segundos.
+ * Al avanzar una entrega espera la escritura y vuelve a leer; descarta respuestas antiguas o desmontadas.
+ */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { actualizarEnvio, obtenerEnvios } from '../services/apiAccess'
 import { useRestaurant } from './useRestaurant'
 import type { Delivery, DeliveryRow } from '../types/delivery'
 
+/** Agrupa las filas por pedido y distingue espera de pago, preparación y estado del traslado. */
 export function adaptarEnvios(rows: DeliveryRow[]): Delivery[] {
   const result = new Map<string, Delivery>()
   for (const row of rows) {
@@ -43,6 +48,7 @@ export function useDeliveries() {
   const sequence = useRef(0)
   const refresh = useCallback(async () => {
     if (!session) return
+    // Una respuesta lenta no debe reemplazar una consulta o transición más reciente.
     const request = ++sequence.current
     const result = await obtenerEnvios(session.id)
     if (!mounted.current || request !== sequence.current) return

@@ -1,6 +1,7 @@
+/** Crea cuentas y clientes HTTP autenticados para los escenarios; comparte cookies y cabeceras de escritura sin depender de usuarios reales. */
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
-import { hashClave } from "../modules/autenticacion.js";
+import { hashClave } from "../modules/auth/autenticacion.js";
 
 export async function crearClientes(base, db) {
   const password = randomBytes(20).toString("base64url");

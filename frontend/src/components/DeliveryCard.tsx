@@ -1,3 +1,6 @@
+/**
+ * Presenta una entrega y emite selección o avance; CourierPage ejecuta la operación.
+ */
 import { deliveryStatusLabels, type Delivery } from '../types/delivery'
 import { Icon } from './Icon'
 

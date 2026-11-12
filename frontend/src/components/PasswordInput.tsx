@@ -1,3 +1,6 @@
+/**
+ * Alterna la visibilidad de la contraseña sin modificar el valor controlado por el formulario.
+ */
 import { useId, useState, type Ref } from 'react'
 import { Icon } from './Icon'
 

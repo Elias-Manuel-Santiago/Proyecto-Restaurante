@@ -1,8 +1,9 @@
+/** Escenario HTTP de autenticación: login, cookies, permisos, edición de cuentas y vencimiento; lo ejecuta scenario.js en la base aislada. */
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
-import { hashToken } from "../modules/autenticacion.js";
-import { sembrarUsuarios } from "../modules/seed-usuarios.js";
-import { guardarUsuario } from "../modules/usuarios.js";
+import { hashToken } from "../modules/auth/autenticacion.js";
+import { sembrarUsuarios } from "../scripts/seed-usuarios.js";
+import { guardarUsuario } from "../modules/auth/usuarios.js";
 
 export async function probarAuth(base, db, clientes) {
   const headers = {

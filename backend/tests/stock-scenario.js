@@ -1,5 +1,6 @@
+/** Verifica recetas y reservas por pedidos, edición, cancelación y devolución; incluye competencia por la última porción. */
 import assert from "node:assert/strict";
-import { registrarPasarela } from "../modules/pasarelas.js";
+import { registrarPasarela } from "../modules/payments/pasarelas.js";
 
 // Control de stock de punta a punta contra la API real y una base aislada.
 export async function probarStock(request, db) {

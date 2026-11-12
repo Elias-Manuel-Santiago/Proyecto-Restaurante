@@ -1,3 +1,7 @@
+/**
+ * Selecciona mesas del plano, abre y cierra visitas y compone pedidos de la visita actual.
+ * Los estados locales controlan filtros y diálogos; los datos confirmados provienen del servidor.
+ */
 import { ErrorMessage } from '../components/ErrorMessage'
 import { useState } from 'react'
 import { OrderCard } from '../components/OrderCard'
@@ -20,6 +24,7 @@ export function TablesPage() {
   const [composing, setComposing] = useState(false)
   const [creatingDelivery, setCreatingDelivery] = useState(false)
   const selected = data.tables.find((table) => table.id === selectedId)
+  // La visita separa el consumo actual de los pedidos de aperturas anteriores de la misma mesa.
   const selectedOrders = selected ? serviceOrders(data, selected) : []
   const select = (table: RestaurantTable) => {
     setSelectedId(table.id)

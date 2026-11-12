@@ -1,3 +1,7 @@
+/**
+ * Convierte el enlace HTTPS de checkout permitido en un QR para el cliente.
+ * PaymentShare muestra ese QR; el estado del cobro se consulta por separado desde PaymentDialog.
+ */
 import QRCode from 'qrcode'
 
 /** El QR comparte solo el checkout público; nunca una sesión de NÁCAR. */

@@ -1,3 +1,6 @@
+/**
+ * Edita un borrador del plato y envía saveDish; cierra al confirmar la escritura.
+ */
 import { ErrorMessage } from './ErrorMessage'
 import { useState } from 'react'
 import { categories, type MenuDish } from '../types'
@@ -20,7 +23,6 @@ export function DishEditor({
         description: '',
         price: 0,
         category: 'Entradas',
-        image: '',
         available: true,
       },
   )

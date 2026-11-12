@@ -1,3 +1,6 @@
+/**
+ * Contenedor modal compartido: gestiona foco, teclado y cierre para formularios y confirmaciones.
+ */
 import { ErrorMessage } from './ErrorMessage'
 import {
   useEffect,

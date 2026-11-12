@@ -22,8 +22,6 @@ Cada integrante usa su propia base. Git comparte código y migraciones, no datos
 3. Backend: `npm ci` y `npm run iniciar:equipo` (instala o migra la base y arranca en 3005).
 4. Frontend: en `frontend/`, `npm ci` y `npm run dev` (5173, con proxy `/api` de Vite).
 
-En la PC de Martín siguen funcionando `Iniciar-Nacar.ps1` y `Ver-Base-Nacar.ps1` sin cambios.
-
 Pruebas: `npm test` en `backend/` (usa bases temporales `codex_restaurante_test_*` y las
 borra); `npm run lint`, `npm run build` y `node --test tests/*.integration.mjs` en `frontend/`.
 
@@ -48,9 +46,7 @@ PostgreSQL: habría que reescribir consultas, restricciones y migraciones.
 En Render: *New* → *Blueprint* → elegir este repositorio. Crea el servicio con la rama,
 los comandos y las variables fijas; el panel pide solo los datos secretos (Aiven, admin
 y Mercado Pago). `FRONTEND_ORIGIN` es opcional en Render: si falta, se usa la URL que
-Render define en `RENDER_EXTERNAL_URL`. Con `NACAR_DATOS_DEMO=1` (ya incluido) el primer
-arranque carga mesas, platos, tarifas, insumos y recetas de ejemplo para la expo; se
-puede repetir sin duplicar ni pisar lo que se cargue a mano.
+Render define en `RENDER_EXTERNAL_URL`.
 
 ### Paso a paso (todo desde los paneles web)
 
@@ -76,14 +72,6 @@ puede repetir sin duplicar ni pisar lo que se cargue a mano.
 4. *Deploy*. En cada arranque `npm start` instala las tablas si la base está vacía,
    aplica migraciones y crea el admin si no existe; después inicia el servidor.
 5. Entrar con el admin y crear el resto de las cuentas desde **Equipo**.
-
-### Datos de demostración
-
-No se sube ningún volcado con datos reales ni hashes de contraseñas. Las mesas, platos e
-inventario de ejemplo están en `backend/modules/datos-demo.js` (online con
-`NACAR_DATOS_DEMO=1`; en local, `node modules/datos-demo.js` desde `backend/`). Si alguna vez se
-exporta una base local, **no** importarla en la nube: en Windows los nombres de tabla se
-guardan en minúsculas (`stock`, `unidades`) y en Linux el código busca `Stock` y `Unidades`.
 
 ### El día de la evaluación
 
