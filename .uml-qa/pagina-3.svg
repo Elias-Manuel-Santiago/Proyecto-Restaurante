@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1300"><rect width="100%" height="100%" fill="white"/><style>text{font-family:Arial,sans-serif;fill:#24334b}</style>
+<text x="60" y="66" font-size="30" font-weight="700">03 · Clases — Pagos y pasarelas</text>
+<text x="60" y="116" font-size="17" font-weight="400">La interfaz y su implementación expresan en POO el contrato de adaptadores usado actualmente en pasarelas.js.</text>
+<text x="60" y="1238" font-size="15" font-weight="400">Modelo POO propuesto · − privado · + público · / derivado · ◆ composición · Línea continua: asociación · Flecha discontinua: dependencia</text>
+<text x="60" y="1277" font-size="13" font-weight="400">NÁCAR · Proyecto Restaurante | Modelo conceptual basado en la implementación actual</text>
+<polyline points="410,249.0 650,249.0 650,401.0" fill="none" stroke="#718096" stroke-width="1.5" />
+<text x="538.0" y="237.0" font-size="14">pago</text>
+<text x="436.0" y="239.0" font-size="14">1</text>
+<text x="656.0" y="371.0" font-size="14">0..1</text>
+<polyline points="1000,401.0 1240,401.0 1240,297.0" fill="none" stroke="#718096" stroke-width="1.5" stroke-dasharray="7 5"/>
+<path d="M1234.0,309.0 L1240,297.0 L1246.0,309.0" fill="white" stroke="#718096"/>
+<text x="1128.0" y="389.0" font-size="14">usa</text>
+<polyline points="1415.0,730 1415.0,414" fill="none" stroke="#718096" stroke-width="1.5" stroke-dasharray="7 5"/>
+<path d="M1409.0,426.0 L1415.0,414 L1421.0,426.0 Z" fill="white" stroke="#718096"/>
+<text x="1423.0" y="560.0" font-size="14">implementa</text>
+<polyline points="702.5,622 702.5,680 560,680 560,780 500,765.5" fill="none" stroke="#718096" stroke-width="1.5" stroke-dasharray="7 5"/>
+<path d="M510.2547947916771,774.1509643266281 L500,765.5 L513.0736483363088,762.4867427626352" fill="white" stroke="#718096"/>
+<text x="639.25" y="668.0" font-size="14">resuelve proveedor</text>
+<rect x="60" y="180" width="350" height="138" fill="white" stroke="#4c6f9c" stroke-width="1.6"/>
+<rect x="60" y="180" width="350" height="64" fill="#eaf1fb" stroke="#4c6f9c"/>
+<text x="235.0" y="203" text-anchor="middle" font-size="15">«referencia»</text>
+<text x="235.0" y="228" text-anchor="middle" font-size="19" font-weight="700" text-decoration="none">Pedido</text>
+<text x="72" y="272" font-size="15">− id: int</text>
+<text x="72" y="298" font-size="15">− pagoRequerido: boolean</text>
+<rect x="650" y="180" width="350" height="442" fill="white" stroke="#4c6f9c" stroke-width="1.6"/>
+<rect x="650" y="180" width="350" height="64" fill="#eaf1fb" stroke="#4c6f9c"/>
+<text x="825.0" y="203" text-anchor="middle" font-size="15">«clase»</text>
+<text x="825.0" y="228" text-anchor="middle" font-size="19" font-weight="700" text-decoration="none">Pago</text>
+<text x="662" y="272" font-size="15">− id: UUID</text>
+<text x="662" y="298" font-size="15">− proveedor: string</text>
+<text x="662" y="324" font-size="15">− estado: EstadoPago</text>
+<text x="662" y="350" font-size="15">− importe: Decimal</text>
+<text x="662" y="376" font-size="15">− moneda: string</text>
+<text x="662" y="402" font-size="15">− checkoutUrl: string?</text>
+<text x="662" y="428" font-size="15">− preferenciaId: string?</text>
+<text x="662" y="454" font-size="15">− referenciaPasarela: string?</text>
+<text x="662" y="480" font-size="15">− reembolsoId: string?</text>
+<path d="M650,490H1000" stroke="#4c6f9c"/>
+<text x="662" y="518" font-size="15">+ iniciar(): void</text>
+<text x="662" y="544" font-size="15">+ consultar(): EstadoPago</text>
+<text x="662" y="570" font-size="15">+ cancelar(actor): void</text>
+<text x="662" y="596" font-size="15">+ reembolsar(actor): void</text>
+<rect x="1240" y="180" width="350" height="234" fill="white" stroke="#287b68" stroke-width="1.6"/>
+<rect x="1240" y="180" width="350" height="64" fill="#eaf8f4" stroke="#287b68"/>
+<text x="1415.0" y="203" text-anchor="middle" font-size="15">«interface»</text>
+<text x="1415.0" y="228" text-anchor="middle" font-size="19" font-weight="700" text-decoration="none">PasarelaPago</text>
+<path d="M1240,256H1590" stroke="#287b68"/>
+<text x="1252" y="284" font-size="15">+ preparar(): void</text>
+<text x="1252" y="310" font-size="15">+ crear(pago): Checkout</text>
+<text x="1252" y="336" font-size="15">+ consultar(pago): ResultadoPago</text>
+<text x="1252" y="362" font-size="15">+ cancelar(pago): void</text>
+<text x="1252" y="388" font-size="15">+ reembolsar(pago): ResultadoPago</text>
+<rect x="1240" y="730" width="350" height="260" fill="white" stroke="#4c6f9c" stroke-width="1.6"/>
+<rect x="1240" y="730" width="350" height="64" fill="#eaf1fb" stroke="#4c6f9c"/>
+<text x="1415.0" y="753" text-anchor="middle" font-size="15">«clase»</text>
+<text x="1415.0" y="778" text-anchor="middle" font-size="19" font-weight="700" text-decoration="none">PasarelaMercadoPago</text>
+<text x="1252" y="822" font-size="15">− nombre: string</text>
+<path d="M1240,832H1590" stroke="#4c6f9c"/>
+<text x="1252" y="860" font-size="15">+ preparar(): void</text>
+<text x="1252" y="886" font-size="15">+ crear(pago): Checkout</text>
+<text x="1252" y="912" font-size="15">+ consultar(pago): ResultadoPago</text>
+<text x="1252" y="938" font-size="15">+ cancelar(pago): void</text>
+<text x="1252" y="964" font-size="15">+ reembolsar(pago): ResultadoPago</text>
+<rect x="60" y="720" width="440" height="182" fill="white" stroke="#287b68" stroke-width="1.6"/>
+<rect x="60" y="720" width="440" height="64" fill="#eaf8f4" stroke="#287b68"/>
+<text x="280.0" y="743" text-anchor="middle" font-size="15">«servicio»</text>
+<text x="280.0" y="768" text-anchor="middle" font-size="19" font-weight="700" text-decoration="none">RegistroPasarelas</text>
+<text x="72" y="812" font-size="15">− proveedores: Map&lt;string, PasarelaPago&gt;</text>
+<path d="M60,822H500" stroke="#287b68"/>
+<text x="72" y="850" font-size="15">+ registrar(codigo, pasarela): void</text>
+<text x="72" y="876" font-size="15">+ obtener(codigo): PasarelaPago</text>
+<rect x="60" y="1050" width="1530" height="135" fill="#fff8e5" stroke="#bd9637"/>
+<text x="78" y="1077" font-size="16">EstadoPago = pendiente | aprobado | rechazado | cancelado | cancelando | reembolsando | reembolsado.</text>
+<text x="78" y="1100" font-size="16">Importe = suma de cantidad × precioUnitario + costoAplicado del envío (si existe).</text>
+<text x="78" y="1123" font-size="16">Un pedido tiene como máximo un Pago. El adaptador actual usa cuentas de prueba de Mercado Pago.</text>
+</svg>

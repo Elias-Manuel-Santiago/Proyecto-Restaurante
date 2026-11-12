@@ -1,0 +1,781 @@
+<mxfile host="app.diagrams.net" compressed="false" pages="10">
+  <diagram id="nacar-1" name="01 · Acceso e índice">
+    <mxGraphModel dx="2405" dy="1355" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="system" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;rounded=0;fillColor=none;strokeColor=#354963;strokeWidth=1.7;verticalAlign=top;spacingTop=17;fontStyle=1;" value="NÁCAR · Sistema de gestión del restaurante" vertex="1">
+          <mxGeometry height="292" width="690" x="330" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-0" edge="1" parent="1" source="personal" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;" target="UC01">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-1" edge="1" parent="1" source="personal" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;" target="UC02">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="title" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=32;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;" value="01 · Acceso e índice" vertex="1">
+          <mxGeometry height="55" width="1270" x="65" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;" value="Casos de uso · Alcance del sistema actual · Diez vistas del mismo sistema" vertex="1">
+          <mxGeometry height="50" width="1270" x="65" y="99" as="geometry" />
+        </mxCell>
+        <mxCell id="note-0" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;" value="El actor «Personal del restaurante» representa a mozo, chef, administrador y repartidor. Cada cuenta accede según su rol." vertex="1">
+          <mxGeometry height="100" width="690" x="330" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="note-1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;" value="Azul: caso original normalizado. Verde: caso incorporado. Las notas amarillas expresan reglas o pendientes; no son relaciones «include» o «extend»." vertex="1">
+          <mxGeometry height="100" width="690" x="330" y="605" as="geometry" />
+        </mxCell>
+        <mxCell id="footer" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=14;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;" value="Asociación: línea continua sin flecha · Los códigos UC identifican el mismo caso en todas las páginas." vertex="1">
+          <mxGeometry height="30" width="1270" x="65" y="951" as="geometry" />
+        </mxCell>
+        <mxCell id="personal" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;fillColor=#ffffff;strokeColor=#24334b;strokeWidth=2;labelWidth=180;" value="Personal del&lt;br/&gt;restaurante" vertex="1">
+          <mxGeometry height="80" width="54" x="145" y="325" as="geometry" />
+        </mxCell>
+        <mxCell id="UC01" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;" value="UC01&lt;br/&gt;Iniciar sesión" vertex="1">
+          <mxGeometry height="90" width="350" x="500" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="UC02" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;" value="UC02&lt;br/&gt;Cerrar sesión" vertex="1">
+          <mxGeometry height="90" width="350" x="500" y="326" as="geometry" />
+        </mxCell>
+        <mxCell id="index" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;" value="PÁGINAS DEL ARCHIVO&lt;br/&gt;02 · Salón y pedidos&lt;br/&gt;03 · Cocina&lt;br/&gt;04 · Carta&lt;br/&gt;05 · Envíos y reparto&lt;br/&gt;06 · Cobros&lt;br/&gt;07 · Administración&lt;br/&gt;08 · Inventario&lt;br/&gt;09 · Inclusión y extensiones&lt;br/&gt;10 · Disponibilidad de pedidos" vertex="1">
+          <mxGeometry height="365" width="290" x="1060" y="240" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="nacar-2" name="02 · Salón y pedidos">
+    <mxGraphModel dx="1400" dy="1418" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1418" math="0" shadow="0" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="system" value="NÁCAR · Sistema de gestión del restaurante" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;rounded=0;fillColor=none;strokeColor=#354963;strokeWidth=1.7;verticalAlign=top;spacingTop=17;fontStyle=1;">
+          <mxGeometry as="geometry" x="330" y="170" width="690" height="928" />
+        </mxCell>
+        <mxCell id="edge-0" parent="1" edge="1" source="mozo" target="UC03" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-1" parent="1" edge="1" source="admin" target="UC03" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-2" parent="1" edge="1" source="mozo" target="UC04" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-3" parent="1" edge="1" source="admin" target="UC04" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-4" parent="1" edge="1" source="mozo" target="UC05" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-5" parent="1" edge="1" source="admin" target="UC05" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-6" parent="1" edge="1" source="mozo" target="UC06" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-7" parent="1" edge="1" source="admin" target="UC06" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-8" parent="1" edge="1" source="mozo" target="UC07" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-9" parent="1" edge="1" source="mozo" target="UC08" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-10" parent="1" edge="1" source="admin" target="UC08" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-11" parent="1" edge="1" source="mozo" target="UC09" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-12" parent="1" edge="1" source="admin" target="UC09" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-13" parent="1" edge="1" source="mozo" target="UC10" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="title" value="02 · Salón y pedidos" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=32;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;">
+          <mxGeometry as="geometry" x="65" y="35" width="1270" height="55" />
+        </mxCell>
+        <mxCell id="subtitle" value="Apertura de visitas, comandas de mesa y seguimiento de pedidos" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="99" width="1270" height="50" />
+        </mxCell>
+        <mxCell id="note-0" value="Reglas: abrir registra comensales; cerrar exige ausencia de pedidos activos y no registra un cobro. Crear y editar incluyen verificar disponibilidad (ver página 10)." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1126" width="690" height="100" />
+        </mxCell>
+        <mxCell id="note-1" value="PENDIENTE DEL ORIGINAL: cambiar la cantidad de comensales durante una visita abierta. Se conserva como requisito pendiente; actualmente solo se registra al abrir la mesa." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1241" width="690" height="100" />
+        </mxCell>
+        <mxCell id="footer" value="Asociación: línea continua sin flecha · Los códigos UC identifican el mismo caso en todas las páginas." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=14;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="1369" width="1270" height="30" />
+        </mxCell>
+        <mxCell id="mozo" value="Mozo" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;fillColor=#ffffff;strokeColor=#24334b;strokeWidth=2;labelWidth=180;">
+          <mxGeometry as="geometry" x="145" y="580" width="54" height="80" />
+        </mxCell>
+        <mxCell id="admin" value="Administrador" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;fillColor=#ffffff;strokeColor=#24334b;strokeWidth=2;labelWidth=180;">
+          <mxGeometry as="geometry" x="1170" y="580" width="54" height="80" />
+        </mxCell>
+        <mxCell id="UC03" value="UC03&lt;br/&gt;Consultar mesas" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="220" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC04" value="UC04&lt;br/&gt;Consultar pedidos" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="326" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC05" value="UC05&lt;br/&gt;Abrir mesa" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="432" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC06" value="UC06&lt;br/&gt;Cerrar mesa" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="538" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC07" value="UC07&lt;br/&gt;Crear pedido en mesa" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="644" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC08" value="UC08&lt;br/&gt;Editar pedido" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="750" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC09" value="UC09&lt;br/&gt;Cancelar pedido" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="856" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC10" value="UC10&lt;br/&gt;Confirmar entrega en mesa" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="962" width="350" height="90" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="nacar-3" name="03 · Cocina">
+    <mxGraphModel dx="1400" dy="1215" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1215" math="0" shadow="0" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="system" value="NÁCAR · Sistema de gestión del restaurante" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;rounded=0;fillColor=none;strokeColor=#354963;strokeWidth=1.7;verticalAlign=top;spacingTop=17;fontStyle=1;">
+          <mxGeometry as="geometry" x="330" y="170" width="690" height="610" />
+        </mxCell>
+        <mxCell id="edge-0" parent="1" edge="1" source="chef" target="UC04" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-1" parent="1" edge="1" source="chef" target="UC03" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-2" parent="1" edge="1" source="chef" target="UC11" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-3" parent="1" edge="1" source="chef" target="UC12" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-4" parent="1" edge="1" source="chef" target="UC13" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="title" value="03 · Cocina" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=32;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;">
+          <mxGeometry as="geometry" x="65" y="35" width="1270" height="55" />
+        </mxCell>
+        <mxCell id="subtitle" value="Preparación y prioridad de comandas de salón, envío y retiro" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="99" width="1270" height="50" />
+        </mxCell>
+        <mxCell id="note-0" value="Cocina avanza el pedido de pendiente a preparación y luego a listo. Marcar listo informa que puede retirarse; la entrega se confirma en salón o reparto." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="808" width="690" height="100" />
+        </mxCell>
+        <mxCell id="note-1" value="Los pedidos con prepago exigido ingresan a preparación al aprobarse el pago. La prioridad se modifica dentro del mismo estado y se reinicia al reiniciar el servidor." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="923" width="690" height="100" />
+        </mxCell>
+        <mxCell id="note-2" value="Consultar mesas para el chef comprende datos asociados a las comandas y filtros. El sistema actual no habilita al chef la pantalla del mapa de mesas." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1038" width="690" height="100" />
+        </mxCell>
+        <mxCell id="footer" value="Asociación: línea continua sin flecha · Los códigos UC identifican el mismo caso en todas las páginas." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=14;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="1166" width="1270" height="30" />
+        </mxCell>
+        <mxCell id="chef" value="Chef" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;fillColor=#ffffff;strokeColor=#24334b;strokeWidth=2;labelWidth=180;">
+          <mxGeometry as="geometry" x="145" y="430" width="54" height="80" />
+        </mxCell>
+        <mxCell id="UC04" value="UC04&lt;br/&gt;Consultar pedidos" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="220" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC03" value="UC03&lt;br/&gt;Consultar mesas" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="326" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC11" value="UC11&lt;br/&gt;Iniciar preparación de pedido" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="432" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC12" value="UC12&lt;br/&gt;Marcar pedido listo para retirar" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="538" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC13" value="UC13&lt;br/&gt;Reordenar pedidos" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="644" width="350" height="90" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="nacar-4" name="04 · Carta">
+    <mxGraphModel dx="1400" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="system" value="NÁCAR · Sistema de gestión del restaurante" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;rounded=0;fillColor=none;strokeColor=#354963;strokeWidth=1.7;verticalAlign=top;spacingTop=17;fontStyle=1;">
+          <mxGeometry as="geometry" x="330" y="170" width="690" height="610" />
+        </mxCell>
+        <mxCell id="edge-0" parent="1" edge="1" source="mozo" target="UC14" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-1" parent="1" edge="1" source="chef" target="UC14" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-2" parent="1" edge="1" source="admin" target="UC14" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-3" parent="1" edge="1" source="admin" target="UC15" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-4" parent="1" edge="1" source="admin" target="UC16" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-5" parent="1" edge="1" source="admin" target="UC17" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-6" parent="1" edge="1" source="chef" target="UC18" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-7" parent="1" edge="1" source="admin" target="UC18" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="title" value="04 · Carta" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=32;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;">
+          <mxGeometry as="geometry" x="65" y="35" width="1270" height="55" />
+        </mxCell>
+        <mxCell id="subtitle" value="Consulta de platos, mantenimiento de la carta y disponibilidad" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="99" width="1270" height="50" />
+        </mxCell>
+        <mxCell id="note-0" value="La disponibilidad combina la marca manual de cocina con los insumos de la receta. Dar de baja un plato conserva las referencias de pedidos históricos." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="808" width="690" height="100" />
+        </mxCell>
+        <mxCell id="footer" value="Asociación: línea continua sin flecha · Los códigos UC identifican el mismo caso en todas las páginas." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=14;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="951" width="1270" height="30" />
+        </mxCell>
+        <mxCell id="mozo" value="Mozo" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;fillColor=#ffffff;strokeColor=#24334b;strokeWidth=2;labelWidth=180;">
+          <mxGeometry as="geometry" x="145" y="200" width="54" height="80" />
+        </mxCell>
+        <mxCell id="chef" value="Chef" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;fillColor=#ffffff;strokeColor=#24334b;strokeWidth=2;labelWidth=180;">
+          <mxGeometry as="geometry" x="145" y="570" width="54" height="80" />
+        </mxCell>
+        <mxCell id="admin" value="Administrador" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;fillColor=#ffffff;strokeColor=#24334b;strokeWidth=2;labelWidth=180;">
+          <mxGeometry as="geometry" x="1170" y="430" width="54" height="80" />
+        </mxCell>
+        <mxCell id="UC14" value="UC14&lt;br/&gt;Consultar carta" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="220" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC15" value="UC15&lt;br/&gt;Registrar plato" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="326" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC16" value="UC16&lt;br/&gt;Editar plato" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="432" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC17" value="UC17&lt;br/&gt;Dar de baja plato" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="538" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC18" value="UC18&lt;br/&gt;Cambiar disponibilidad de plato" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="644" width="350" height="90" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="nacar-5" name="05 · Envíos y reparto">
+    <mxGraphModel dx="1400" dy="1851" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1851" math="0" shadow="0" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="system" value="NÁCAR · Sistema de gestión del restaurante" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;rounded=0;fillColor=none;strokeColor=#354963;strokeWidth=1.7;verticalAlign=top;spacingTop=17;fontStyle=1;">
+          <mxGeometry as="geometry" x="330" y="170" width="690" height="1246" />
+        </mxCell>
+        <mxCell id="edge-0" parent="1" edge="1" source="mozo" target="UC19" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-1" parent="1" edge="1" source="admin" target="UC19" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-2" parent="1" edge="1" source="mozo" target="UC26" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-3" parent="1" edge="1" source="admin" target="UC26" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-4" parent="1" edge="1" source="mozo" target="UC23" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-5" parent="1" edge="1" source="admin" target="UC23" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-6" parent="1" edge="1" source="mozo" target="UC24" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-7" parent="1" edge="1" source="admin" target="UC24" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-8" parent="1" edge="1" source="mozo" target="UC25" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-9" parent="1" edge="1" source="admin" target="UC25" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-10" parent="1" edge="1" source="repartidor" target="UC20" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-11" parent="1" edge="1" source="repartidor" target="UC21" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-12" parent="1" edge="1" source="repartidor" target="UC22" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-13" parent="1" edge="1" source="admin" target="UC27" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-14" parent="1" edge="1" source="admin" target="UC28" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-15" parent="1" edge="1" source="admin" target="UC29" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="title" value="05 · Envíos y reparto" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=32;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;">
+          <mxGeometry as="geometry" x="65" y="35" width="1270" height="55" />
+        </mxCell>
+        <mxCell id="subtitle" value="Delivery interno, cadetería externa, retiro en local y configuración de modalidades" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="99" width="1270" height="50" />
+        </mxCell>
+        <mxCell id="note-0" value="Repartidor = personal interno con cuenta y envíos asignados. La cadetería externa no tiene acceso: mozo o administrador registra su salida y confirma su entrega." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1444" width="690" height="100" />
+        </mxCell>
+        <mxCell id="note-1" value="Retirar exige pedido listo y pago aprobado; entregar a domicilio exige envío en camino. En retiro en local, mozo o administrador confirma directamente el retiro." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1559" width="690" height="100" />
+        </mxCell>
+        <mxCell id="note-2" value="Registrar el pedido incluye consultar modalidades. Dirección y repartidor se completan según la modalidad. Ver el detalle «include» y «extend» en la página 09." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1674" width="690" height="100" />
+        </mxCell>
+        <mxCell id="footer" value="Asociación: línea continua sin flecha · Los códigos UC identifican el mismo caso en todas las páginas." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=14;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="1802" width="1270" height="30" />
+        </mxCell>
+        <mxCell id="mozo" value="Mozo" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;fillColor=#ffffff;strokeColor=#24334b;strokeWidth=2;labelWidth=180;">
+          <mxGeometry as="geometry" x="145" y="400" width="54" height="80" />
+        </mxCell>
+        <mxCell id="repartidor" value="Repartidor" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;fillColor=#ffffff;strokeColor=#24334b;strokeWidth=2;labelWidth=180;">
+          <mxGeometry as="geometry" x="145" y="860" width="54" height="80" />
+        </mxCell>
+        <mxCell id="admin" value="Administrador" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;fillColor=#ffffff;strokeColor=#24334b;strokeWidth=2;labelWidth=180;">
+          <mxGeometry as="geometry" x="1170" y="710" width="54" height="80" />
+        </mxCell>
+        <mxCell id="UC19" value="UC19&lt;br/&gt;Registrar pedido para envío o retiro" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="220" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC26" value="UC26&lt;br/&gt;Consultar modalidades de entrega" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="326" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC23" value="UC23&lt;br/&gt;Registrar salida por cadetería externa" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="432" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC24" value="UC24&lt;br/&gt;Confirmar entrega por cadetería externa" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="538" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC25" value="UC25&lt;br/&gt;Confirmar retiro en local" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="644" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC20" value="UC20&lt;br/&gt;Consultar pedidos asignados" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="750" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC21" value="UC21&lt;br/&gt;Retirar pedido e iniciar reparto" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="856" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC22" value="UC22&lt;br/&gt;Confirmar entrega a domicilio" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="962" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC27" value="UC27&lt;br/&gt;Registrar modalidad de entrega" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="1068" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC28" value="UC28&lt;br/&gt;Editar modalidad y tarifa" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="1174" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC29" value="UC29&lt;br/&gt;Activar o desactivar modalidad" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="1280" width="350" height="90" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="nacar-6" name="06 · Cobros">
+    <mxGraphModel dx="1400" dy="1321" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1321" math="0" shadow="0" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="system" value="NÁCAR · Sistema de gestión del restaurante" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;rounded=0;fillColor=none;strokeColor=#354963;strokeWidth=1.7;verticalAlign=top;spacingTop=17;fontStyle=1;">
+          <mxGeometry as="geometry" x="330" y="170" width="690" height="716" />
+        </mxCell>
+        <mxCell id="edge-0" parent="1" edge="1" source="mozo" target="UC49" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-1" parent="1" edge="1" source="admin" target="UC49" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-2" parent="1" edge="1" source="mp" target="UC49" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-3" parent="1" edge="1" source="mozo" target="UC50" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-4" parent="1" edge="1" source="admin" target="UC50" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-5" parent="1" edge="1" source="mp" target="UC50" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-6" parent="1" edge="1" source="mozo" target="UC51" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-7" parent="1" edge="1" source="admin" target="UC51" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-8" parent="1" edge="1" source="mp" target="UC51" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-9" parent="1" edge="1" source="mozo" target="UC52" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-10" parent="1" edge="1" source="admin" target="UC52" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-11" parent="1" edge="1" source="mp" target="UC52" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-12" parent="1" edge="1" source="mp" target="UC56" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="relation-13" parent="1" edge="1" source="UC52" target="UC56" value="«include»" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=6 4;startArrow=none;endArrow=open;endFill=0;endSize=11;strokeColor=#5365a4;strokeWidth=1.6;fontFamily=Arial;fontSize=15;fontColor=#24334b;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="title" value="06 · Cobros" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=32;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;">
+          <mxGeometry as="geometry" x="65" y="35" width="1270" height="55" />
+        </mxCell>
+        <mxCell id="subtitle" value="Integración con pasarela externa · Mercado Pago en entorno de prueba" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="99" width="1270" height="50" />
+        </mxCell>
+        <mxCell id="note-0" value="Mozo y administrador operan el cobro. Mercado Pago participa como sistema externo. El cliente paga en el checkout externo mediante enlace o QR, sin cuenta en NÁCAR." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="914" width="690" height="100" />
+        </mxCell>
+        <mxCell id="note-1" value="La aprobación se verifica consultando la pasarela; un clic o retorno del navegador no acredita el pago. Envío y retiro exigen prepago; las mesas no lo exigen en el circuito actual." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1029" width="690" height="100" />
+        </mxCell>
+        <mxCell id="note-2" value="Cancelar y reembolsar incluye solicitar el reembolso a la pasarela y exige que no se haya despachado o entregado. La devolución puede quedar pendiente." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1144" width="690" height="100" />
+        </mxCell>
+        <mxCell id="footer" value="Asociación: línea continua sin flecha · Los códigos UC identifican el mismo caso en todas las páginas." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=14;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="1272" width="1270" height="30" />
+        </mxCell>
+        <mxCell id="mozo" value="Mozo" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;fillColor=#ffffff;strokeColor=#24334b;strokeWidth=2;labelWidth=180;">
+          <mxGeometry as="geometry" x="145" y="230" width="54" height="80" />
+        </mxCell>
+        <mxCell id="admin" value="Administrador" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;fillColor=#ffffff;strokeColor=#24334b;strokeWidth=2;labelWidth=180;">
+          <mxGeometry as="geometry" x="145" y="610" width="54" height="80" />
+        </mxCell>
+        <mxCell id="mp" value="«sistema externo»&lt;br/&gt;Mercado Pago" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;fillColor=#ffffff;strokeColor=#24334b;strokeWidth=2;labelWidth=180;">
+          <mxGeometry as="geometry" x="1170" y="420" width="54" height="80" />
+        </mxCell>
+        <mxCell id="UC49" value="UC49&lt;br/&gt;Iniciar cobro de pedido" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="220" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC50" value="UC50&lt;br/&gt;Consultar estado del pago" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="326" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC51" value="UC51&lt;br/&gt;Cancelar cobro pendiente" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="432" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC52" value="UC52&lt;br/&gt;Cancelar y reembolsar pedido" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="538" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC56" value="UC56&lt;br/&gt;Solicitar reembolso a la pasarela" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;" tooltip="Comportamiento incluido en UC52: solicita o recupera la devolución mediante Mercado Pago. La aprobación final puede quedar pendiente.">
+          <mxGeometry as="geometry" x="500" y="750" width="350" height="90" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="nacar-7" name="07 · Administración">
+    <mxGraphModel dx="1400" dy="1957" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1957" math="0" shadow="0" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="system" value="NÁCAR · Sistema de gestión del restaurante" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;rounded=0;fillColor=none;strokeColor=#354963;strokeWidth=1.7;verticalAlign=top;spacingTop=17;fontStyle=1;">
+          <mxGeometry as="geometry" x="330" y="170" width="690" height="1352" />
+        </mxCell>
+        <mxCell id="edge-0" parent="1" edge="1" source="admin" target="UC33" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-1" parent="1" edge="1" source="admin" target="UC30" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-2" parent="1" edge="1" source="admin" target="UC31" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-3" parent="1" edge="1" source="admin" target="UC32" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-4" parent="1" edge="1" source="admin" target="UC34" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-5" parent="1" edge="1" source="admin" target="UC35" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-6" parent="1" edge="1" source="admin" target="UC36" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-7" parent="1" edge="1" source="admin" target="UC37" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-8" parent="1" edge="1" source="admin" target="UC38" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-9" parent="1" edge="1" source="admin" target="UC39" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-10" parent="1" edge="1" source="admin" target="UC40" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-11" parent="1" edge="1" source="admin" target="UC41" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="title" value="07 · Administración" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=32;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;">
+          <mxGeometry as="geometry" x="65" y="35" width="1270" height="55" />
+        </mxCell>
+        <mxCell id="subtitle" value="Cuentas del personal, mesas, indicadores y resúmenes guardados" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="99" width="1270" height="50" />
+        </mxCell>
+        <mxCell id="note-0" value="La baja de usuario desactiva la cuenta y revoca sus sesiones. Se conservan al menos un administrador activo y las referencias históricas; no se permite la propia desactivación." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1550" width="690" height="100" />
+        </mxCell>
+        <mxCell id="note-1" value="La baja de mesa es lógica y exige que esté desocupada. Editar mesa cambia número o capacidad; no equivale a modificar los comensales de la visita." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1665" width="690" height="100" />
+        </mxCell>
+        <mxCell id="note-2" value="El consumo mostrado en estadísticas no equivale a cobros ni a ganancia neta. Los resúmenes guardados se registran por separado con importes ingresados explícitamente." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1780" width="690" height="100" />
+        </mxCell>
+        <mxCell id="footer" value="Asociación: línea continua sin flecha · Los códigos UC identifican el mismo caso en todas las páginas." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=14;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="1908" width="1270" height="30" />
+        </mxCell>
+        <mxCell id="admin" value="Administrador" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;fillColor=#ffffff;strokeColor=#24334b;strokeWidth=2;labelWidth=180;">
+          <mxGeometry as="geometry" x="145" y="810" width="54" height="80" />
+        </mxCell>
+        <mxCell id="UC33" value="UC33&lt;br/&gt;Consultar usuarios" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="220" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC30" value="UC30&lt;br/&gt;Registrar usuario" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="326" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC31" value="UC31&lt;br/&gt;Editar usuario" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="432" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC32" value="UC32&lt;br/&gt;Desactivar usuario" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="538" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC34" value="UC34&lt;br/&gt;Restablecer contraseña de usuario" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="644" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC35" value="UC35&lt;br/&gt;Registrar mesa" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="750" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC36" value="UC36&lt;br/&gt;Editar mesa" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="856" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC37" value="UC37&lt;br/&gt;Dar de baja mesa" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="962" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC38" value="UC38&lt;br/&gt;Consultar estadísticas" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="1068" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC39" value="UC39&lt;br/&gt;Crear resumen" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="1174" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC40" value="UC40&lt;br/&gt;Consultar resúmenes y su detalle" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="1280" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC41" value="UC41&lt;br/&gt;Eliminar resumen" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="1386" width="350" height="90" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="nacar-8" name="08 · Inventario">
+    <mxGraphModel dx="1400" dy="1427" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1427" math="0" shadow="0" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="system" value="NÁCAR · Sistema de gestión del restaurante" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;rounded=0;fillColor=none;strokeColor=#354963;strokeWidth=1.7;verticalAlign=top;spacingTop=17;fontStyle=1;">
+          <mxGeometry as="geometry" x="330" y="170" width="690" height="822" />
+        </mxCell>
+        <mxCell id="edge-0" parent="1" edge="1" source="admin" target="UC42" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-1" parent="1" edge="1" source="admin" target="UC43" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-2" parent="1" edge="1" source="admin" target="UC44" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-3" parent="1" edge="1" source="admin" target="UC45" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-4" parent="1" edge="1" source="admin" target="UC46" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-5" parent="1" edge="1" source="admin" target="UC47" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-6" parent="1" edge="1" source="admin" target="UC48" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="title" value="08 · Inventario" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=32;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;">
+          <mxGeometry as="geometry" x="65" y="35" width="1270" height="55" />
+        </mxCell>
+        <mxCell id="subtitle" value="Existencias, unidades de medida, recetas y trazabilidad de movimientos" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="99" width="1270" height="50" />
+        </mxCell>
+        <mxCell id="note-0" value="Registrar o editar pedidos incluye verificar disponibilidad (página 10) y consume o ajusta insumos; cancelar repone lo descontado. No son acciones manuales del mozo o chef." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1020" width="690" height="100" />
+        </mxCell>
+        <mxCell id="note-1" value="Configurar receta permite crearla, reemplazarla o quitarla. Ajustar existencias registra reposiciones o mermas. No se agregan bajas de insumos o unidades que el sistema no ofrece." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1135" width="690" height="100" />
+        </mxCell>
+        <mxCell id="note-2" value="Editar insumo está disponible en la API del administrador. La interfaz actual no ofrece un formulario para modificar su nombre o unidad." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1250" width="690" height="100" />
+        </mxCell>
+        <mxCell id="footer" value="Asociación: línea continua sin flecha · Los códigos UC identifican el mismo caso en todas las páginas." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=14;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="1378" width="1270" height="30" />
+        </mxCell>
+        <mxCell id="admin" value="Administrador" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;fillColor=#ffffff;strokeColor=#24334b;strokeWidth=2;labelWidth=180;">
+          <mxGeometry as="geometry" x="145" y="570" width="54" height="80" />
+        </mxCell>
+        <mxCell id="UC42" value="UC42&lt;br/&gt;Consultar inventario" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="220" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC43" value="UC43&lt;br/&gt;Registrar unidad de medida" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="326" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC44" value="UC44&lt;br/&gt;Registrar insumo" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="432" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC45" value="UC45&lt;br/&gt;Editar insumo" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;" tooltip="Disponible en la API; falta formulario en la interfaz.">
+          <mxGeometry as="geometry" x="500" y="538" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC46" value="UC46&lt;br/&gt;Ajustar existencias de insumo" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="644" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC47" value="UC47&lt;br/&gt;Configurar receta de plato" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="750" width="350" height="90" />
+        </mxCell>
+        <mxCell id="UC48" value="UC48&lt;br/&gt;Consultar movimientos de stock" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="856" width="350" height="90" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="nacar-9" name="09 · Inclusión y extensiones">
+    <mxGraphModel dx="1400" dy="1427" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1427" math="0" shadow="0" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="system" value="NÁCAR · Sistema de gestión del restaurante" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;rounded=0;fillColor=none;strokeColor=#354963;strokeWidth=1.7;verticalAlign=top;spacingTop=17;fontStyle=1;">
+          <mxGeometry as="geometry" x="330" y="170" width="690" height="822" />
+        </mxCell>
+        <mxCell id="edge-0" parent="1" edge="1" source="mozo" target="UC19" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge-1" parent="1" edge="1" source="admin" target="UC19" style="edgeStyle=none;html=1;rounded=0;startArrow=none;endArrow=none;strokeColor=#718096;strokeWidth=1.3;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="relation-2" parent="1" edge="1" source="UC19" target="UC26" value="«include»" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=6 4;startArrow=none;endArrow=open;endFill=0;endSize=11;strokeColor=#5365a4;strokeWidth=1.6;fontFamily=Arial;fontSize=15;fontColor=#24334b;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="relation-3" parent="1" edge="1" source="UC53" target="UC19" value="«extend»&lt;br/&gt;[requiere dirección]" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=6 4;startArrow=none;endArrow=open;endFill=0;endSize=11;strokeColor=#5365a4;strokeWidth=1.6;fontFamily=Arial;fontSize=15;fontColor=#24334b;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.25;entryY=0.0669872981077807;entryPerimeter=0;" tooltip="Punto de extensión: Completar datos de entrega. Condición: requiere dirección.">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="relation-4" parent="1" edge="1" source="UC54" target="UC19" value="«extend»&lt;br/&gt;[requiere repartidor interno]" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=6 4;startArrow=none;endArrow=open;endFill=0;endSize=11;strokeColor=#5365a4;strokeWidth=1.6;fontFamily=Arial;fontSize=15;fontColor=#24334b;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.75;entryY=0.0669872981077807;entryPerimeter=0;" tooltip="Punto de extensión: Completar datos de reparto. Condición: requiere repartidor interno.">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="title" value="09 · Inclusión y extensiones" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=32;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;">
+          <mxGeometry as="geometry" x="65" y="35" width="1270" height="55" />
+        </mxCell>
+        <mxCell id="subtitle" value="Detalle de UC19 · Los mismos actores y casos de la vista de envíos" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="99" width="1270" height="50" />
+        </mxCell>
+        <mxCell id="note-0" value="UC53 extiende UC19 en «Completar datos de entrega» si la modalidad requiere dirección. UC54 lo extiende en «Completar datos de reparto» si requiere repartidor interno." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1020" width="690" height="100" />
+        </mxCell>
+        <mxCell id="note-1" value="Las extensiones son condicionales: cuando se cumple su condición deben completarse antes de registrar el pedido. En retiro en local no se ejecutan estas extensiones." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1135" width="690" height="100" />
+        </mxCell>
+        <mxCell id="note-2" value="Flecha discontinua «include»: del caso base al incluido. Flecha discontinua «extend»: de la extensión al caso base. UC19 y UC26 conservan sus códigos de la página 05." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1250" width="690" height="100" />
+        </mxCell>
+        <mxCell id="footer" value="Asociación: línea continua sin flecha · Los códigos UC identifican el mismo caso en todas las páginas." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=14;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="1378" width="1270" height="30" />
+        </mxCell>
+        <mxCell id="mozo" value="Mozo" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;fillColor=#ffffff;strokeColor=#24334b;strokeWidth=2;labelWidth=180;">
+          <mxGeometry as="geometry" x="145" y="495" width="54" height="80" />
+        </mxCell>
+        <mxCell id="admin" value="Administrador" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;fillColor=#ffffff;strokeColor=#24334b;strokeWidth=2;labelWidth=180;">
+          <mxGeometry as="geometry" x="1170" y="495" width="54" height="80" />
+        </mxCell>
+        <mxCell id="UC19" value="UC19&lt;br/&gt;Registrar pedido para envío o retiro&lt;br/&gt;&lt;br/&gt;Puntos de extensión:&lt;br/&gt;Completar datos de entrega&lt;br/&gt;Completar datos de reparto" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="480" y="430" width="390" height="210" />
+        </mxCell>
+        <mxCell id="UC26" value="UC26&lt;br/&gt;Consultar modalidades de entrega" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="790" width="350" height="100" />
+        </mxCell>
+        <mxCell id="UC53" value="UC53&lt;br/&gt;Registrar dirección de entrega" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;" tooltip="Extiende UC19 en Completar datos de entrega cuando la modalidad requiere dirección.">
+          <mxGeometry as="geometry" x="365" y="240" width="300" height="100" />
+        </mxCell>
+        <mxCell id="UC54" value="UC54&lt;br/&gt;Asignar repartidor al registrar pedido" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;" tooltip="Extiende UC19 en Completar datos de reparto cuando la modalidad requiere repartidor interno. No representa reasignación posterior.">
+          <mxGeometry as="geometry" x="685" y="240" width="300" height="100" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="nacar-10" name="10 · Disponibilidad de pedidos">
+    <mxGraphModel dx="1400" dy="1427" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1427" math="0" shadow="0" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="system" value="NÁCAR · Sistema de gestión del restaurante" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;rounded=0;fillColor=none;strokeColor=#354963;strokeWidth=1.7;verticalAlign=top;spacingTop=17;fontStyle=1;">
+          <mxGeometry as="geometry" x="330" y="170" width="690" height="822" />
+        </mxCell>
+        <mxCell id="relation-0" parent="1" edge="1" source="UC07" target="UC55" value="«include»" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=6 4;startArrow=none;endArrow=open;endFill=0;endSize=11;strokeColor=#5365a4;strokeWidth=1.6;fontFamily=Arial;fontSize=15;fontColor=#24334b;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.25;entryY=0.0669872981077807;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="relation-1" parent="1" edge="1" source="UC08" target="UC55" value="«include»" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=6 4;startArrow=none;endArrow=open;endFill=0;endSize=11;strokeColor=#5365a4;strokeWidth=1.6;fontFamily=Arial;fontSize=15;fontColor=#24334b;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.75;entryY=0.0669872981077807;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="relation-2" parent="1" edge="1" source="UC19" target="UC55" value="«include»" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=6 4;startArrow=none;endArrow=open;endFill=0;endSize=11;strokeColor=#5365a4;strokeWidth=1.6;fontFamily=Arial;fontSize=15;fontColor=#24334b;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitPerimeter=0;entryX=0.5;entryY=1;entryPerimeter=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="title" value="10 · Disponibilidad de pedidos" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=32;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;">
+          <mxGeometry as="geometry" x="65" y="35" width="1270" height="55" />
+        </mxCell>
+        <mxCell id="subtitle" value="Tres inclusiones del mismo comportamiento · Detalle de las páginas 02 y 05" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=18;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="99" width="1270" height="50" />
+        </mxCell>
+        <mxCell id="note-0" value="UC07, UC08 y UC19 incluyen UC55 antes de guardar: los platos deben estar habilitados y los insumos de sus recetas deben alcanzar para las cantidades solicitadas." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1020" width="690" height="100" />
+        </mxCell>
+        <mxCell id="note-1" value="Al editar se considera lo que el pedido ya había reservado. Los platos sin receta no requieren insumos; la comprobación sigue validando su disponibilidad manual." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1135" width="690" height="100" />
+        </mxCell>
+        <mxCell id="note-2" value="Los actores y permisos de los casos base se conservan en las páginas 02 y 05. UC55 es una operación interna compartida; no concede permisos para ajustar stock manualmente." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#24334b;shape=note;size=16;fillColor=#fff8e5;strokeColor=#bd9637;align=left;verticalAlign=middle;spacingLeft=20;spacingRight=18;">
+          <mxGeometry as="geometry" x="330" y="1250" width="690" height="100" />
+        </mxCell>
+        <mxCell id="footer" value="Asociación: línea continua sin flecha · Los códigos UC identifican el mismo caso en todas las páginas." vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=14;fontColor=#24334b;text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=0;">
+          <mxGeometry as="geometry" x="65" y="1378" width="1270" height="30" />
+        </mxCell>
+        <mxCell id="UC07" value="UC07&lt;br/&gt;Crear pedido en mesa" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="365" y="240" width="300" height="100" />
+        </mxCell>
+        <mxCell id="UC08" value="UC08&lt;br/&gt;Editar pedido" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eef2ff;strokeColor=#5365a4;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="685" y="240" width="300" height="100" />
+        </mxCell>
+        <mxCell id="UC19" value="UC19&lt;br/&gt;Registrar pedido para envío o retiro" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;">
+          <mxGeometry as="geometry" x="500" y="790" width="350" height="100" />
+        </mxCell>
+        <mxCell id="UC55" value="UC55&lt;br/&gt;Verificar disponibilidad de platos e insumos" vertex="1" parent="1" style="html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=19;fontColor=#24334b;ellipse;fillColor=#eaf8f4;strokeColor=#287b68;strokeWidth=1.6;spacing=10;" tooltip="Comprobación obligatoria compartida por UC07, UC08 y UC19: disponibilidad manual de platos y existencias para las recetas; considera las cantidades ya reservadas al editar.">
+          <mxGeometry as="geometry" x="480" y="480" width="390" height="130" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

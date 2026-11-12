@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1300"><rect width="100%" height="100%" fill="white"/><style>text{font-family:Arial,sans-serif;fill:#24334b}</style>
+<text x="60" y="66" font-size="30" font-weight="700">01 · Clases — Salón, carta y pedidos</text>
+<text x="60" y="116" font-size="17" font-weight="400">Diseño orientado a objetos: atributos y responsabilidades derivados de las funciones actuales del restaurante.</text>
+<text x="60" y="1238" font-size="15" font-weight="400">Modelo POO propuesto · − privado · + público · / derivado · ◆ composición · Línea continua: asociación · Flecha discontinua: dependencia</text>
+<text x="60" y="1277" font-size="13" font-weight="400">NÁCAR · Proyecto Restaurante | Modelo conceptual basado en la implementación actual</text>
+<polyline points="410,362.0 650,362.0 650,388.0" fill="none" stroke="#718096" stroke-width="1.5" />
+<text x="538.0" y="350.0" font-size="14">recibe</text>
+<text x="436.0" y="352.0" font-size="14">0..1</text>
+<text x="656.0" y="358.0" font-size="14">0..*</text>
+<polyline points="1000,388.0 1240,388.0 1240,297.0" fill="none" stroke="#718096" stroke-width="1.5" />
+<polygon points="1000,388.0 1008.0,383.0 1016.0,388.0 1008.0,393.0" fill="#718096"/>
+<text x="1128.0" y="376.0" font-size="14">contiene</text>
+<text x="1026.0" y="378.0" font-size="14">1</text>
+<text x="1246.0" y="307.0" font-size="14">1..*</text>
+<polyline points="1415.0,414 1415.0,660" fill="none" stroke="#718096" stroke-width="1.5" />
+<text x="1423.0" y="525.0" font-size="14">corresponde a</text>
+<text x="1421.0" y="424.0" font-size="14">0..*</text>
+<text x="1421.0" y="630.0" font-size="14">1</text>
+<polyline points="235.0,544 235.0,680" fill="none" stroke="#718096" stroke-width="1.5" />
+<polygon points="235.0,544 240.0,552.0 235.0,560.0 230.0,552.0" fill="#718096"/>
+<text x="243.0" y="600.0" font-size="14">posición</text>
+<text x="241.0" y="554.0" font-size="14">1</text>
+<text x="241.0" y="650.0" font-size="14">0..1</text>
+<polyline points="825.0,596 825.0,790" fill="none" stroke="#718096" stroke-width="1.5" />
+<polygon points="825.0,596 830.0,604.0 825.0,612.0 820.0,604.0" fill="#718096"/>
+<text x="833.0" y="681.0" font-size="14">historial</text>
+<text x="831.0" y="606.0" font-size="14">1</text>
+<text x="831.0" y="760.0" font-size="14">1..*</text>
+<rect x="60" y="180" width="350" height="364" fill="white" stroke="#4c6f9c" stroke-width="1.6"/>
+<rect x="60" y="180" width="350" height="64" fill="#eaf1fb" stroke="#4c6f9c"/>
+<text x="235.0" y="203" text-anchor="middle" font-size="15">«clase»</text>
+<text x="235.0" y="228" text-anchor="middle" font-size="19" font-weight="700" text-decoration="none">Mesa</text>
+<text x="72" y="272" font-size="15">− id: int</text>
+<text x="72" y="298" font-size="15">− numero: int</text>
+<text x="72" y="324" font-size="15">− capacidad: int</text>
+<text x="72" y="350" font-size="15">− estado: EstadoMesa</text>
+<text x="72" y="376" font-size="15">− comensales: int</text>
+<text x="72" y="402" font-size="15">− servicioId: string?</text>
+<path d="M60,412H410" stroke="#4c6f9c"/>
+<text x="72" y="440" font-size="15">+ abrir(comensales): void</text>
+<text x="72" y="466" font-size="15">+ cerrar(): void</text>
+<text x="72" y="492" font-size="15">+ cambiarTamano(capacidad): void</text>
+<text x="72" y="518" font-size="15">+ ubicar(posicion): void</text>
+<rect x="650" y="180" width="350" height="416" fill="white" stroke="#4c6f9c" stroke-width="1.6"/>
+<rect x="650" y="180" width="350" height="64" fill="#eaf1fb" stroke="#4c6f9c"/>
+<text x="825.0" y="203" text-anchor="middle" font-size="15">«clase»</text>
+<text x="825.0" y="228" text-anchor="middle" font-size="19" font-weight="700" text-decoration="none">Pedido</text>
+<text x="662" y="272" font-size="15">− id: int</text>
+<text x="662" y="298" font-size="15">− estado: EstadoPedido</text>
+<text x="662" y="324" font-size="15">− creadoEn: DateTime</text>
+<text x="662" y="350" font-size="15">− servicioId: string?</text>
+<text x="662" y="376" font-size="15">− numeroMesa: int?</text>
+<text x="662" y="402" font-size="15">− mozoId: string</text>
+<text x="662" y="428" font-size="15">− mozoNombre: string</text>
+<text x="662" y="454" font-size="15">− pagoRequerido: boolean</text>
+<path d="M650,464H1000" stroke="#4c6f9c"/>
+<text x="662" y="492" font-size="15">+ editarItems(items): void</text>
+<text x="662" y="518" font-size="15">+ cambiarEstado(estado, actor): void</text>
+<text x="662" y="544" font-size="15">+ calcularSubtotal(): Decimal</text>
+<text x="662" y="570" font-size="15">+ cancelar(actor): void</text>
+<rect x="1240" y="180" width="350" height="234" fill="white" stroke="#4c6f9c" stroke-width="1.6"/>
+<rect x="1240" y="180" width="350" height="64" fill="#eaf1fb" stroke="#4c6f9c"/>
+<text x="1415.0" y="203" text-anchor="middle" font-size="15">«clase»</text>
+<text x="1415.0" y="228" text-anchor="middle" font-size="19" font-weight="700" text-decoration="none">DetallePedido</text>
+<text x="1252" y="272" font-size="15">− cantidad: int</text>
+<text x="1252" y="298" font-size="15">− notas: string</text>
+<text x="1252" y="324" font-size="15">− nombreComida: string</text>
+<text x="1252" y="350" font-size="15">− precioUnitario: Decimal</text>
+<path d="M1240,360H1590" stroke="#4c6f9c"/>
+<text x="1252" y="388" font-size="15">+ calcularSubtotal(): Decimal</text>
+<rect x="60" y="680" width="350" height="242" fill="white" stroke="#4c6f9c" stroke-width="1.6"/>
+<rect x="60" y="680" width="350" height="64" fill="#eaf1fb" stroke="#4c6f9c"/>
+<text x="235.0" y="703" text-anchor="middle" font-size="15">«clase»</text>
+<text x="235.0" y="728" text-anchor="middle" font-size="19" font-weight="700" text-decoration="none">PosicionMesa</text>
+<text x="72" y="772" font-size="15">− forma: FormaMesa</text>
+<text x="72" y="798" font-size="15">− x: Decimal</text>
+<text x="72" y="824" font-size="15">− y: Decimal</text>
+<text x="72" y="850" font-size="15">− ancho: Decimal</text>
+<text x="72" y="876" font-size="15">− alto: Decimal</text>
+<text x="72" y="902" font-size="15">− rotacion: Decimal</text>
+<rect x="650" y="790" width="350" height="164" fill="white" stroke="#4c6f9c" stroke-width="1.6"/>
+<rect x="650" y="790" width="350" height="64" fill="#eaf1fb" stroke="#4c6f9c"/>
+<text x="825.0" y="813" text-anchor="middle" font-size="15">«clase»</text>
+<text x="825.0" y="838" text-anchor="middle" font-size="19" font-weight="700" text-decoration="none">EventoEstado</text>
+<text x="662" y="882" font-size="15">− estado: EstadoPedido</text>
+<text x="662" y="908" font-size="15">− fecha: DateTime</text>
+<text x="662" y="934" font-size="15">− actor: string</text>
+<rect x="1240" y="660" width="350" height="364" fill="white" stroke="#4c6f9c" stroke-width="1.6"/>
+<rect x="1240" y="660" width="350" height="64" fill="#eaf1fb" stroke="#4c6f9c"/>
+<text x="1415.0" y="683" text-anchor="middle" font-size="15">«clase»</text>
+<text x="1415.0" y="708" text-anchor="middle" font-size="19" font-weight="700" text-decoration="none">Comida</text>
+<text x="1252" y="752" font-size="15">− id: int</text>
+<text x="1252" y="778" font-size="15">− nombre: string</text>
+<text x="1252" y="804" font-size="15">− descripcion: string</text>
+<text x="1252" y="830" font-size="15">− categoria: Categoria</text>
+<text x="1252" y="856" font-size="15">− precio: Decimal</text>
+<text x="1252" y="882" font-size="15">− disponible: boolean</text>
+<text x="1252" y="908" font-size="15">− /porciones: int?</text>
+<path d="M1240,918H1590" stroke="#4c6f9c"/>
+<text x="1252" y="946" font-size="15">+ editar(datos): void</text>
+<text x="1252" y="972" font-size="15">+ cambiarDisponibilidad(valor): void</text>
+<text x="1252" y="998" font-size="15">+ puedeVenderse(): boolean</text>
+<rect x="60" y="1080" width="1530" height="112" fill="#fff8e5" stroke="#bd9637"/>
+<text x="78" y="1107" font-size="16">EstadoPedido = pendiente | preparacion | listo | entregado | cancelado. EstadoMesa = ocupada | desocupada.</text>
+<text x="78" y="1130" font-size="16">Un pedido pertenece a una mesa o tiene un envío. DetallePedido conserva nombre y precio históricos.</text>
+<text x="78" y="1153" font-size="16">/porciones es calculado; null indica que no hay receta. FormaMesa = rectangle | circle.</text>
+</svg>
